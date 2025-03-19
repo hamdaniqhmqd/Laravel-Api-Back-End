@@ -12,13 +12,20 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('users', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
+            $table->id('id_user');
+            $table->unsignedBigInteger('id_branch_user')->nullable();
+            $table->string('username')->unique();
             $table->string('password');
-            $table->rememberToken();
+            $table->string('fullname_user');
+            $table->enum('role_user', ['admin', 'owner', 'kurir']);
+            $table->enum('gender_user', ['male', 'female']);
+            $table->string('phone_user')->nullable();
+            $table->text('address_user')->nullable();
+            $table->enum('is_active_user', ['active', 'inactive'])->default('active');
             $table->timestamps();
+
+            // Jika id_branch_user merupakan foreign key, tambahkan constraint berikut
+            // $table->foreign('id_branch_user')->references('id')->on('branch')->onDelete('cascade');
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
