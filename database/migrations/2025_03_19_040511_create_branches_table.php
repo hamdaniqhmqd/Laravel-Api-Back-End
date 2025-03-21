@@ -12,8 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('branches', function (Blueprint $table) {
-            $table->id('id_branch');
+            $table->id('id_branch')->index();
             $table->string('name_branch');
+            $table->string('city_branch');
             $table->text('address_branch');
             $table->enum('is_active_branch', ['active', 'inactive'])->default('active');
             $table->timestamps();

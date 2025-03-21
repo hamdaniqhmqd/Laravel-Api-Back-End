@@ -11,12 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('rental__items', function (Blueprint $table) {
-            $table->id('id_rental_item');
+        Schema::create('rental_items', function (Blueprint $table) {
+            $table->id('id_rental_item')->index();
             $table->unsignedBigInteger('id_branch_rental_item'); // Foreign key ke branch
             $table->string('number_rental_item')->unique();
             $table->string('name_rental_item');
-            $table->bigInteger('price_rental_items');
+            $table->bigInteger('price_rental_item');
             $table->enum('status_rental_item', ['available', 'rented', 'maintenance'])->default('available');
             $table->enum('condition_rental_item', ['clean', 'dirty', 'damaged'])->default('clean');
             $table->text('description_rental_item')->nullable();

@@ -12,9 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('list_transaction_laundries', function (Blueprint $table) {
-            $table->id('id_list_transaction_laundry');
-            $table->unsignedBigInteger('id_transaction_laundry');
-            $table->unsignedBigInteger('id_item_laundry');
+            $table->id('id_list_transaction_laundry')->index();
+            $table->unsignedBigInteger('id_transaction_laundry')->index();
+            $table->unsignedBigInteger('id_item_laundry')->index();
             $table->bigInteger('price_list_transaction_laundry');
             $table->double('weight_list_transaction_laundry', 8, 2);
             $table->integer('pcs_list_transaction_rental');
@@ -24,17 +24,17 @@ return new class extends Migration
             $table->timestamps();
 
             // Foreign Key
-            // $table->foreign('id_transaction_laundry')
-            //     ->references('id_transaction_laundry') // Perbaiki agar sesuai dengan tabel utama
-            //     ->on('transaction_laundries') // Pastikan tabel utama benar
-            //     ->onUpdate('cascade')
-            //     ->onDelete('cascade');
+            $table->foreign('id_transaction_laundry', 'id_laundry_transaction')
+                ->references('id_transaction_laundry')
+                ->on('transaction_laundries')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
 
-            // $table->foreign('id_item_laundry')
-            //     ->references('id_laundry_item')
-            //     ->on('laundry_items')
-            //     ->onUpdate('cascade')
-            //     ->onDelete('cascade');
+            $table->foreign('id_item_laundry', 'id_laundry_transaction_item')
+                ->references('id_laundry_item')
+                ->on('laundry_items')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
         });
     }
 

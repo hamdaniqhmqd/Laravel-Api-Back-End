@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('laundry__items', function (Blueprint $table) {
-            $table->id('id_laundry_item');
+        Schema::create('laundry_items', function (Blueprint $table) {
+            $table->id('id_laundry_item')->index();
             $table->unsignedBigInteger('id_branch_laundry_item')->nullable(); // Foreign key ke branch
             $table->string('name_laundry_item');
             $table->bigInteger('price_laundry_item');
