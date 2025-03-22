@@ -24,8 +24,11 @@ return new class extends Migration
             $table->enum('is_active_user', ['active', 'inactive'])->default('active');
             $table->timestamps();
 
-            // Jika id_branch_user merupakan foreign key, tambahkan constraint berikut
-            // $table->foreign('id_branch_user')->references('id')->on('branch')->onDelete('cascade');
+            // $table->foreign('id_branch_user')
+            //     ->references('id_branch')
+            //     ->on('branches')
+            //     ->onUpdate('cascade')
+            //     ->onDelete('cascade');
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {

@@ -2,9 +2,42 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Invoice_Rental extends Model
 {
-    //
+    use HasFactory;
+
+    protected $table = 'invoice_rentals';
+    protected $primaryKey = 'id_invoice_rental';
+    public $timestamps = true;
+
+    protected $fillable = [
+        'id_branch_invoice',
+        'id_client_invoice',
+        'notes_invoice_rental',
+        'time_invoice_rental',
+        'total_weight_invoice_rental',
+        'price_invoice_rental',
+        'promo_invoice_rental',
+        'additional_cost_invoice_rental',
+        'total_price_invoice_rental',
+        'is_active_invoice_rental',
+    ];
+
+    public function branch()
+    {
+        return $this->belongsTo(Branch::class, 'id_branch_invoice', 'id_branch');
+    }
+
+    public function client()
+    {
+        return $this->belongsTo(Client::class, 'id_client_invoice', 'id_client');
+    }
+
+    public function listInvoices()
+    {
+        return $this->hasMany(List_Invoice_Rental::class, 'id_rental_invoice', 'id_list_invoice_rental');
+    }
 }

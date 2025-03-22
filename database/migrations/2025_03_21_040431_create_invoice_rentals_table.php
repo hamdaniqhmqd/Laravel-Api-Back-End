@@ -13,7 +13,6 @@ return new class extends Migration
     {
         Schema::create('invoice_rentals', function (Blueprint $table) {
             $table->id('id_invoice_rental')->index();
-            // $table->unsignedBigInteger('id_rental_transaction')->index();
             $table->unsignedBigInteger('id_branch_invoice')->index();
             $table->unsignedBigInteger('id_client_invoice')->index();
             $table->text('notes_invoice_rental')->nullable();
@@ -25,13 +24,6 @@ return new class extends Migration
             $table->double('total_price_invoice_rental', 12, 2);
             $table->enum('is_active_invoice_rental', ['active', 'inactive'])->default('active');
             $table->timestamps();
-
-            // Foreign Key Constraints
-            // $table->foreign('id_rental_transaction', 'fk_invoice_transaction_rental') // Nama constraint diperbaiki
-            //     ->references('id_transaction_rental')
-            //     ->on('transaction_rentals')
-            //     ->onUpdate('cascade')
-            //     ->onDelete('cascade');
 
             $table->foreign('id_branch_invoice', 'fk_invoice_branch') // Nama constraint diperbaiki
                 ->references('id_branch')

@@ -17,10 +17,21 @@ class User extends Authenticatable
      *
      * @var list<string>
      */
+
+    protected $table = 'users';
+    protected $primaryKey = 'id_user';
+    public $timestamps = true;
+
     protected $fillable = [
-        'name',
-        'email',
+        'id_branch_user',
+        'username',
         'password',
+        'fullname_user',
+        'role_user',
+        'gender_user',
+        'phone_user',
+        'address_user',
+        'is_active_user'
     ];
 
     /**
@@ -44,5 +55,10 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function branch()
+    {
+        return $this->belongsTo(Branch::class, 'id_branch_user', 'id_branch');
     }
 }
