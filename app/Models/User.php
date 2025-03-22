@@ -61,4 +61,14 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Branch::class, 'id_branch_user', 'id_branch');
     }
+
+    public function transactions_laundry()
+    {
+        return $this->hasMany(Transaction_Laundry::class, 'id_user_transaction_laundry', 'id_user');
+    }
+
+    public function transactions_rental()
+    {
+        return $this->hasMany(Transaction_Rental::class, 'id_kurir_transaction_rental', 'id_user');
+    }
 }

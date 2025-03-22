@@ -23,12 +23,12 @@ class List_Invoice_Rental extends Model
         'is_active_list_invoice_rental',
     ];
 
-    public function invoice()
+    public function invoiceRental()
     {
         return $this->belongsTo(Invoice_Rental::class, 'id_rental_invoice', 'id_invoice_rental');
     }
 
-    public function transaction()
+    public function transactionRental()
     {
         return $this->belongsTo(Transaction_Rental::class, 'id_rental_transaction', 'id_transaction_rental');
     }

@@ -28,14 +28,14 @@ class Transaction_Laundry extends Model
         'last_date_transaction_laundry',
     ];
 
-    // protected $casts = [
-    //     'time_transaction_laundry' => 'datetime:H:i',
-    //     'total_weight_transaction_laundry' => 'float',
-    //     'total_price_transaction_laundry' => 'float',
-    //     'cash_transaction_laundry' => 'float',
-    //     'first_date_transaction_laundry' => 'date',
-    //     'last_date_transaction_laundry' => 'date',
-    // ];
+    protected $casts = [
+        'time_transaction_laundry' => 'datetime:H:i',
+        'total_weight_transaction_laundry' => 'float',
+        'total_price_transaction_laundry' => 'float',
+        'cash_transaction_laundry' => 'float',
+        'first_date_transaction_laundry' => 'date',
+        'last_date_transaction_laundry' => 'date',
+    ];
 
     // Relasi ke User (Kurir)
     public function user()
@@ -52,6 +52,6 @@ class Transaction_Laundry extends Model
     // Relasi ke List_Transaction_Laundry
     public function listTransactionLaundry()
     {
-        return $this->hasMany(List_Transaction_Laundry::class, 'id_transaction_laundry', 'id_transaction_laundry');
+        return $this->hasMany(List_Transaction_Laundry::class, 'id_list_transaction_laundry', 'id_transaction_laundry');
     }
 }

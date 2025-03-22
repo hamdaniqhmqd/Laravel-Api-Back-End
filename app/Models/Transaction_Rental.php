@@ -30,15 +30,15 @@ class Transaction_Rental extends Model
         'last_date_transaction_rental',
     ];
 
-    // protected $casts = [
-    //     'total_weight_transaction_rental' => 'float',
-    //     'total_pcs_transaction_rental' => 'integer',
-    //     'promo_transaction_rental' => 'integer',
-    //     'additional_cost_transaction_rental' => 'integer',
-    //     'total_price_transaction_rental' => 'integer',
-    //     'first_date_transaction_rental' => 'date',
-    //     'last_date_transaction_rental' => 'date',
-    // ];
+    protected $casts = [
+        'total_weight_transaction_rental' => 'float',
+        'total_pcs_transaction_rental' => 'integer',
+        'promo_transaction_rental' => 'integer',
+        'additional_cost_transaction_rental' => 'integer',
+        'total_price_transaction_rental' => 'integer',
+        'first_date_transaction_rental' => 'date',
+        'last_date_transaction_rental' => 'date',
+    ];
 
     public function kurir()
     {
@@ -58,5 +58,10 @@ class Transaction_Rental extends Model
     public function listTransactions()
     {
         return $this->hasMany(List_Transaction_Rental::class, 'id_rental_transaction', 'id_transaction_rental');
+    }
+
+    public function ListInvoice()
+    {
+        return $this->hasMany(List_Invoice_Rental::class, 'id_list_invoice_rental', 'id_transaction_rental');
     }
 }

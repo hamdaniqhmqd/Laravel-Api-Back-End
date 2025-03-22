@@ -39,4 +39,19 @@ class Branch extends Model
     {
         return $this->hasMany(Rental_Item::class, 'id_branch_rental_item', 'id_branch');
     }
+
+    public function transactionsLaundry()
+    {
+        return $this->hasMany(Transaction_Laundry::class, 'id_branch_transaction_laundry', 'id_branch');
+    }
+
+    public function transactionsRental()
+    {
+        return $this->hasMany(Transaction_Rental::class, 'id_branch_transaction_rental', 'id_branch');
+    }
+
+    public function invoicesRental()
+    {
+        return $this->hasMany(Invoice_Rental::class, 'id_branch_invoice', 'id_branch');
+    }
 }

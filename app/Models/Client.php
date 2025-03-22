@@ -25,4 +25,14 @@ class Client extends Model
     {
         return $this->belongsTo(Branch::class, 'id_branch_client', 'id_branch');
     }
+
+    public function transactions_rental()
+    {
+        return $this->hasMany(Transaction_Rental::class, 'id_client_transaction_rental', 'id_client');
+    }
+
+    public function invoice_rental()
+    {
+        return $this->hasMany(Invoice_Rental::class, 'id_client_invoice', 'id_client');
+    }
 }
