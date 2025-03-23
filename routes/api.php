@@ -20,10 +20,15 @@ Route::post('/logout', LogoutController::class)->middleware('auth:sanctum')->nam
 Route::middleware(['auth:sanctum', 'role:owner'])->group(function () {
     // Users
     Route::get('/users', [UserController::class, 'index']);
-    Route::post('/users', [UserController::class, 'store']);
+    Route::get('/all_users', [UserController::class, 'getAll']);
+    Route::post('/create_users', [UserController::class, 'store']);
     Route::get('/users/{id}', [UserController::class, 'show']);
-    Route::put('/users/{id}', [UserController::class, 'update']);
-    Route::delete('/users/{id}', [UserController::class, 'destroy']);
+    Route::put('/edit_users/{id}', [UserController::class, 'update']);
+    Route::put('/delete_users/{id}', [UserController::class, 'destroy']);
+    Route::put('/reset_password/{id}', [UserController::class, 'resetPassword']);
+
+    // Branch
+
 });
 
 
