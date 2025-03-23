@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\BranchController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\LogoutController;
@@ -28,7 +29,12 @@ Route::middleware(['auth:sanctum', 'role:owner'])->group(function () {
     Route::put('/reset_password/{id}', [UserController::class, 'resetPassword']);
 
     // Branch
-
+    Route::get('/branches', [BranchController::class, 'index']);
+    Route::get('/all_branches', [BranchController::class, 'getAll']);
+    Route::post('/create_branches', [BranchController::class, 'store']);
+    Route::get('/branches/{id}', [BranchController::class, 'show']);
+    Route::put('/edit_branches/{id}', [BranchController::class, 'update']);
+    Route::put('/delete_branches/{id}', [BranchController::class, 'destroy']);
 });
 
 
