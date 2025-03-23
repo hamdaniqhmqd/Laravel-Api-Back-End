@@ -17,9 +17,21 @@ Route::get('/user', function (Request $request) {
 Route::post('/login', LoginController::class)->name('login');
 Route::post('/logout', LogoutController::class)->middleware('auth:sanctum')->name('logout');
 
-// Users
-Route::get('/users', [UserController::class, 'index']);
-Route::post('/users', [UserController::class, 'store']);
-Route::get('/users/{id}', [UserController::class, 'show']);
-Route::put('/users/{id}', [UserController::class, 'update']);
-Route::delete('/users/{id}', [UserController::class, 'destroy']);
+Route::middleware(['auth:sanctum', 'role:owner'])->group(function () {
+    // Users
+    Route::get('/users', [UserController::class, 'index']);
+    Route::post('/users', [UserController::class, 'store']);
+    Route::get('/users/{id}', [UserController::class, 'show']);
+    Route::put('/users/{id}', [UserController::class, 'update']);
+    Route::delete('/users/{id}', [UserController::class, 'destroy']);
+});
+
+
+Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
+    //
+});
+
+
+Route::middleware(['auth:sanctum', 'role:kurir'])->group(function () {
+    //
+});
