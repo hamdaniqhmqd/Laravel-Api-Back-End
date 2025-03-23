@@ -10,66 +10,66 @@ use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasApiTokens, HasFactory, Notifiable;
+  /** @use HasFactory<\Database\Factories\UserFactory> */
+  use HasApiTokens, HasFactory, Notifiable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
-     */
+  /**
+   * The attributes that are mass assignable.
+   *
+   * @var list<string>
+   */
 
-    protected $table = 'users';
-    protected $primaryKey = 'id_user';
-    public $timestamps = true;
+  protected $table = 'users';
+  protected $primaryKey = 'id_user';
+  public $timestamps = true;
 
-    protected $fillable = [
-        'id_branch_user',
-        'username',
-        'password',
-        'fullname_user',
-        'role_user',
-        'gender_user',
-        'phone_user',
-        'address_user',
-        'is_active_user'
+  protected $fillable = [
+    'id_branch_user',
+    'username',
+    'password',
+    'fullname_user',
+    'role_user',
+    'gender_user',
+    'phone_user',
+    'address_user',
+    'is_active_user'
+  ];
+
+  /**
+   * The attributes that should be hidden for serialization.
+   *
+   * @var list<string>
+   */
+  protected $hidden = [
+    'password',
+    'remember_token',
+  ];
+
+  /**
+   * Get the attributes that should be cast.
+   *
+   * @return array<string, string>
+   */
+  protected function casts(): array
+  {
+    return [
+      'email_verified_at' => 'datetime',
+      'password' => 'hashed',
     ];
+  }
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
-     */
-    protected $hidden = [
-        'password',
-        'remember_token',
-    ];
+  public function branch()
+  {
+    return $this->belongsTo(Branch::class, 'id_branch_user', 'id_branch');
+  }
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
-    protected function casts(): array
-    {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
-    }
+  public function transactions_laundry()
+  {
+    return $this->hasMany(Transaction_Laundry::class, 'id_user_transaction_laundry', 'id_user');
+  }
 
-    public function branch()
-    {
-        return $this->belongsTo(Branch::class, 'id_branch_user', 'id_branch');
-    }
-
-    public function transactions_laundry()
-    {
-        return $this->hasMany(Transaction_Laundry::class, 'id_user_transaction_laundry', 'id_user');
-    }
-
-    public function transactions_rental()
-    {
-        return $this->hasMany(Transaction_Rental::class, 'id_kurir_transaction_rental', 'id_user');
-    }
+  public function transactions_rental()
+  {
+    return $this->hasMany(Transaction_Rental::class, 'id_kurir_transaction_rental', 'id_user');
+  }
 }

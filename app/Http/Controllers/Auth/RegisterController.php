@@ -57,7 +57,7 @@ class RegisterController extends Controller
                 'user'  => $user,
                 'token' => $token,
                 // 'expires_at' => $now->toDateTimeString(),
-            ]);
+            ], null, 200);
         } catch (ValidationException $e) {
             // Jika validasi gagal
             return new ResponseApiResource(false, 'Validation error', [
