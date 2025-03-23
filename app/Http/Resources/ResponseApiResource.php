@@ -11,6 +11,7 @@ class ResponseApiResource extends JsonResource
     public $status;
     public $message;
     public $resource;
+    public $errors;
 
     /**
      * __construct
@@ -18,13 +19,15 @@ class ResponseApiResource extends JsonResource
      * @param  mixed $status
      * @param  mixed $message
      * @param  mixed $resource
+     * @param  mixed $errors
      * @return void
      */
-    public function __construct($status, $message, $resource)
+    public function __construct($status, $message, $resource, $errors)
     {
         parent::__construct($resource);
         $this->status  = $status;
         $this->message = $message;
+        $this->errors = $errors;
     }
 
     /**
@@ -38,7 +41,8 @@ class ResponseApiResource extends JsonResource
         return [
             'success'   => $this->status,
             'message'   => $this->message,
-            'data'      => $this->resource
+            'data'      => $this->resource,
+            'errors'      => $this->errors,
         ];
     }
 }
