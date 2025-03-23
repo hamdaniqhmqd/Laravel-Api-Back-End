@@ -14,39 +14,43 @@ class BranchSeeder extends Seeder
      */
     public function run(): void
     {
-        Branch::insert([
-            [
-                'name_branch' => 'Branch Jakarta Pusat',
-                'city_branch' => 'Jakarta',
-                'address_branch' => 'Jl. MH Thamrin No.10, Jakarta Pusat',
-                'is_active_branch' => 'active',
-            ],
-            [
-                'name_branch' => 'Branch Surabaya Timur',
-                'city_branch' => 'Surabaya',
-                'address_branch' => 'Jl. Raya Darmo No.25, Surabaya',
-                'is_active_branch' => 'active',
-            ],
-            [
-                'name_branch' => 'Branch Bandung Utara',
-                'city_branch' => 'Bandung',
-                'address_branch' => 'Jl. Setiabudi No.45, Bandung',
-                'is_active_branch' => 'inactive',
-            ],
-            [
-                'name_branch' => 'Branch Medan Kota',
-                'city_branch' => 'Medan',
-                'address_branch' => 'Jl. Gatot Subroto No.100, Medan',
-                'is_active_branch' => 'active',
-            ],
-            [
-                'name_branch' => 'Branch Semarang Barat',
-                'city_branch' => 'Semarang',
-                'address_branch' => 'Jl. Pemuda No.30, Semarang',
-                'is_active_branch' => 'inactive',
-            ],
-        ]);
+        try {
+            Branch::insert([
+                [
+                    'name_branch' => 'Branch Jakarta Pusat',
+                    'city_branch' => 'Jakarta',
+                    'address_branch' => 'Jl. MH Thamrin No.10, Jakarta Pusat',
+                    'is_active_branch' => 'active',
+                ],
+                [
+                    'name_branch' => 'Branch Surabaya Timur',
+                    'city_branch' => 'Surabaya',
+                    'address_branch' => 'Jl. Raya Darmo No.25, Surabaya',
+                    'is_active_branch' => 'active',
+                ],
+                [
+                    'name_branch' => 'Branch Bandung Utara',
+                    'city_branch' => 'Bandung',
+                    'address_branch' => 'Jl. Setiabudi No.45, Bandung',
+                    'is_active_branch' => 'inactive',
+                ],
+                [
+                    'name_branch' => 'Branch Medan Kota',
+                    'city_branch' => 'Medan',
+                    'address_branch' => 'Jl. Gatot Subroto No.100, Medan',
+                    'is_active_branch' => 'active',
+                ],
+                [
+                    'name_branch' => 'Branch Semarang Barat',
+                    'city_branch' => 'Semarang',
+                    'address_branch' => 'Jl. Pemuda No.30, Semarang',
+                    'is_active_branch' => 'inactive',
+                ],
+            ]);
 
-        Log::info('Data branch berhasil disimpan');
+            Log::info('Data branch berhasil disimpan');
+        } catch (\Exception $error) {
+            Log::error('Gagal menyimpan data branch: ' . $error->getMessage());
+        }
     }
 }

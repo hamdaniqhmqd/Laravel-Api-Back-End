@@ -14,11 +14,15 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $this->call([
-            BranchSeeder::class,
-            UserSeeder::class,
-        ]);
+        try {
+            $this->call([
+                BranchSeeder::class,
+                UserSeeder::class,
+            ]);
 
-        Log::info('Database seeded successfully');
+            Log::info('Database seeded successfully'); //code...
+        } catch (\Exception $error) {
+            Log::error("Database seeding failed: " . $error->getMessage());
+        }
     }
 }
