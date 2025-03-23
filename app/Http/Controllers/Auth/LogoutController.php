@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ResponseApiResource;
 use Illuminate\Http\Request;
+use Exception;
+use Illuminate\Support\Facades\Log;
 
 class LogoutController extends Controller
 {
@@ -18,24 +20,26 @@ class LogoutController extends Controller
             $user = $request->user();
             $token = $user->currentAccessToken();
 
-            // Periksa apakah token ada
+            // Periksa apakah token ada dan kolom last_used_at belum terisi
             if (!$token) {
-                return new ResponseApiResource(false, 'No active token found', [
-                    'status_code' => 400
-                ], 400);
+                Log::warning('Token tidak ditemukan : dengan id_user ' . $user->id_user);
+
+                return new ResponseApiResource(
+                    false,
+                    'Token tidak ditemukan',
+                    $user,
+                    'Token tidak ditemukan',
+                    404
+                );
             }
 
-            // Update last_used_at untuk menonaktifkan token tanpa menghapusnya
-            $token->forceFill(['last_used_at' => now()])->save();
+            Log::info('Logout berhasil : dengan id_user ' . $user->id_user);
 
-            return new ResponseApiResource(true, 'Logout successful', [
-                'status_code' => 200
-            ], 200);
-        } catch (\Exception $e) {
-            return new ResponseApiResource(false, 'Something went wrong', [
-                'error_message' => $e->getMessage(),
-                'status_code' => 500,
-            ], 500);
+            return new ResponseApiResource(true, 'Logout berhasil', $user, null, 200);
+        } catch (Exception $e) {
+            Log::error('Logout gagal : dengan id_user ' . $user->id_user . ' : ' . $e->getMessage());
+
+            return new ResponseApiResource(false, 'Ada yang tidak beres', $user, $e->getMessage(), 500);
         }
     }
 }

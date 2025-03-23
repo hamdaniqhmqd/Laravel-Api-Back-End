@@ -8,9 +8,11 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 use Carbon\Carbon;
+use Exception;
 use App\Models\User;
 use Laravel\Sanctum\PersonalAccessToken;
 use App\Http\Resources\ResponseApiResource;
+use Illuminate\Support\Facades\Log;
 
 class LoginController extends Controller
 {
@@ -19,31 +21,6 @@ class LoginController extends Controller
      */
     public function __invoke(Request $request)
     {
-
-        // TEST LOGIN PERTAMA
-
-        // $credentials = $request->validate([
-        //     'username' => 'required|string',
-        //     'password' => 'required|string|min:8',
-        // ]);
-
-        // if (!Auth::attempt($credentials)) {
-        //     return new ResponseApiResource(false, 'Invalid is data User', [
-        //         'status_code' => 401
-        //     ]);
-        // }
-
-        // $user = auth()->user();
-        // $token = $user->createToken('apilaundry&rental' . $request->username, ['read', 'write']);
-        // // $plainTextToken = $token->plainTextToken;
-
-        // return new ResponseApiResource(true, 'Login successful', [
-        //     'status_code' => 200,
-        //     'token' => $token->plainTextToken
-        // ]);
-
-        // TEST LOGIN KEDUAN
-
         try {
             // Validasi input
             $credentials = $request->validate([
@@ -55,17 +32,22 @@ class LoginController extends Controller
             $user = User::where('username', $credentials['username'])->first();
 
             // Periksa apakah user ada dan memiliki status "active"
-            if (!$user || !Hash::check($credentials['password'], $user->password)) {
-                return new ResponseApiResource(false, 'Invalid is data User', [
-                    'status_code' => 401
-                ], 401);
-            }
+            if (!$user || !Hash::check($credentials['password'], $user->password) || $user->is_active_user !== 'active') {
 
-            // Periksa apakah user memiliki status "active"
-            if ($user->is_active_user !== 'active') {
-                return new ResponseApiResource(false, 'Account is inactive', [
-                    'status_code' => 403
-                ], 403);
+                Log::warning(
+                    !$user || !Hash::check($credentials['password'], $user->password)
+                        ? 'Data pengguna tidak valid : dengan id_user ' . $user->id_user
+                        : 'Akun tidak aktif : dengan id_user ' . $user->id_user
+                );
+
+                return new ResponseApiResource(
+                    false,
+                    !$user || !Hash::check($credentials['password'], $user->password)
+                        ? 'Data pengguna tidak valid'
+                        : 'Akun tidak aktif',
+                    null,
+                    !$user || !Hash::check($credentials['password'], $user->password) ? 401 : 403
+                );
             }
 
             // Periksa token sebelumnya
@@ -83,23 +65,23 @@ class LoginController extends Controller
             // Informasi data token
             $tokenModel = PersonalAccessToken::findToken($plainTextToken);
 
+            Log::info('Login berhasil : dengan id_user ' . $user->id_user);
+
             // Response sukses dengan token baru
-            return new ResponseApiResource(true, 'Login successful', [
+            return new ResponseApiResource(true, 'Berhasil masuk', [
                 'user'  => $user,
-                'token' => $plainTextToken
-            ]);
-        } catch (ValidationException $e) {
+                'token' => $plainTextToken,
+            ], null);
+        } catch (ValidationException $error) {
             // Jika validasi gagal
-            return new ResponseApiResource(false, 'Validation error', [
-                'errors' => $e->errors(),
-                'status_code' => 422,
-            ], 422);
-        } catch (\Exception $e) {
+            Log::error('Kesalahan validasi : ' . $error->getMessage());
+
+            return new ResponseApiResource(false, 'Kesalahan validasi', null, $error->errors(), 422);
+        } catch (Exception $error) {
             // Tangani error umum
-            return new ResponseApiResource(false, 'Something went wrong', [
-                'error_message' => $e->getMessage(),
-                'status_code' => 500,
-            ], 500);
+            Log::error('Ada yang tidak beres : ' . $error->getMessage());
+
+            return new ResponseApiResource(false, 'Ada yang tidak beres', null, $error->getMessage(), 500);
         }
     }
 }

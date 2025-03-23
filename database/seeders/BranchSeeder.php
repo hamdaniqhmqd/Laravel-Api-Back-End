@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\Branch;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Log;
 
 class BranchSeeder extends Seeder
 {
@@ -13,15 +14,39 @@ class BranchSeeder extends Seeder
      */
     public function run(): void
     {
-        $cities = ['Jakarta', 'Surabaya', 'Bandung', 'Medan', 'Semarang'];
+        Branch::insert([
+            [
+                'name_branch' => 'Branch Jakarta Pusat',
+                'city_branch' => 'Jakarta',
+                'address_branch' => 'Jl. MH Thamrin No.10, Jakarta Pusat',
+                'is_active_branch' => 'active',
+            ],
+            [
+                'name_branch' => 'Branch Surabaya Timur',
+                'city_branch' => 'Surabaya',
+                'address_branch' => 'Jl. Raya Darmo No.25, Surabaya',
+                'is_active_branch' => 'active',
+            ],
+            [
+                'name_branch' => 'Branch Bandung Utara',
+                'city_branch' => 'Bandung',
+                'address_branch' => 'Jl. Setiabudi No.45, Bandung',
+                'is_active_branch' => 'inactive',
+            ],
+            [
+                'name_branch' => 'Branch Medan Kota',
+                'city_branch' => 'Medan',
+                'address_branch' => 'Jl. Gatot Subroto No.100, Medan',
+                'is_active_branch' => 'active',
+            ],
+            [
+                'name_branch' => 'Branch Semarang Barat',
+                'city_branch' => 'Semarang',
+                'address_branch' => 'Jl. Pemuda No.30, Semarang',
+                'is_active_branch' => 'inactive',
+            ],
+        ]);
 
-        for ($i = 1; $i <= 5; $i++) {
-            Branch::create([
-                'name_branch' => 'Branch ' . $i,
-                'city_branch' => $cities[array_rand($cities)],
-                'address_branch' => 'Alamat cabang ' . $i,
-                'is_active_branch' => rand(0, 1) ? 'active' : 'inactive',
-            ]);
-        }
+        Log::info('Data branch berhasil disimpan');
     }
 }
