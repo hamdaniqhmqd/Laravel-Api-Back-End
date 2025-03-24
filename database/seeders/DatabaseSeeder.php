@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Transaction_Rental;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -18,6 +19,13 @@ class DatabaseSeeder extends Seeder
             $this->call([
                 BranchSeeder::class,
                 UserSeeder::class,
+                ClientSeeder::class,
+                LaundryItemsSeeder::class,
+                RentalItemsSeeder::class,
+                ListTransactionsLaundrySeeder::class,
+                TransactionsRentalSeeder::class,
+                ListTransactionsRentalSeeder::class,
+                TransactionsLaundrySeeder::class,
             ]);
 
             Log::info('Database seeded successfully'); //code...

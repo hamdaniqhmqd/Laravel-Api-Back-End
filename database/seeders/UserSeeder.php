@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -27,6 +28,8 @@ class UserSeeder extends Seeder
                     'phone_user' => '081234567891',
                     'address_user' => 'Jl. Sudirman No.10, Jakarta',
                     'is_active_user' => 'active',
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now(),
                 ],
                 [
                     'id_branch_user' => 2,
@@ -38,6 +41,8 @@ class UserSeeder extends Seeder
                     'phone_user' => '081234567892',
                     'address_user' => 'Jl. Basuki Rahmat No.20, Surabaya',
                     'is_active_user' => 'active',
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now(),
                 ],
                 [
                     'id_branch_user' => 3,
@@ -49,6 +54,8 @@ class UserSeeder extends Seeder
                     'phone_user' => '081234567893',
                     'address_user' => 'Jl. Asia Afrika No.30, Bandung',
                     'is_active_user' => 'inactive',
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now(),
                 ],
                 [
                     'id_branch_user' => null,
@@ -60,6 +67,8 @@ class UserSeeder extends Seeder
                     'phone_user' => '081234567894',
                     'address_user' => 'Jl. Merdeka No.40, Yogyakarta',
                     'is_active_user' => 'active',
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now(),
                 ],
                 [
                     'id_branch_user' => 4,
@@ -71,6 +80,8 @@ class UserSeeder extends Seeder
                     'phone_user' => '081234567895',
                     'address_user' => 'Jl. Sisingamangaraja No.50, Medan',
                     'is_active_user' => 'active',
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now(),
                 ],
                 [
                     'id_branch_user' => null,
@@ -82,6 +93,8 @@ class UserSeeder extends Seeder
                     'phone_user' => '081234567896',
                     'address_user' => 'Jl. Diponegoro No.60, Malang',
                     'is_active_user' => 'inactive',
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now(),
                 ],
                 [
                     'id_branch_user' => 5,
@@ -93,6 +106,8 @@ class UserSeeder extends Seeder
                     'phone_user' => '081234567897',
                     'address_user' => 'Jl. Pandanaran No.70, Semarang',
                     'is_active_user' => 'active',
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now(),
                 ],
                 [
                     'id_branch_user' => 2,
@@ -104,6 +119,8 @@ class UserSeeder extends Seeder
                     'phone_user' => '081234567898',
                     'address_user' => 'Jl. Tunjungan No.80, Surabaya',
                     'is_active_user' => 'inactive',
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now(),
                 ],
                 [
                     'id_branch_user' => 3,
@@ -115,6 +132,8 @@ class UserSeeder extends Seeder
                     'phone_user' => '081234567899',
                     'address_user' => 'Jl. Cihampelas No.90, Bandung',
                     'is_active_user' => 'active',
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now(),
                 ],
                 [
                     'id_branch_user' => null,
@@ -126,6 +145,8 @@ class UserSeeder extends Seeder
                     'phone_user' => '081234567900',
                     'address_user' => 'Jl. Sudirman No.100, Jakarta',
                     'is_active_user' => 'inactive',
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now(),
                 ],
             ]);
 
