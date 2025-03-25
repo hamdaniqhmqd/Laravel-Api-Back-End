@@ -72,6 +72,33 @@ class ClientController extends Controller
     }
 
     /**
+     * getBranch
+     *
+     * @return void
+     */
+    public function getBrachWithClient()
+    {
+        try {
+            // Mengambil semua client
+            $clients =  Client::with('branch')->get();
+
+            Log::info('Sukses menampilkan data client');
+
+            // Kembalikan data client sebagai resource
+            return new ResponseApiResource(true, 'Daftar seluruh Data client', $clients, null, 200);
+        } catch (Exception $error) {
+            Log::error("Daftar Data client Gagal " . $error->getMessage());
+
+            Logging::record(
+                Auth::guard('sanctum')->user(),
+                "Daftar Data client Gagal " . $error->getMessage()
+            );
+
+            return new ResponseApiResource(false, 'Data client Tidak Ditemukan!', null, $error->getMessage(), 404);
+        }
+    }
+
+    /**
      * store
      *
      * @param  mixed $request
