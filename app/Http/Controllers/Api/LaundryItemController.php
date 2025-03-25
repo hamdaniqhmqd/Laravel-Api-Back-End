@@ -24,8 +24,8 @@ class LaundryItemController extends Controller
     public function index()
     {
         try {
-            // Dapatkan semua Laundry Item kecuali yang memiliki is_active_branch = 'inactive'
-            $laundry_items = Laundry_Item::where('is_active_branch', '!=', 'inactive')->get();
+            // Dapatkan semua Laundry Item kecuali yang memiliki is_active_laundry_item = 'inactive'
+            $laundry_items = Laundry_Item::where('is_active_laundry_item', '!=', 'inactive')->latest()->get();
 
             Log::info('Sukses menampilkan data Laundry Item yang aktif');
 
@@ -39,7 +39,7 @@ class LaundryItemController extends Controller
                 "Daftar Data Laundry Item Gagal " . $error->getMessage()
             );
 
-            return new ResponseApiResource(false, 'Data Caang Tidak Ditemukan!', null, $error->getMessage(), 404);
+            return new ResponseApiResource(false, 'Data Laundry Tidak Ditemukan!', null, $error->getMessage(), 404);
         }
     }
 
@@ -53,12 +53,39 @@ class LaundryItemController extends Controller
     {
         try {
             // Mengambil semua Laundry Item
-            $laundry_items =  Laundry_Item::get();
+            $laundry_items =  Laundry_Item::withTrashed()->latest()->get();
 
-            Log::info('Sukses menampilkan data Laundry Item');
+            Log::info('Sukses menampilkan seluruh data Laundry Item');
 
             // Kembalikan data Laundry Item sebagai resource
             return new ResponseApiResource(true, 'Daftar seluruh Data Laundry Item', $laundry_items, null, 200);
+        } catch (Exception $error) {
+            Log::error("Daftar Data Laundry Item Gagal " . $error->getMessage());
+
+            Logging::record(
+                Auth::guard('sanctum')->user(),
+                "Daftar Data Laundry Item Gagal " . $error->getMessage()
+            );
+
+            return new ResponseApiResource(false, 'Data Laundry Item Tidak Ditemukan!', null, $error->getMessage(), 404);
+        }
+    }
+
+    /**
+     * getAllTrashed
+     *
+     * @return void
+     */
+    public function getAllTrashed()
+    {
+        try {
+            // Mengambil semua Laundry Item
+            $laundry_items =  Laundry_Item::onlyTrashed()->latest()->get();
+
+            Log::info('Sukses menampilkan data Laundry Item yang dihapus');
+
+            // Kembalikan data Laundry Item sebagai resource
+            return new ResponseApiResource(true, 'Daftar Data Laundry Item yang dihapus', $laundry_items, null, 200);
         } catch (Exception $error) {
             Log::error("Daftar Data Laundry Item Gagal " . $error->getMessage());
 
@@ -138,7 +165,7 @@ class LaundryItemController extends Controller
     {
         try {
             // Cari client berdasarkan ID
-            $laundry_item = Laundry_Item::find($id);
+            $laundry_item = Laundry_Item::withTrashed()->find($id);
 
             // Periksa apakah client ditemukan
             if (!$laundry_item) {
@@ -195,7 +222,7 @@ class LaundryItemController extends Controller
             }
 
             // Cari laundry item berdasarkan ID
-            $laundryItem = Laundry_Item::find($id);
+            $laundryItem = Laundry_Item::withTrashed()->find($id);
             if (!$laundryItem) {
                 return new ResponseApiResource(false, 'Laundry item tidak ditemukan.', [], null, 404);
             }
@@ -237,7 +264,7 @@ class LaundryItemController extends Controller
     {
         try {
             // Cari Client berdasarkan ID
-            $client = Laundry_Item::find($id);
+            $client = Laundry_Item::withTrashed()->find($id);
 
             // Jika Client tidak ditemukan
             if (!$client) {
@@ -246,8 +273,11 @@ class LaundryItemController extends Controller
                 return new ResponseApiResource(false, 'Client tidak ditemukan!', $id,  $client, 404);
             }
 
-            // Ubah status is_active_client menjadi 'inactive'
-            $client->update(['is_active_client' => 'inactive']);
+            // Ubah status is_active_laundry_item menjadi 'inactive'
+            $client->update(['is_active_laundry_item' => 'inactive']);
+
+            // hapus
+            $client->delete();
 
             // Log informasi perubahan status Client
             Log::info('Client berhasil dinonaktifkan', ['id_client' => $id, 'name_client' => $client->name_client]);
@@ -264,6 +294,86 @@ class LaundryItemController extends Controller
             Logging::record(
                 Auth::guard('sanctum')->user(),
                 "Gagal menonaktifkan Client: " . $e->getMessage()
+            );
+
+            return new ResponseApiResource(false, 'Terjadi kesalahan pada server', $id, $e->getMessage(), 500);
+        }
+    }
+
+    public function restore($id)
+    {
+        try {
+            // Cari Client berdasarkan ID
+            $client = Laundry_Item::withTrashed()->find($id);
+
+            // Jika Client tidak ditemukan
+            if (!$client) {
+                Log::info('Client tidak ditemukan saat mencoba dipulihkan', ['id_client' => $id]);
+
+                return new ResponseApiResource(false, 'Client tidak ditemukan!', $id,  $client, 404);
+            }
+
+            // Ubah status is_active_laundry_item menjadi 'active'
+            $client->update(['is_active_laundry_item' => 'active']);
+
+            // hapus
+            $client->restore();
+
+            // Log informasi perubahan status Client
+            Log::info('Client berhasil dipulihkan', ['id_client' => $id, 'name_client' => $client->name_client]);
+
+            // Kembalikan response sukses
+            return new ResponseApiResource(true, 'Client berhasil dipulihkan!', $client, 200);
+        } catch (\Exception $e) {
+            // Log error jika terjadi kesalahan
+            Log::error('Gagal memulihkan Client', [
+                'id_client' => $id,
+                'error'   => $e->getMessage()
+            ]);
+
+            Logging::record(
+                Auth::guard('sanctum')->user(),
+                "Gagal memulihkan Client: " . $e->getMessage()
+            );
+
+            return new ResponseApiResource(false, 'Terjadi kesalahan pada server', $id, $e->getMessage(), 500);
+        }
+    }
+
+    public function forceDestroy($id)
+    {
+        try {
+            // Cari Client berdasarkan ID
+            $client = Laundry_Item::withTrashed()->find($id);
+
+            // Jika Client tidak ditemukan
+            if (!$client) {
+                Log::info('Client tidak ditemukan saat mencoba menghapus permanent', ['id_client' => $id]);
+
+                return new ResponseApiResource(false, 'Client tidak ditemukan!', $id,  $client, 404);
+            }
+
+            // Ubah status is_active_laundry_item menjadi 'inactive'
+            $client->update(['is_active_laundry_item' => 'inactive']);
+
+            // hapus
+            $client->forceDelete();
+
+            // Log informasi perubahan status Client
+            Log::info('Client berhasil menghapus permanent', ['id_client' => $id, 'name_client' => $client->name_client]);
+
+            // Kembalikan response sukses
+            return new ResponseApiResource(true, 'Client berhasil menghapus permanent!', $client, 200);
+        } catch (\Exception $e) {
+            // Log error jika terjadi kesalahan
+            Log::error('Gagal menghapus permanent Client', [
+                'id_client' => $id,
+                'error'   => $e->getMessage()
+            ]);
+
+            Logging::record(
+                Auth::guard('sanctum')->user(),
+                "Gagal menghapus permanent Client: " . $e->getMessage()
             );
 
             return new ResponseApiResource(false, 'Terjadi kesalahan pada server', $id, $e->getMessage(), 500);

@@ -25,7 +25,7 @@ class ClientController extends Controller
     {
         try {
             // Dapatkan semua client kecuali yang memiliki is_active_client = 'inactive'
-            $clients = Client::where('is_active_client', '!=', 'inactive')->get();
+            $clients = Client::where('is_active_client', '!=', 'inactive')->latest()->get();
 
             Log::info('Sukses menampilkan data client yang aktif');
 
@@ -53,12 +53,39 @@ class ClientController extends Controller
     {
         try {
             // Mengambil semua client
-            $clients =  Client::get();
+            $clients =  Client::withTrashed()->latest()->get();
 
-            Log::info('Sukses menampilkan data client');
+            Log::info('Sukses menampilkan seluruh data client');
 
             // Kembalikan data client sebagai resource
             return new ResponseApiResource(true, 'Daftar seluruh Data client', $clients, null, 200);
+        } catch (Exception $error) {
+            Log::error("Daftar Data client Gagal " . $error->getMessage());
+
+            Logging::record(
+                Auth::guard('sanctum')->user(),
+                "Daftar Data client Gagal " . $error->getMessage()
+            );
+
+            return new ResponseApiResource(false, 'Data client Tidak Ditemukan!', null, $error->getMessage(), 404);
+        }
+    }
+
+    /**
+     * getAllTrashed
+     *
+     * @return void
+     */
+    public function getAllTrashed()
+    {
+        try {
+            // Mengambil semua client
+            $clients =  Client::onlyTrashed()->latest()->get();
+
+            Log::info('Sukses menampilkan data client yang dihapus');
+
+            // Kembalikan data client sebagai resource
+            return new ResponseApiResource(true, 'Daftar seluruh Data client yang dihapus', $clients, null, 200);
         } catch (Exception $error) {
             Log::error("Daftar Data client Gagal " . $error->getMessage());
 
@@ -278,6 +305,9 @@ class ClientController extends Controller
             // Ubah status is_active_client menjadi 'inactive'
             $client->update(['is_active_client' => 'inactive']);
 
+            // Hapus
+            $client->delete();
+
             // Log informasi perubahan status Client
             Log::info('Client berhasil dinonaktifkan', ['id_client' => $id, 'name_client' => $client->name_client]);
 
@@ -293,6 +323,86 @@ class ClientController extends Controller
             Logging::record(
                 Auth::guard('sanctum')->user(),
                 "Gagal menonaktifkan Client: " . $e->getMessage()
+            );
+
+            return new ResponseApiResource(false, 'Terjadi kesalahan pada server', $id, $e->getMessage(), 500);
+        }
+    }
+
+    public function restore($id)
+    {
+        try {
+            // Cari Client berdasarkan ID
+            $client = Client::withTrashed()->find($id);
+
+            // Jika Client tidak ditemukan
+            if (!$client) {
+                Log::info('Client tidak ditemukan saat mencoba dipulihkan', ['id_client' => $id]);
+
+                return new ResponseApiResource(false, 'Client tidak ditemukan!', $id,  $client, 404);
+            }
+
+            // Ubah status is_active_client menjadi 'active'
+            $client->update(['is_active_client' => 'active']);
+
+            // Restore Client
+            $client->restore();
+
+            // Log informasi perubahan status Client
+            Log::info('Client berhasil dipulihkan', ['id_client' => $id, 'name_client' => $client->name_client]);
+
+            // Kembalikan response sukses
+            return new ResponseApiResource(true, 'Client berhasil dipulihkan!', $client, 200);
+        } catch (\Exception $e) {
+            // Log error jika terjadi kesalahan
+            Log::error('Gagal memulihkan Client', [
+                'id_client' => $id,
+                'error'   => $e->getMessage()
+            ]);
+
+            Logging::record(
+                Auth::guard('sanctum')->user(),
+                "Gagal memulihkan Client: " . $e->getMessage()
+            );
+
+            return new ResponseApiResource(false, 'Terjadi kesalahan pada server', $id, $e->getMessage(), 500);
+        }
+    }
+
+    public function forceDestroy($id)
+    {
+        try {
+            // Cari Client berdasarkan ID
+            $client = Client::withTrashed()->find($id);
+
+            // Jika Client tidak ditemukan
+            if (!$client) {
+                Log::info('Client tidak ditemukan saat mencoba hapus permanent', ['id_client' => $id]);
+
+                return new ResponseApiResource(false, 'Client tidak ditemukan!', $id,  $client, 404);
+            }
+
+            // Ubah status is_active_client menjadi 'inactive'
+            $client->update(['is_active_client' => 'inactive']);
+
+            // Hapus permanen Client
+            $client->forceDelete();
+
+            // Log informasi perubahan status Client
+            Log::info('Client berhasil hapus permanent', ['id_client' => $id, 'name_client' => $client->name_client]);
+
+            // Kembalikan response sukses
+            return new ResponseApiResource(true, 'Client berhasil hapus permanent!', $client, 200);
+        } catch (\Exception $e) {
+            // Log error jika terjadi kesalahan
+            Log::error('Gagal hapus permanent Client', [
+                'id_client' => $id,
+                'error'   => $e->getMessage()
+            ]);
+
+            Logging::record(
+                Auth::guard('sanctum')->user(),
+                "Gagal hapus permanent Client: " . $e->getMessage()
             );
 
             return new ResponseApiResource(false, 'Terjadi kesalahan pada server', $id, $e->getMessage(), 500);

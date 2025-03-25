@@ -25,7 +25,7 @@ class RentalItemController extends Controller
     {
         try {
             // Dapatkan semua Rental Item kecuali yang memiliki is_active_rental_item = 'inactive'
-            $rental_items = Rental_Item::where('is_active_rental_item', '!=', 'inactive')->get();
+            $rental_items = Rental_Item::where('is_active_rental_item', '!=', 'inactive')->latest()->get();
 
             Log::info('Sukses menampilkan data Rental Item yang aktif');
 
@@ -53,7 +53,34 @@ class RentalItemController extends Controller
     {
         try {
             // Mengambil semua Rental Item
-            $rental_item =  Rental_Item::get();
+            $rental_item =  Rental_Item::withTrashed()->latest()->get();
+
+            Log::info('Sukses menampilkan data Rental Item');
+
+            // Kembalikan data Rental Item sebagai resource
+            return new ResponseApiResource(true, 'Daftar seluruh Data Rental Item', $rental_item, null, 200);
+        } catch (Exception $error) {
+            Log::error("Daftar Data Rental Item Gagal " . $error->getMessage());
+
+            Logging::record(
+                Auth::guard('sanctum')->user(),
+                "Daftar Data Rental Item Gagal " . $error->getMessage()
+            );
+
+            return new ResponseApiResource(false, 'Data Rental Item Tidak Ditemukan!', null, $error->getMessage(), 404);
+        }
+    }
+
+    /**
+     * getAllTrashed
+     *
+     * @return void
+     */
+    public function getAllTrashed()
+    {
+        try {
+            // Mengambil semua Rental Item
+            $rental_item =  Rental_Item::onlyTrashed()->latest()->get();
 
             Log::info('Sukses menampilkan data Rental Item');
 
@@ -141,7 +168,7 @@ class RentalItemController extends Controller
     {
         try {
             // Cari client berdasarkan ID
-            $rental_item = Rental_Item::find($id);
+            $rental_item = Rental_Item::withTrashed()->find($id);
 
             // Periksa apakah client ditemukan
             if (!$rental_item) {
@@ -200,7 +227,7 @@ class RentalItemController extends Controller
             }
 
             // Cari rental item berdasarkan ID
-            $rentalItem = Rental_Item::find($id);
+            $rentalItem = Rental_Item::withTrashed()->latest()->find($id);
             if (!$rentalItem) {
                 return new ResponseApiResource(false, 'Rental item tidak ditemukan.', [], null, 404);
             }
@@ -251,7 +278,7 @@ class RentalItemController extends Controller
     {
         try {
             // Cari Client berdasarkan ID
-            $rental_item = Rental_Item::find($id);
+            $rental_item = Rental_Item::withTrashed()->find($id);
 
             // Jika Client tidak ditemukan
             if (!$rental_item) {
@@ -262,6 +289,9 @@ class RentalItemController extends Controller
 
             // Ubah status is_active_rental_item menjadi 'inactive'
             $rental_item->update(['is_active_rental_item' => 'inactive']);
+
+            // Hapus
+            $rental_item->delete();
 
             // Log informasi perubahan status Client
             Log::info('Client berhasil dinonaktifkan', ['id_rental_item' => $id, 'name_rental_item' => $rental_item->name_rental_item]);
@@ -278,6 +308,86 @@ class RentalItemController extends Controller
             Logging::record(
                 Auth::guard('sanctum')->user(),
                 "Gagal menonaktifkan Client: " . $e->getMessage()
+            );
+
+            return new ResponseApiResource(false, 'Terjadi kesalahan pada server', [], $e->getMessage(), 500);
+        }
+    }
+
+    public function restore($id)
+    {
+        try {
+            // Cari Client berdasarkan ID
+            $rental_item = Rental_Item::withTrashed()->find($id);
+
+            // Jika Client tidak ditemukan
+            if (!$rental_item) {
+                Log::info('Client tidak ditemukan saat mencoba dipulihkan', ['id_rental_item' => $id]);
+
+                return new ResponseApiResource(false, 'Client tidak ditemukan!', $id,  $rental_item, 404);
+            }
+
+            // Ubah status is_active_rental_item menjadi 'active'
+            $rental_item->update(['is_active_rental_item' => 'active']);
+
+            // Pulihkan
+            $rental_item->restore();
+
+            // Log informasi perubahan status Client
+            Log::info('Client berhasil dipulihkan', ['id_rental_item' => $id, 'name_rental_item' => $rental_item->name_rental_item]);
+
+            // Kembalikan response sukses
+            return new ResponseApiResource(true, 'Client berhasil dipulihkan!', $rental_item, 200);
+        } catch (\Exception $e) {
+            // Log error jika terjadi kesalahan
+            Log::error('Gagal memulihkan Client', [
+                'id_rental_item' => $id,
+                'error'   => $e->getMessage()
+            ]);
+
+            Logging::record(
+                Auth::guard('sanctum')->user(),
+                "Gagal memulihkan Client: " . $e->getMessage()
+            );
+
+            return new ResponseApiResource(false, 'Terjadi kesalahan pada server', [], $e->getMessage(), 500);
+        }
+    }
+
+    public function forceDestroy($id)
+    {
+        try {
+            // Cari Client berdasarkan ID
+            $rental_item = Rental_Item::withTrashed()->find($id);
+
+            // Jika Client tidak ditemukan
+            if (!$rental_item) {
+                Log::info('Client tidak ditemukan saat mencoba menghapus permanent', ['id_rental_item' => $id]);
+
+                return new ResponseApiResource(false, 'Client tidak ditemukan!', $id,  $rental_item, 404);
+            }
+
+            // Ubah status is_active_rental_item menjadi 'inactive'
+            $rental_item->update(['is_active_rental_item' => 'inactive']);
+
+            // Hapus permanent
+            $rental_item->forceDelete();
+
+            // Log informasi perubahan status Client
+            Log::info('Client berhasil dihapus permanen', ['id_rental_item' => $id, 'name_rental_item' => $rental_item->name_rental_item]);
+
+            // Kembalikan response sukses
+            return new ResponseApiResource(true, 'Client berhasil dihapus permanen!', $rental_item, 200);
+        } catch (\Exception $e) {
+            // Log error jika terjadi kesalahan
+            Log::error('Gagal menghapus permanen Client', [
+                'id_rental_item' => $id,
+                'error'   => $e->getMessage()
+            ]);
+
+            Logging::record(
+                Auth::guard('sanctum')->user(),
+                "Gagal menghapus permanen Client: " . $e->getMessage()
             );
 
             return new ResponseApiResource(false, 'Terjadi kesalahan pada server', [], $e->getMessage(), 500);

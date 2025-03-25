@@ -25,7 +25,7 @@ class BranchController extends Controller
     {
         try {
             // Dapatkan semua cabang kecuali yang memiliki is_active_branch = 'inactive'
-            $branches = Branch::where('is_active_branch', '!=', 'inactive')->get();
+            $branches = Branch::where('is_active_branch', '!=', 'inactive')->latest()->get();
 
             Log::info('Sukses menampilkan data cabang yang aktif');
 
@@ -53,12 +53,39 @@ class BranchController extends Controller
     {
         try {
             // Mengambil semua cabang
-            $branches =  Branch::get();
+            $branches =  Branch::withTrashed()->latest()->get();
 
             Log::info('Sukses menampilkan data cabang');
 
             // Kembalikan data cabang sebagai resource
             return new ResponseApiResource(true, 'Daftar seluruh Data cabang', $branches, null, 200);
+        } catch (Exception $error) {
+            Log::error("Daftar Data cabang Gagal " . $error->getMessage());
+
+            Logging::record(
+                Auth::guard('sanctum')->user(),
+                "Daftar Data cabang Gagal " . $error->getMessage()
+            );
+
+            return new ResponseApiResource(false, 'Data cabang Tidak Ditemukan!', null, $error->getMessage(), 404);
+        }
+    }
+
+    /**
+     * getAllTrashed
+     *
+     * @return void
+     */
+    public function getAllTrashed()
+    {
+        try {
+            // Mengambil semua cabang
+            $branches =  Branch::onlyTrashed()->latest()->get();
+
+            Log::info('Sukses menampilkan data cabang yang dihapus');
+
+            // Kembalikan data cabang sebagai resource
+            return new ResponseApiResource(true, 'Daftar data cabang yang dihapus', $branches, null, 200);
         } catch (Exception $error) {
             Log::error("Daftar Data cabang Gagal " . $error->getMessage());
 
@@ -129,7 +156,7 @@ class BranchController extends Controller
     {
         try {
             // Cari cabang berdasarkan ID
-            $branch = Branch::find($id);
+            $branch = Branch::withTrashed()->find($id);
 
             // Periksa apakah cabang ditemukan
             if (!$branch) {
@@ -179,7 +206,7 @@ class BranchController extends Controller
             }
 
             // Cari branch berdasarkan ID
-            $branch = Branch::find($id);
+            $branch = Branch::withTrashed()->find($id);
             if (!$branch) {
                 return new ResponseApiResource(false, 'Branch tidak ditemukan.', [], null, 404);
             }
@@ -220,7 +247,7 @@ class BranchController extends Controller
     {
         try {
             // Cari cabang berdasarkan ID
-            $branch = Branch::find($id);
+            $branch = Branch::withTrashed()->find($id);
 
             // Jika cabang tidak ditemukan
             if (!$branch) {
@@ -232,6 +259,9 @@ class BranchController extends Controller
             // Ubah status is_active_branch menjadi 'inactive'
             $branch->update(['is_active_branch' => 'inactive']);
 
+            // Hapus cabang
+            $branch->delete();
+
             // Log informasi perubahan status Cabang
             Log::info('Cabang berhasil dinonaktifkan', ['id_branch' => $id, 'name_branch' => $branch->name_branch]);
 
@@ -240,6 +270,76 @@ class BranchController extends Controller
         } catch (\Exception $e) {
             // Log error jika terjadi kesalahan
             Log::error('Gagal menonaktifkan Cabang', [
+                'id_branch' => $id,
+                'error'   => $e->getMessage()
+            ]);
+
+            return new ResponseApiResource(false, 'Terjadi kesalahan pada server', $id, $e->getMessage(), 500);
+        }
+    }
+
+    public function restore($id)
+    {
+        try {
+            // Cari cabang berdasarkan ID
+            $branch = Branch::withTrashed()->find($id);
+
+            // Jika cabang tidak ditemukan
+            if (!$branch) {
+                Log::info('Cabang tidak ditemukan saat mencoba dipulihkan', ['id_branch' => $id]);
+
+                return new ResponseApiResource(false, 'Cabang tidak ditemukan!', $id,  $branch, 404);
+            }
+
+            // Ubah status is_active_branch menjadi 'active'
+            $branch->update(['is_active_branch' => 'active']);
+
+            // Pulihkan cabang
+            $branch->restore();
+
+            // Log informasi perubahan status Cabang
+            Log::info('Cabang berhasil dipulihkan', ['id_branch' => $id, 'name_branch' => $branch->name_branch]);
+
+            // Kembalikan response sukses
+            return new ResponseApiResource(true, 'Cabang berhasil dipulihkan!', $branch, 200);
+        } catch (\Exception $e) {
+            // Log error jika terjadi kesalahan
+            Log::error('Gagal memulihkan Cabang', [
+                'id_branch' => $id,
+                'error'   => $e->getMessage()
+            ]);
+
+            return new ResponseApiResource(false, 'Terjadi kesalahan pada server', $id, $e->getMessage(), 500);
+        }
+    }
+
+    public function forceDestroy($id)
+    {
+        try {
+            // Cari cabang berdasarkan ID
+            $branch = Branch::withTrashed()->find($id);
+
+            // Jika cabang tidak ditemukan
+            if (!$branch) {
+                Log::info('Cabang tidak ditemukan saat mencoba hapus permanent', ['id_branch' => $id]);
+
+                return new ResponseApiResource(false, 'Cabang tidak ditemukan!', $id,  $branch, 404);
+            }
+
+            // Ubah status is_active_branch menjadi 'inactive'
+            $branch->update(['is_active_branch' => 'inactive']);
+
+            // Hapus cabang permanent
+            $branch->forceDelete();
+
+            // Log informasi perubahan status Cabang
+            Log::info('Cabang berhasil hapus permanent', ['id_branch' => $id, 'name_branch' => $branch->name_branch]);
+
+            // Kembalikan response sukses
+            return new ResponseApiResource(true, 'Cabang berhasil hapus permanent!', $branch, 200);
+        } catch (\Exception $e) {
+            // Log error jika terjadi kesalahan
+            Log::error('Gagal hapus permanent Cabang', [
                 'id_branch' => $id,
                 'error'   => $e->getMessage()
             ]);

@@ -26,7 +26,7 @@ class UserController extends Controller
     {
         try {
             // Dapatkan semua pengguna kecuali yang memiliki is_active_user = 'inactive'
-            $users = User::where('is_active_user', '!=', 'inactive')->get();
+            $users = User::where('is_active_user', '!=', 'inactive')->latest()->get();
 
             Log::info('Sukses menampilkan data user yang aktif');
 
@@ -54,12 +54,39 @@ class UserController extends Controller
     {
         try {
             //get all users
-            $users = User::get();
+            $users = User::withTrashed()->latest()->get();
 
             Log::info('Sukses menampilkan data user');
 
             //return collection of users as a resource
             return new ResponseApiResource(true, 'Daftar seluruh Data Pengguna', $users, null, 200);
+        } catch (Exception $error) {
+            Log::error("Daftar Data Pengguna Gagal " . $error->getMessage());
+
+            Logging::record(
+                Auth::guard('sanctum')->user(),
+                "Daftar Data Pengguna Gagal " . $error->getMessage()
+            );
+
+            return new ResponseApiResource(false, 'Data User Tidak Ditemukan!', null, $error->getMessage(), 404);
+        }
+    }
+
+    /**
+     * getAllTrashed
+     *
+     * @return void
+     */
+    public function getAllTrashed()
+    {
+        try {
+            //get all users
+            $users = User::onlyTrashed()->latest()->get();
+
+            Log::info('Sukses menampilkan data user yang dihapus');
+
+            //return collection of users as a resource
+            return new ResponseApiResource(true, 'Daftar data user yang dihapus', $users, null, 200);
         } catch (Exception $error) {
             Log::error("Daftar Data Pengguna Gagal " . $error->getMessage());
 
@@ -101,11 +128,6 @@ class UserController extends Controller
                 return new ResponseApiResource(false, 'Validasi gagal', $request->all(), $validator->errors());
             }
 
-            // Jika role adalah 'owner', pastikan id_branch_user bernilai null
-            // if ($request->role_user === 'owner' && $request->id_branch_user !== null) {
-            //     $request->merge(['id_branch_user' => null]);
-            // }
-
             // Membuat user baru
             $user = User::create([
                 'id_branch_user' => $request->id_branch_user,
@@ -146,7 +168,7 @@ class UserController extends Controller
     {
         try {
             // Cari user berdasarkan ID
-            $user = User::find($id);
+            $user = User::withTrashed()->find($id);
 
             // Periksa apakah user ditemukan
             if (!$user) {
@@ -175,7 +197,7 @@ class UserController extends Controller
     {
         try {
             // Cari user berdasarkan ID
-            $user = User::find($id);
+            $user = User::withTrashed()->find($id);
 
             // Jika user tidak ditemukan
             if (!$user) {
@@ -214,6 +236,13 @@ class UserController extends Controller
                 'is_active_user' => $request->is_active_user,
             ]);
 
+
+            if ($request->is_active_user === 'inactive') {
+                $user->delete();
+
+                return new ResponseApiResource(true, 'User berhasil dinonaktifkan!', $user, null, 200);
+            }
+
             // Log info jika update berhasil
             Log::info('User berhasil diperbarui', ['id_user' => $id, 'username' => $user->username]);
 
@@ -245,7 +274,7 @@ class UserController extends Controller
     {
         try {
             // Cari user berdasarkan ID
-            $user = User::find($id);
+            $user = User::withTrashed()->find($id);
 
             // Jika user tidak ditemukan
             if (!$user) {
@@ -257,8 +286,11 @@ class UserController extends Controller
             // Ubah status is_active_user menjadi 'inactive'
             $user->update(['is_active_user' => 'inactive']);
 
+            // Hapus user
+            $user->delete();
+
             // Log informasi perubahan status user
-            Log::info('User berhasil dinonaktifkan', ['id_user' => $id, 'username' => $user->username]);
+            Log::info('User berhasil dihapus dan dinonaktifkan', ['id_user' => $id, 'username' => $user->username]);
 
             // Kembalikan response sukses
             return new ResponseApiResource(true, 'User berhasil dinonaktifkan!', $user, 200);
@@ -273,11 +305,81 @@ class UserController extends Controller
         }
     }
 
+    public function restore($id)
+    {
+        try {
+            // Cari user berdasarkan ID
+            $user = User::withTrashed()->find($id);
+
+            // Jika user tidak ditemukan
+            if (!$user) {
+                Log::info('User tidak ditemukan saat mencoba pemulihan', ['id_user' => $id]);
+
+                return new ResponseApiResource(false, 'User tidak ditemukan!', $id,  $user, 404);
+            }
+
+            // Ubah status is_active_user menjadi 'active'
+            $user->update(['is_active_user' => 'active']);
+
+            // Hapus user
+            $user->restore();
+
+            // Log informasi perubahan status user
+            Log::info('User berhasil dipulihkan', ['id_user' => $id, 'username' => $user->username]);
+
+            // Kembalikan response sukses
+            return new ResponseApiResource(true, 'User berhasil dipulihkan!', $user, 200);
+        } catch (\Exception $e) {
+            // Log error jika terjadi kesalahan
+            Log::error('Gagal memulihkan user', [
+                'id_user' => $id,
+                'error'   => $e->getMessage()
+            ]);
+
+            return new ResponseApiResource(false, 'Terjadi kesalahan pada server', $id, $e->getMessage(), 500);
+        }
+    }
+
+    public function forceDestroy($id)
+    {
+        try {
+            // Cari user berdasarkan ID
+            $user = User::withTrashed()->find($id);
+
+            // Jika user tidak ditemukan
+            if (!$user) {
+                Log::info('User tidak ditemukan saat mencoba menghapus', ['id_user' => $id]);
+
+                return new ResponseApiResource(false, 'User tidak ditemukan!', $id,  $user, 404);
+            }
+
+            // Ubah status is_active_user menjadi 'inactive'
+            $user->update(['is_active_user' => 'inactive']);
+
+            // Hapus user permanent
+            $user->forceDelete();
+
+            // Log informasi perubahan status user
+            Log::info('User berhasil dihapus pemanent', ['id_user' => $id, 'username' => $user->username]);
+
+            // Kembalikan response sukses
+            return new ResponseApiResource(true, 'User berhasil dihapus pemanent!', $user, 200);
+        } catch (\Exception $e) {
+            // Log error jika terjadi kesalahan
+            Log::error('Gagal menghapus user', [
+                'id_user' => $id,
+                'error'   => $e->getMessage()
+            ]);
+
+            return new ResponseApiResource(false, 'Terjadi kesalahan pada server', $id, $e->getMessage(), 500);
+        }
+    }
+
     public function resetPassword($id)
     {
         try {
             // Cari user berdasarkan ID
-            $user = User::find($id);
+            $user = User::withTrashed()->find($id);
 
             // Jika user tidak ditemukan
             if (!$user) {
