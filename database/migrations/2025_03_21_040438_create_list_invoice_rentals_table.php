@@ -20,6 +20,7 @@ return new class extends Migration
             $table->double('price_list_invoice_rental', 12, 2);
             $table->double('weight_list_invoice_rental', 8, 2);
             $table->enum('is_active_list_invoice_rental', ['active', 'inactive'])->default('active');
+            $table->softDeletes();
             $table->timestamps();
 
             // Foreign Key Constraints

@@ -18,6 +18,7 @@ return new class extends Migration
             $table->text('address_client')->nullable();
             $table->string('phone_client')->nullable();
             $table->enum('is_active_client', ['active', 'inactive'])->default('active');
+            $table->softDeletes();
             $table->timestamps();
 
             $table->foreign('id_branch_client')

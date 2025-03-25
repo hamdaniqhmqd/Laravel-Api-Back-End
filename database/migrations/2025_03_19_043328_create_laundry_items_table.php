@@ -16,9 +16,10 @@ return new class extends Migration
             $table->unsignedBigInteger('id_branch_laundry_item')->nullable(); // Foreign key ke branch
             $table->string('name_laundry_item');
             $table->bigInteger('price_laundry_item');
-            $table->time('time_laundry__item')->nullable();
+            $table->time('time_laundry_item')->nullable();
             $table->text('description_laundry_item')->nullable();
             $table->enum('is_active_laundry_item', ['active', 'inactive'])->default('active');
+            $table->softDeletes();
             $table->timestamps();
 
             // Foreign Key

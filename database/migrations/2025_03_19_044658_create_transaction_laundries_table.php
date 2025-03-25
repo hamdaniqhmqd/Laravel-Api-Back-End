@@ -25,6 +25,7 @@ return new class extends Migration
             $table->enum('is_active_transaction_laundry', ['active', 'inactive'])->default('active');
             $table->date('first_date_transaction_laundry');
             $table->date('last_date_transaction_laundry');
+            $table->softDeletes();
             $table->timestamps();
 
             // Foreign Key dengan ON CASCADE DELETE dan CASCADE UPDATE

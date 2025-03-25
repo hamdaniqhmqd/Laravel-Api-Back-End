@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('city_branch');
             $table->text('address_branch');
             $table->enum('is_active_branch', ['active', 'inactive'])->default('active');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

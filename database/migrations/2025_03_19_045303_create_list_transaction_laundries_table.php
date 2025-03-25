@@ -21,6 +21,7 @@ return new class extends Migration
             $table->enum('status_list_transaction_laundry', ['pending', 'completed', 'cancelled'])->default('pending');
             $table->text('note_list_transaction_laundry')->nullable();
             $table->enum('is_active_list_transaction_laundry', ['active', 'inactive'])->default('active');
+            $table->softDeletes();
             $table->timestamps();
 
             // Foreign Key

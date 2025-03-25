@@ -21,6 +21,7 @@ return new class extends Migration
             $table->bigInteger('price_list_transaction_rental');
             $table->double('weight_list_transaction_rental', 8, 2);
             $table->enum('is_active_list_transaction_rental', ['active', 'inactive'])->default('active');
+            $table->softDeletes();
             $table->timestamps();
 
             // Foreign Key Constraints

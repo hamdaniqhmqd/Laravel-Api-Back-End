@@ -29,7 +29,10 @@ class TransactionsLaundrySeeder extends Seeder
                     'cash_transaction_laundry' => 50000,
                     'is_active_transaction_laundry' => 'active',
                     'first_date_transaction_laundry' => Carbon::now()->subDays(3),
-                    'last_date_transaction_laundry' => Carbon::now()->addDays(2)
+                    'last_date_transaction_laundry' => Carbon::now()->addDays(2),
+                    'deleted_at' => null,
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now(),
                 ],
 
                 [
@@ -44,7 +47,10 @@ class TransactionsLaundrySeeder extends Seeder
                     'cash_transaction_laundry' => 60000,
                     'is_active_transaction_laundry' => 'active',
                     'first_date_transaction_laundry' => Carbon::now()->subDays(2),
-                    'last_date_transaction_laundry' => Carbon::now()->addDays(3)
+                    'last_date_transaction_laundry' => Carbon::now()->addDays(3),
+                    'deleted_at' => null,
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now(),
                 ],
 
                 [
@@ -59,7 +65,10 @@ class TransactionsLaundrySeeder extends Seeder
                     'cash_transaction_laundry' => 50000,
                     'is_active_transaction_laundry' => 'active',
                     'first_date_transaction_laundry' => Carbon::now()->subDays(5),
-                    'last_date_transaction_laundry' => Carbon::now()->subDays(1)
+                    'last_date_transaction_laundry' => Carbon::now()->subDays(1),
+                    'deleted_at' => null,
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now(),
                 ],
 
                 [
@@ -72,9 +81,12 @@ class TransactionsLaundrySeeder extends Seeder
                     'total_weight_transaction_laundry' => 3.0,
                     'total_price_transaction_laundry' => 30000,
                     'cash_transaction_laundry' => 0,
-                    'is_active_transaction_laundry' => 'inactive',
+                    'is_active_transaction_laundry' => 'active',
                     'first_date_transaction_laundry' => Carbon::now()->subDays(1),
-                    'last_date_transaction_laundry' => Carbon::now()->addDays(2)
+                    'last_date_transaction_laundry' => Carbon::now()->addDays(2),
+                    'deleted_at' => null,
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now(),
                 ],
 
                 [
@@ -89,7 +101,10 @@ class TransactionsLaundrySeeder extends Seeder
                     'cash_transaction_laundry' => 70000,
                     'is_active_transaction_laundry' => 'active',
                     'first_date_transaction_laundry' => Carbon::now()->subDays(2),
-                    'last_date_transaction_laundry' => Carbon::now()->addDays(4)
+                    'last_date_transaction_laundry' => Carbon::now()->addDays(4),
+                    'deleted_at' => null,
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now(),
                 ],
 
                 [
@@ -104,7 +119,10 @@ class TransactionsLaundrySeeder extends Seeder
                     'cash_transaction_laundry' => 50000,
                     'is_active_transaction_laundry' => 'active',
                     'first_date_transaction_laundry' => Carbon::now()->subDays(7),
-                    'last_date_transaction_laundry' => Carbon::now()->subDays(2)
+                    'last_date_transaction_laundry' => Carbon::now()->subDays(2),
+                    'deleted_at' => null,
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now(),
                 ],
 
                 [
@@ -119,7 +137,10 @@ class TransactionsLaundrySeeder extends Seeder
                     'cash_transaction_laundry' => 60000,
                     'is_active_transaction_laundry' => 'active',
                     'first_date_transaction_laundry' => Carbon::now()->subDays(3),
-                    'last_date_transaction_laundry' => Carbon::now()->addDays(2)
+                    'last_date_transaction_laundry' => Carbon::now()->addDays(2),
+                    'deleted_at' => null,
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now(),
                 ],
 
                 [
@@ -134,7 +155,10 @@ class TransactionsLaundrySeeder extends Seeder
                     'cash_transaction_laundry' => 50000,
                     'is_active_transaction_laundry' => 'active',
                     'first_date_transaction_laundry' => Carbon::now()->subDays(2),
-                    'last_date_transaction_laundry' => Carbon::now()->addDays(3)
+                    'last_date_transaction_laundry' => Carbon::now()->addDays(3),
+                    'deleted_at' => null,
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now(),
                 ],
 
                 [
@@ -149,7 +173,10 @@ class TransactionsLaundrySeeder extends Seeder
                     'cash_transaction_laundry' => 50000,
                     'is_active_transaction_laundry' => 'active',
                     'first_date_transaction_laundry' => Carbon::now()->subDays(6),
-                    'last_date_transaction_laundry' => Carbon::now()->subDays(2)
+                    'last_date_transaction_laundry' => Carbon::now()->subDays(2),
+                    'deleted_at' => null,
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now(),
                 ],
 
                 [
@@ -164,7 +191,10 @@ class TransactionsLaundrySeeder extends Seeder
                     'cash_transaction_laundry' => 70000,
                     'is_active_transaction_laundry' => 'active',
                     'first_date_transaction_laundry' => Carbon::now()->subDays(4),
-                    'last_date_transaction_laundry' => Carbon::now()->addDays(2)
+                    'last_date_transaction_laundry' => Carbon::now()->addDays(2),
+                    'deleted_at' => null,
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now(),
                 ],
             ]);
 

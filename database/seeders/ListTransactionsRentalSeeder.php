@@ -26,6 +26,7 @@ class ListTransactionsRentalSeeder extends Seeder
                     'price_list_transaction_rental' => 500000,
                     'weight_list_transaction_rental' => 15.5,
                     'is_active_list_transaction_rental' => 'active',
+                    'deleted_at' => null,
                     'created_at' => Carbon::now(),
                     'updated_at' => Carbon::now()
                 ],
@@ -38,6 +39,7 @@ class ListTransactionsRentalSeeder extends Seeder
                     'price_list_transaction_rental' => 750000,
                     'weight_list_transaction_rental' => 20.3,
                     'is_active_list_transaction_rental' => 'active',
+                    'deleted_at' => null,
                     'created_at' => Carbon::now(),
                     'updated_at' => Carbon::now()
                 ],
@@ -49,7 +51,8 @@ class ListTransactionsRentalSeeder extends Seeder
                     'note_list_transaction_rental' => 'Customer cancelled due to rain.',
                     'price_list_transaction_rental' => 600000,
                     'weight_list_transaction_rental' => 10.2,
-                    'is_active_list_transaction_rental' => 'inactive',
+                    'is_active_list_transaction_rental' => 'active',
+                    'deleted_at' => null,
                     'created_at' => Carbon::now(),
                     'updated_at' => Carbon::now()
                 ],
@@ -62,6 +65,7 @@ class ListTransactionsRentalSeeder extends Seeder
                     'price_list_transaction_rental' => 1200000,
                     'weight_list_transaction_rental' => 25.0,
                     'is_active_list_transaction_rental' => 'active',
+                    'deleted_at' => null,
                     'created_at' => Carbon::now(),
                     'updated_at' => Carbon::now()
                 ],
@@ -74,6 +78,7 @@ class ListTransactionsRentalSeeder extends Seeder
                     'price_list_transaction_rental' => 950000,
                     'weight_list_transaction_rental' => 18.7,
                     'is_active_list_transaction_rental' => 'active',
+                    'deleted_at' => null,
                     'created_at' => Carbon::now(),
                     'updated_at' => Carbon::now()
                 ],
@@ -86,6 +91,7 @@ class ListTransactionsRentalSeeder extends Seeder
                     'price_list_transaction_rental' => 850000,
                     'weight_list_transaction_rental' => 12.5,
                     'is_active_list_transaction_rental' => 'active',
+                    'deleted_at' => null,
                     'created_at' => Carbon::now(),
                     'updated_at' => Carbon::now()
                 ],
@@ -98,6 +104,7 @@ class ListTransactionsRentalSeeder extends Seeder
                     'price_list_transaction_rental' => 720000,
                     'weight_list_transaction_rental' => 14.8,
                     'is_active_list_transaction_rental' => 'active',
+                    'deleted_at' => null,
                     'created_at' => Carbon::now(),
                     'updated_at' => Carbon::now()
                 ],
@@ -110,6 +117,7 @@ class ListTransactionsRentalSeeder extends Seeder
                     'price_list_transaction_rental' => 1500000,
                     'weight_list_transaction_rental' => 22.5,
                     'is_active_list_transaction_rental' => 'active',
+                    'deleted_at' => null,
                     'created_at' => Carbon::now(),
                     'updated_at' => Carbon::now()
                 ],
@@ -122,6 +130,7 @@ class ListTransactionsRentalSeeder extends Seeder
                     'price_list_transaction_rental' => 650000,
                     'weight_list_transaction_rental' => 9.5,
                     'is_active_list_transaction_rental' => 'active',
+                    'deleted_at' => null,
                     'created_at' => Carbon::now(),
                     'updated_at' => Carbon::now()
                 ],
@@ -133,7 +142,8 @@ class ListTransactionsRentalSeeder extends Seeder
                     'note_list_transaction_rental' => 'Customer rescheduled.',
                     'price_list_transaction_rental' => 880000,
                     'weight_list_transaction_rental' => 16.3,
-                    'is_active_list_transaction_rental' => 'inactive',
+                    'is_active_list_transaction_rental' => 'active',
+                    'deleted_at' => null,
                     'created_at' => Carbon::now(),
                     'updated_at' => Carbon::now()
                 ],

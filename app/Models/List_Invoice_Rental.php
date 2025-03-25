@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class List_Invoice_Rental extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $table = 'list__invoice__rentals';
     protected $primaryKey = 'id_list_invoice_rental';
@@ -21,6 +22,17 @@ class List_Invoice_Rental extends Model
         'price_list_invoice_rental',
         'weight_list_invoice_rental',
         'is_active_list_invoice_rental',
+    ];
+
+    /**
+     * The attributes that should be cast.
+     *
+     * @var list<string, string>
+     */
+    protected $dates = [
+        'deleted_at',
+        'created_at',
+        'updated_at'
     ];
 
     public function invoiceRental()

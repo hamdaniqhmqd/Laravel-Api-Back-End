@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class List_Transaction_Laundry extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $table = 'list_transaction_laundries';
     protected $primaryKey = 'id_list_transaction_laundry';
@@ -22,6 +23,17 @@ class List_Transaction_Laundry extends Model
         'status_list_transaction_laundry',
         'note_list_transaction_laundry',
         'is_active_list_transaction_laundry'
+    ];
+
+    /**
+     * The attributes that should be cast.
+     *
+     * @var list<string, string>
+     */
+    protected $dates = [
+        'deleted_at',
+        'created_at',
+        'updated_at'
     ];
 
     public function transactionLaundry()

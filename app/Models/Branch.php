@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Branch extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $table = 'branches';
     protected $primaryKey = 'id_branch';
@@ -18,6 +19,17 @@ class Branch extends Model
         'city_branch',
         'address_branch',
         'is_active_branch'
+    ];
+
+    /**
+     * The attributes that should be cast.
+     *
+     * @var list<string, string>
+     */
+    protected $dates = [
+        'deleted_at',
+        'created_at',
+        'updated_at'
     ];
 
     public function users()

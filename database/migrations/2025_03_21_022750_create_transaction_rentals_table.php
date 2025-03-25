@@ -28,6 +28,7 @@ return new class extends Migration
             $table->enum('is_active_transaction_rental', ['active', 'inactive'])->default('active');
             $table->date('first_date_transaction_rental');
             $table->date('last_date_transaction_rental');
+            $table->softDeletes();
             $table->timestamps();
 
             // Foreign Key Constraints

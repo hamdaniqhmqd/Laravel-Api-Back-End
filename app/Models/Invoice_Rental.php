@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Invoice_Rental extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $table = 'invoice_rentals';
     protected $primaryKey = 'id_invoice_rental';
@@ -24,6 +25,17 @@ class Invoice_Rental extends Model
         'additional_cost_invoice_rental',
         'total_price_invoice_rental',
         'is_active_invoice_rental',
+    ];
+
+    /**
+     * The attributes that should be cast.
+     *
+     * @var list<string, string>
+     */
+    protected $dates = [
+        'deleted_at',
+        'created_at',
+        'updated_at'
     ];
 
     public function branch()

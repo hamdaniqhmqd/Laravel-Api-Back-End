@@ -23,6 +23,7 @@ return new class extends Migration
             $table->double('additional_cost_invoice_rental', 12, 2)->default(0);
             $table->double('total_price_invoice_rental', 12, 2);
             $table->enum('is_active_invoice_rental', ['active', 'inactive'])->default('active');
+            $table->softDeletes();
             $table->timestamps();
 
             $table->foreign('id_branch_invoice', 'fk_invoice_branch') // Nama constraint diperbaiki

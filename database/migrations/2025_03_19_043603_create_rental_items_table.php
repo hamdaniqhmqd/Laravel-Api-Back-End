@@ -21,6 +21,7 @@ return new class extends Migration
             $table->enum('condition_rental_item', ['clean', 'dirty', 'damaged'])->default('clean');
             $table->text('description_rental_item')->nullable();
             $table->enum('is_active_rental_item', ['active', 'inactive'])->default('active');
+            $table->softDeletes();
             $table->timestamps();
 
             // Foreign Key dengan ON CASCADE DELETE dan CASCADE UPDATE
