@@ -80,7 +80,7 @@ class ClientController extends Controller
     {
         try {
             // Mengambil semua client
-            $clients =  Client::onlyTrashed()->where('is_active_client', '!=', 'inactive')->latest()->get();
+            $clients =  Client::onlyTrashed()->where('is_active_client', '!=', 'active')->latest()->get();
 
             Log::info('Sukses menampilkan data client yang dihapus');
 

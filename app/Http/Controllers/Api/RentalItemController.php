@@ -80,7 +80,7 @@ class RentalItemController extends Controller
     {
         try {
             // Mengambil semua Rental Item
-            $rental_item =  Rental_Item::onlyTrashed()->where('is_active_rental_item', '!=', 'inactive')->latest()->get();
+            $rental_item =  Rental_Item::onlyTrashed()->where('is_active_rental_item', '!=', 'active')->latest()->get();
 
             Log::info('Sukses menampilkan data Rental Item');
 

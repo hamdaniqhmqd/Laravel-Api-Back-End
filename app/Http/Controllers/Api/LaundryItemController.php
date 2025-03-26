@@ -80,7 +80,7 @@ class LaundryItemController extends Controller
     {
         try {
             // Mengambil semua Laundry Item
-            $laundry_items =  Laundry_Item::onlyTrashed()->where('is_active_laundry_item', '!=', 'inactive')->latest()->get();
+            $laundry_items =  Laundry_Item::onlyTrashed()->where('is_active_laundry_item', '!=', 'active')->latest()->get();
 
             Log::info('Sukses menampilkan data Laundry Item yang dihapus');
 

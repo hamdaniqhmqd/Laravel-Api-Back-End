@@ -80,7 +80,7 @@ class BranchController extends Controller
     {
         try {
             // Mengambil semua cabang
-            $branches =  Branch::onlyTrashed()->where('is_active_branch', '!=', 'inactive')->latest()->get();
+            $branches =  Branch::onlyTrashed()->where('is_active_branch', '!=', 'active')->latest()->get();
 
             Log::info('Sukses menampilkan data cabang yang dihapus');
 

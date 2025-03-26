@@ -81,7 +81,7 @@ class UserController extends Controller
     {
         try {
             //get all users
-            $users = User::onlyTrashed()->where('is_active_user', '!=', 'inactive')->latest()->get();
+            $users = User::onlyTrashed()->where('is_active_user', '!=', 'active')->latest()->get();
 
             Log::info('Sukses menampilkan data user yang dihapus');
 
