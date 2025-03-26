@@ -17,7 +17,7 @@ class Transaction_Laundry extends Model
     protected $fillable = [
         'id_user_transaction_laundry',
         'id_branch_transaction_laundry',
-        'time_transaction_laundry',
+        // 'time_transaction_laundry',
         'name_client_transaction_laundry',
         'status_transaction_laundry',
         'notes_transaction_laundry',
@@ -30,12 +30,11 @@ class Transaction_Laundry extends Model
     ];
 
     protected $casts = [
-        'time_transaction_laundry' => 'datetime:H:i',
         'total_weight_transaction_laundry' => 'float',
         'total_price_transaction_laundry' => 'float',
         'cash_transaction_laundry' => 'float',
-        'first_date_transaction_laundry' => 'date',
-        'last_date_transaction_laundry' => 'date',
+        // 'first_date_transaction_laundry' => 'timestamp',
+        // 'last_date_transaction_laundry' => 'timestamp',
     ];
 
     /**
@@ -44,6 +43,8 @@ class Transaction_Laundry extends Model
      * @var list<string, string>
      */
     protected $dates = [
+        // 'first_date_transaction_laundry',
+        // 'last_date_transaction_laundry',
         'deleted_at',
         'created_at',
         'updated_at'

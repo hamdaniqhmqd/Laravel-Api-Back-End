@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id('id_transaction_laundry')->index();
             $table->unsignedBigInteger('id_user_transaction_laundry')->index(); // Foreign key ke kurir
             $table->unsignedBigInteger('id_branch_transaction_laundry')->index(); // Foreign key ke branch
-            $table->time('time_transaction_laundry');
+            // $table->time('time_transaction_laundry');
             $table->string('name_client_transaction_laundry');
             $table->enum('status_transaction_laundry', ['pending', 'in_progress', 'completed', 'cancelled'])->default('pending');
             $table->text('notes_transaction_laundry')->nullable();
@@ -23,8 +23,8 @@ return new class extends Migration
             $table->double('total_price_transaction_laundry', 10, 2);
             $table->double('cash_transaction_laundry', 10, 2);
             $table->enum('is_active_transaction_laundry', ['active', 'inactive'])->default('active');
-            $table->date('first_date_transaction_laundry');
-            $table->date('last_date_transaction_laundry');
+            $table->timestamp('first_date_transaction_laundry')->nullable();
+            $table->timestamp('last_date_transaction_laundry')->nullable();
             $table->softDeletes();
             $table->timestamps();
 
