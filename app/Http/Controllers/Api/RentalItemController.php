@@ -80,7 +80,7 @@ class RentalItemController extends Controller
     {
         try {
             // Mengambil semua Rental Item
-            $rental_item =  Rental_Item::onlyTrashed()->latest()->get();
+            $rental_item =  Rental_Item::onlyTrashed()->where('is_active_rental_item', '!=', 'active')->latest()->get();
 
             Log::info('Sukses menampilkan data Rental Item');
 
@@ -208,6 +208,12 @@ class RentalItemController extends Controller
     public function update(Request $request, $id)
     {
         try {
+            // Cari rental item berdasarkan ID
+            $rentalItem = Rental_Item::withTrashed()->latest()->find($id);
+            if (!$rentalItem) {
+                return new ResponseApiResource(false, 'Rental item tidak ditemukan.', [], null, 404);
+            }
+
             // Validasi input
             $validator = Validator::make($request->all(), [
                 'number_rental_item' => 'required|string|max:255|unique:rental_items,number_rental_item,' . $id . ',id_rental_item',
@@ -226,10 +232,12 @@ class RentalItemController extends Controller
                 return new ResponseApiResource(false, 'Validasi gagal', $request->all(), $validator->errors());
             }
 
-            // Cari rental item berdasarkan ID
-            $rentalItem = Rental_Item::withTrashed()->latest()->find($id);
-            if (!$rentalItem) {
-                return new ResponseApiResource(false, 'Rental item tidak ditemukan.', [], null, 404);
+            if ($request->is_active_rental_item === 'inactive') {
+                $rentalItem->delete();
+
+                Log::info('Rental item berhasil dinonaktifkan', ['id_rental_item' => $id, 'name' => $rentalItem->name_rental_item]);
+
+                return new ResponseApiResource(true, 'Rental item berhasil dinonaktifkan!', $rentalItem, null, 200);
             }
 
             // Update data rental item

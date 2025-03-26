@@ -80,7 +80,7 @@ class ClientController extends Controller
     {
         try {
             // Mengambil semua client
-            $clients =  Client::onlyTrashed()->latest()->get();
+            $clients =  Client::onlyTrashed()->where('is_active_client', '!=', 'active')->latest()->get();
 
             Log::info('Sukses menampilkan data client yang dihapus');
 
@@ -230,6 +230,14 @@ class ClientController extends Controller
     public function update(Request $request, $id)
     {
         try {
+            // Cari client berdasarkan ID
+            $client = Client::find($id);
+            if (!$client) {
+                Log::info('Client tidak ditemukan dengan id ' . $id);
+
+                return new ResponseApiResource(false, 'Client tidak ditemukan.', [], null, 404);
+            }
+
             // Validasi input
             $validator = Validator::make($request->all(), [
                 'name_client' => 'required|string|max:255',
@@ -249,6 +257,15 @@ class ClientController extends Controller
             $client = Client::find($id);
             if (!$client) {
                 return new ResponseApiResource(false, 'Client tidak ditemukan.', [], null, 404);
+            }
+
+            // Periksa apakah is_active_client adalah 'inactive'
+            if ($request->is_active_client === 'inactive') {
+                $client->delete();
+
+                Log::info('client berhasil dinonaktifkan', ['id_client' => $id, 'name_client' => $client->name_client]);
+
+                return new ResponseApiResource(true, 'client berhasil dinonaktifkan!', $client, null, 200);
             }
 
             // Update data client

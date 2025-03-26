@@ -81,7 +81,7 @@ class UserController extends Controller
     {
         try {
             //get all users
-            $users = User::onlyTrashed()->latest()->get();
+            $users = User::onlyTrashed()->where('is_active_user', '!=', 'active')->latest()->get();
 
             Log::info('Sukses menampilkan data user yang dihapus');
 
@@ -236,9 +236,11 @@ class UserController extends Controller
                 'is_active_user' => $request->is_active_user,
             ]);
 
-
+            // Periksa apakah user ingin dinonaktifkan
             if ($request->is_active_user === 'inactive') {
                 $user->delete();
+
+                Log::info('User berhasil dinonaktifkan', ['id_user' => $id, 'username' => $user->username]);
 
                 return new ResponseApiResource(true, 'User berhasil dinonaktifkan!', $user, null, 200);
             }

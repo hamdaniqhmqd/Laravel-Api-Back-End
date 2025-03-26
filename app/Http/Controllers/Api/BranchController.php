@@ -39,7 +39,7 @@ class BranchController extends Controller
                 "Daftar Data Cabang Gagal " . $error->getMessage()
             );
 
-            return new ResponseApiResource(false, 'Data Caang Tidak Ditemukan!', null, $error->getMessage(), 404);
+            return new ResponseApiResource(false, 'Data Cabang Tidak Ditemukan!', null, $error->getMessage(), 404);
         }
     }
 
@@ -80,7 +80,7 @@ class BranchController extends Controller
     {
         try {
             // Mengambil semua cabang
-            $branches =  Branch::onlyTrashed()->latest()->get();
+            $branches =  Branch::onlyTrashed()->where('is_active_branch', '!=', 'active')->latest()->get();
 
             Log::info('Sukses menampilkan data cabang yang dihapus');
 
@@ -191,6 +191,12 @@ class BranchController extends Controller
     public function update(Request $request, $id)
     {
         try {
+            // Cari branch berdasarkan ID
+            $branch = Branch::withTrashed()->find($id);
+            if (!$branch) {
+                return new ResponseApiResource(false, 'Branch tidak ditemukan.', [], null, 404);
+            }
+
             // Validasi input
             $validator = Validator::make($request->all(), [
                 'name_branch' => 'required|string|max:255',
@@ -205,10 +211,12 @@ class BranchController extends Controller
                 return new ResponseApiResource(false, 'Validasi gagal', $request->all(), $validator->errors());
             }
 
-            // Cari branch berdasarkan ID
-            $branch = Branch::withTrashed()->find($id);
-            if (!$branch) {
-                return new ResponseApiResource(false, 'Branch tidak ditemukan.', [], null, 404);
+            if ($request->is_active_branch === 'inactive') {
+                $branch->delete();
+
+                Log::info('Branch berhasil dinonaktifkan', ['id_user' => $id, 'name_branch' => $branch->name_branch]);
+
+                return new ResponseApiResource(true, 'Branch berhasil dinonaktifkan!', $branch, null, 200);
             }
 
             // Update data branch
