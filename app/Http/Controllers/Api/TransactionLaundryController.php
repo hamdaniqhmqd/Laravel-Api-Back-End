@@ -40,7 +40,7 @@ class TransactionLaundryController extends Controller
                 "Daftar Data transaksi laundry Gagal " . $error->getMessage()
             );
 
-            return new ResponseApiResource(false, 'Data Caang Tidak Ditemukan!', null, $error->getMessage(), 404);
+            return new ResponseApiResource(false, 'Data transaksi laundry Tidak Ditemukan!', null, $error->getMessage(), 404);
         }
     }
 
