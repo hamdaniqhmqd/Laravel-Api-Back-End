@@ -184,7 +184,7 @@ class TransactionLaundryController extends Controller
             }
 
             // Log info jika Transaksi laundry ditemukan
-            Log::info('Detail Transaksi laundry ditemukan', ['id' => $transaction_laundry->id_transaction_laundry, 'time' => $transaction_laundry->time_transaction_laundry]);
+            Log::info('Detail Transaksi laundry ditemukan', ['id' => $transaction_laundry->id_transaction_laundry, 'name_client_transaction_laundry' => $transaction_laundry->name_client_transaction_laundry]);
 
             // Return data Transaksi laundry sebagai resource
             return new ResponseApiResource(true, 'Detail Data Transaksi laundry : ', $transaction_laundry, null, 200);
@@ -241,7 +241,7 @@ class TransactionLaundryController extends Controller
             if ($request->is_active_transaction_laundry === 'inactive') {
                 $transaction_laundry->delete();
 
-                Log::info('Transaksi Laundry berhasil dinonaktifkan', ['id_transaction_laundry' => $id, 'time' => $transaction_laundry->time_transaction_laundry]);
+                Log::info('Transaksi Laundry berhasil dinonaktifkan', ['id_transaction_laundry' => $id, 'name_client_transaction_laundry' => $transaction_laundry->name_client_transaction_laundry]);
 
                 return new ResponseApiResource(true, 'Transaksi Laundry berhasil dinonaktifkan!', $transaction_laundry, null, 200);
             }
@@ -336,7 +336,7 @@ class TransactionLaundryController extends Controller
             $transaction_laundry->delete();
 
             // Log informasi perubahan status Cabang
-            Log::info('Cabang berhasil dinonaktifkan', ['id_transaction_laundry' => $id, 'time' => $transaction_laundry->time_transaction_laundry]);
+            Log::info('Cabang berhasil dinonaktifkan', ['id_transaction_laundry' => $id, 'name_client_transaction_laundry' => $transaction_laundry->name_client_transaction_laundry]);
 
             // Kembalikan response sukses
             return new ResponseApiResource(true, 'Cabang berhasil dinonaktifkan!', $transaction_laundry, 200);
@@ -371,7 +371,7 @@ class TransactionLaundryController extends Controller
             $transaction_laundry->restore();
 
             // Log informasi perubahan status Transaksi Laundry
-            Log::info('Transaksi Laundry berhasil dipulihkan', ['id_transaction_laundry' => $id, 'time' => $transaction_laundry->time_transaction_laundry]);
+            Log::info('Transaksi Laundry berhasil dipulihkan', ['id_transaction_laundry' => $id, 'name_client_transaction_laundry' => $transaction_laundry->name_client_transaction_laundry]);
 
             // Kembalikan response sukses
             return new ResponseApiResource(true, 'Transaksi Laundry berhasil dipulihkan!', $transaction_laundry, 200);
@@ -406,7 +406,7 @@ class TransactionLaundryController extends Controller
             $transaction_laundry->forceDelete();
 
             // Log informasi perubahan status Transaksi Laundry
-            Log::info('Transaksi Laundry berhasil hapus permanent', ['id_transaction_laundry' => $id, 'time' => $transaction_laundry->time_transaction_laundry]);
+            Log::info('Transaksi Laundry berhasil hapus permanent', ['id_transaction_laundry' => $id, 'name_client_transaction_laundry' => $transaction_laundry->name_client_transaction_laundry]);
 
             // Kembalikan response sukses
             return new ResponseApiResource(true, 'Transaksi Laundry berhasil hapus permanent!', $transaction_laundry, 200);
