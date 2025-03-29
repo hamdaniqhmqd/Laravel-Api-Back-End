@@ -191,7 +191,7 @@ class LaundryItemController extends Controller
                 "Gagal mengambil Data client: " . $e->getMessage()
             );
 
-            return new ResponseApiResource(false, 'Terjadi kesalahan pada server', $id, $e->getMessage(), 500);
+            return new ResponseApiResource(false, 'Terjadi kesalahan pada server', [], $e->getMessage(), 500);
         }
     }
 
@@ -229,14 +229,6 @@ class LaundryItemController extends Controller
                 return new ResponseApiResource(false, 'Validasi gagal', $request->all(), $validator->errors());
             }
 
-            if ($request->is_active_laundry_item === 'inactive') {
-                $laundryItem->delete();
-
-                Log::info('Laundry item berhasil dinonaktifkan', ['id_laundry_item' => $id, 'name' => $laundryItem->name_laundry_item]);
-
-                return new ResponseApiResource(true, 'Laundry item berhasil dinonaktifkan!', $laundryItem, null, 200);
-            }
-
             // Update data laundry item
             $laundryItem->update([
                 'name_laundry_item' => $request->name_laundry_item,
@@ -246,6 +238,16 @@ class LaundryItemController extends Controller
                 'is_active_laundry_item' => $request->is_active_laundry_item,
                 'id_branch_laundry_item' => $request->id_branch_laundry_item,
             ]);
+
+            if ($request->is_active_laundry_item === 'inactive') {
+                $laundryItem->delete();
+
+                Log::info('Laundry item berhasil dinonaktifkan', ['id_laundry_item' => $id, 'name' => $laundryItem->name_laundry_item]);
+            } elseif ($request->is_active_laundry_item === 'active') {
+                $laundryItem->restore();
+
+                Log::info('Laundry item berhasil diaktifkan', ['id_laundry_item' => $id, 'name' => $laundryItem->name_laundry_item]);
+            }
 
             // Logging berhasil
             Log::info('Laundry item dengan id_laundry_item ' . $id . ' berhasil diperbarui.');
@@ -274,7 +276,7 @@ class LaundryItemController extends Controller
     {
         try {
             // Cari Client berdasarkan ID
-            $laundryItem = Laundry_Item::withTrashed()->find($id);
+            $laundryItem = Laundry_Item::find($id);
 
             // Jika Client tidak ditemukan
             if (!$laundryItem) {
@@ -293,7 +295,7 @@ class LaundryItemController extends Controller
             Log::info('Client berhasil dinonaktifkan', ['id_laundry_item' => $id, 'name_laundry_item' => $laundryItem->name_laundry_item]);
 
             // Kembalikan response sukses
-            return new ResponseApiResource(true, 'Client berhasil dinonaktifkan!', $laundryItem, 200);
+            return new ResponseApiResource(true, 'Client berhasil dinonaktifkan!', $laundryItem, null, 200);
         } catch (\Exception $e) {
             // Log error jika terjadi kesalahan
             Log::error('Gagal menonaktifkan Client', [
@@ -306,7 +308,7 @@ class LaundryItemController extends Controller
                 "Gagal menonaktifkan Client: " . $e->getMessage()
             );
 
-            return new ResponseApiResource(false, 'Terjadi kesalahan pada server', $id, $e->getMessage(), 500);
+            return new ResponseApiResource(false, 'Terjadi kesalahan pada server', [], $e->getMessage(), 500);
         }
     }
 
@@ -333,7 +335,7 @@ class LaundryItemController extends Controller
             Log::info('Client berhasil dipulihkan', ['id_laundry_item' => $id, 'name_laundry_item' => $laundryItem->name_laundry_item]);
 
             // Kembalikan response sukses
-            return new ResponseApiResource(true, 'Client berhasil dipulihkan!', $laundryItem, 200);
+            return new ResponseApiResource(true, 'Client berhasil dipulihkan!', $laundryItem, null, 200);
         } catch (\Exception $e) {
             // Log error jika terjadi kesalahan
             Log::error('Gagal memulihkan Client', [
@@ -346,7 +348,7 @@ class LaundryItemController extends Controller
                 "Gagal memulihkan Client: " . $e->getMessage()
             );
 
-            return new ResponseApiResource(false, 'Terjadi kesalahan pada server', $id, $e->getMessage(), 500);
+            return new ResponseApiResource(false, 'Terjadi kesalahan pada server', [], $e->getMessage(), 500);
         }
     }
 
@@ -360,7 +362,7 @@ class LaundryItemController extends Controller
             if (!$laundryItem) {
                 Log::info('Client tidak ditemukan saat mencoba menghapus permanent', ['id_laundry_item' => $id]);
 
-                return new ResponseApiResource(false, 'Client tidak ditemukan!', $id,  $laundryItem, 404);
+                return new ResponseApiResource(false, 'Client tidak ditemukan saat mencoba menghapus permanent!', [],  $laundryItem, 404);
             }
 
             // Ubah status is_active_laundry_item menjadi 'inactive'
@@ -373,7 +375,7 @@ class LaundryItemController extends Controller
             Log::info('Client berhasil menghapus permanent', ['id_laundry_item' => $id, 'name_laundry_item' => $laundryItem->name_laundry_item]);
 
             // Kembalikan response sukses
-            return new ResponseApiResource(true, 'Client berhasil menghapus permanent!', $laundryItem, 200);
+            return new ResponseApiResource(true, 'Client berhasil menghapus permanent!', $laundryItem, null, 200);
         } catch (\Exception $e) {
             // Log error jika terjadi kesalahan
             Log::error('Gagal menghapus permanent Client', [
@@ -386,7 +388,7 @@ class LaundryItemController extends Controller
                 "Gagal menghapus permanent Client: " . $e->getMessage()
             );
 
-            return new ResponseApiResource(false, 'Terjadi kesalahan pada server', $id, $e->getMessage(), 500);
+            return new ResponseApiResource(false, 'Terjadi kesalahan pada server', [], $e->getMessage(), 500);
         }
     }
 }

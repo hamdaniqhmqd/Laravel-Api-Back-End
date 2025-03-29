@@ -106,8 +106,12 @@ class ClientController extends Controller
     public function getBrachWithClient()
     {
         try {
-            // Mengambil semua client
-            $clients =  Client::with('branch')->get();
+            // Mengambil semua client serta semua branch, meskipun branch dihapus
+            // $clients =  Client::with('branch')->latest()->get();
+            $clients = Client::with(['branch' => function ($query) {
+                $query->withTrashed();
+            }])->latest()->get();
+
 
             Log::info('Sukses menampilkan data client');
 
@@ -190,7 +194,7 @@ class ClientController extends Controller
     {
         try {
             // Cari client berdasarkan ID
-            $client = Client::find($id);
+            $client = Client::withTrashed()->find($id);
 
             // Periksa apakah client ditemukan
             if (!$client) {
@@ -216,7 +220,7 @@ class ClientController extends Controller
                 "Gagal mengambil Data client: " . $e->getMessage()
             );
 
-            return new ResponseApiResource(false, 'Terjadi kesalahan pada server', $id, $e->getMessage(), 500);
+            return new ResponseApiResource(false, 'Terjadi kesalahan pada server', [], $e->getMessage(), 500);
         }
     }
 
@@ -231,11 +235,11 @@ class ClientController extends Controller
     {
         try {
             // Cari client berdasarkan ID
-            $client = Client::find($id);
+            $client = Client::withTrashed()->find($id);
             if (!$client) {
                 Log::info('Client tidak ditemukan dengan id ' . $id);
 
-                return new ResponseApiResource(false, 'Client tidak ditemukan.', [], null, 404);
+                return new ResponseApiResource(false, 'Client tidak ditemukan.', null, null, 404);
             }
 
             // Validasi input
@@ -253,21 +257,6 @@ class ClientController extends Controller
                 return new ResponseApiResource(false, 'Validasi gagal', $request->all(), $validator->errors());
             }
 
-            // Cari client berdasarkan ID
-            $client = Client::find($id);
-            if (!$client) {
-                return new ResponseApiResource(false, 'Client tidak ditemukan.', [], null, 404);
-            }
-
-            // Periksa apakah is_active_client adalah 'inactive'
-            if ($request->is_active_client === 'inactive') {
-                $client->delete();
-
-                Log::info('client berhasil dinonaktifkan', ['id_client' => $id, 'name_client' => $client->name_client]);
-
-                return new ResponseApiResource(true, 'client berhasil dinonaktifkan!', $client, null, 200);
-            }
-
             // Update data client
             $client->update([
                 'name_client' => $request->name_client,
@@ -276,6 +265,17 @@ class ClientController extends Controller
                 'is_active_client' => $request->is_active_client,
                 'id_branch_client' => $request->id_branch_client,
             ]);
+
+            // Periksa apakah is_active_client adalah 'inactive'
+            if ($request->is_active_client === 'inactive') {
+                $client->delete();
+
+                Log::info('client berhasil dinonaktifkan', ['id_client' => $id, 'name_client' => $client->name_client]);
+            } elseif ($request->is_active_client === 'active') {
+                $client->restore();
+
+                Log::info('client berhasil diaktifkan', ['id_client' => $id, 'name_client' => $client->name_client]);
+            }
 
             // Logging berhasil
             Log::info('Client dengan id_client ' . $id . ' berhasil diperbarui.');
@@ -316,7 +316,7 @@ class ClientController extends Controller
             if (!$client) {
                 Log::info('Client tidak ditemukan saat mencoba menghapus', ['id_client' => $id]);
 
-                return new ResponseApiResource(false, 'Client tidak ditemukan!', $id,  $client, 404);
+                return new ResponseApiResource(false, 'Client tidak ditemukan!', [],  $client, 404);
             }
 
             // Ubah status is_active_client menjadi 'inactive'
@@ -342,7 +342,7 @@ class ClientController extends Controller
                 "Gagal menonaktifkan Client: " . $e->getMessage()
             );
 
-            return new ResponseApiResource(false, 'Terjadi kesalahan pada server', $id, $e->getMessage(), 500);
+            return new ResponseApiResource(false, 'Terjadi kesalahan pada server', [], $e->getMessage(), 500);
         }
     }
 
@@ -356,7 +356,7 @@ class ClientController extends Controller
             if (!$client) {
                 Log::info('Client tidak ditemukan saat mencoba dipulihkan', ['id_client' => $id]);
 
-                return new ResponseApiResource(false, 'Client tidak ditemukan!', $id,  $client, 404);
+                return new ResponseApiResource(false, 'Client tidak ditemukan!', [],  $client, 404);
             }
 
             // Ubah status is_active_client menjadi 'active'
@@ -382,7 +382,7 @@ class ClientController extends Controller
                 "Gagal memulihkan Client: " . $e->getMessage()
             );
 
-            return new ResponseApiResource(false, 'Terjadi kesalahan pada server', $id, $e->getMessage(), 500);
+            return new ResponseApiResource(false, 'Terjadi kesalahan pada server', [], $e->getMessage(), 500);
         }
     }
 
@@ -396,7 +396,7 @@ class ClientController extends Controller
             if (!$client) {
                 Log::info('Client tidak ditemukan saat mencoba hapus permanent', ['id_client' => $id]);
 
-                return new ResponseApiResource(false, 'Client tidak ditemukan!', $id,  $client, 404);
+                return new ResponseApiResource(false, 'Client tidak ditemukan!', [],  $client, 404);
             }
 
             // Ubah status is_active_client menjadi 'inactive'
@@ -422,7 +422,7 @@ class ClientController extends Controller
                 "Gagal hapus permanent Client: " . $e->getMessage()
             );
 
-            return new ResponseApiResource(false, 'Terjadi kesalahan pada server', $id, $e->getMessage(), 500);
+            return new ResponseApiResource(false, 'Terjadi kesalahan pada server', [], $e->getMessage(), 500);
         }
     }
 }

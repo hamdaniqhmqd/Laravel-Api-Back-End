@@ -138,7 +138,7 @@ class UserController extends Controller
                 'gender_user' => $request->gender_user,
                 'phone_user' => $request->phone_user,
                 'address_user' => $request->address_user,
-                'is_active_user' => $request->is_active_user,
+                'is_active_user' => $request->is_active_user
             ]);
 
             // Kembalikan response sukses
@@ -153,6 +153,11 @@ class UserController extends Controller
         } catch (Exception $e) {
             // Logging error untuk debugging
             Log::error('Error saat menambahkan user : ' . $e->getMessage());
+
+            Logging::record(
+                Auth::guard('sanctum')->user(),
+                "Error saat menambahkan user : " . $e->getMessage()
+            );
 
             return new ResponseApiResource(false, 'Terjadi kesalahan saat menambahkan user.', $request->all(), $e->getMessage(), 500);
         }
@@ -184,10 +189,15 @@ class UserController extends Controller
             return new ResponseApiResource(true, 'Detail Data User!', $user, null, 200);
         } catch (Exception $e) {
             // Log error jika terjadi masalah
-            Log::error('Gagal mengambil data user', [
+            Log::error('Gagal mengambil data user sesuai id', [
                 'id' => $id,
                 'error' => $e->getMessage()
             ]);
+
+            Logging::record(
+                Auth::guard('sanctum')->user(),
+                "Gagal mengambil data user sesuai id " . $e->getMessage()
+            );
 
             return new ResponseApiResource(false, 'Terjadi kesalahan pada server', $id, $e->getMessage(), 500);
         }
@@ -241,15 +251,17 @@ class UserController extends Controller
                 $user->delete();
 
                 Log::info('User berhasil dinonaktifkan', ['id_user' => $id, 'username' => $user->username]);
+            } elseif ($request->is_active_user === 'active') {
+                $user->restore();
 
-                return new ResponseApiResource(true, 'User berhasil dinonaktifkan!', $user, null, 200);
+                Log::info('User berhasil diaktifkan', ['id_user' => $id, 'username' => $user->username]);
             }
 
             // Log info jika update berhasil
             Log::info('User berhasil diperbarui', ['id_user' => $id, 'username' => $user->username]);
 
             // Kembalikan response sukses
-            return new ResponseApiResource(true, 'User berhasil diperbarui!', $user, $validator->errors(), 200);
+            return new ResponseApiResource(true, 'User berhasil diperbarui!', $user, null, 200);
         } catch (ValidationException $error) {
             // Logging error untuk debugging
             Log::error('Error saat memperbarui user : ' . $error->getMessage());
@@ -261,6 +273,11 @@ class UserController extends Controller
                 'id_user' => $id,
                 'error'   => $e->getMessage()
             ]);
+
+            Logging::record(
+                Auth::guard('sanctum')->user(),
+                "Gagal memperbarui user " . $e->getMessage()
+            );
 
             return new ResponseApiResource(false, 'Terjadi kesalahan pada server', $id, $e->getMessage(), 500);
         }
@@ -276,7 +293,7 @@ class UserController extends Controller
     {
         try {
             // Cari user berdasarkan ID
-            $user = User::withTrashed()->find($id);
+            $user = User::find($id);
 
             // Jika user tidak ditemukan
             if (!$user) {
@@ -302,6 +319,11 @@ class UserController extends Controller
                 'id_user' => $id,
                 'error'   => $e->getMessage()
             ]);
+
+            Logging::record(
+                Auth::guard('sanctum')->user(),
+                "Gagal menonaktifkan user " . $e->getMessage()
+            );
 
             return new ResponseApiResource(false, 'Terjadi kesalahan pada server', $id, $e->getMessage(), 500);
         }
@@ -338,6 +360,11 @@ class UserController extends Controller
                 'error'   => $e->getMessage()
             ]);
 
+            Logging::record(
+                Auth::guard('sanctum')->user(),
+                "Gagal memulihkan user " . $e->getMessage()
+            );
+
             return new ResponseApiResource(false, 'Terjadi kesalahan pada server', $id, $e->getMessage(), 500);
         }
     }
@@ -368,10 +395,15 @@ class UserController extends Controller
             return new ResponseApiResource(true, 'User berhasil dihapus pemanent!', $user, 200);
         } catch (\Exception $e) {
             // Log error jika terjadi kesalahan
-            Log::error('Gagal menghapus user', [
+            Log::error('Gagal menghapus permanent user', [
                 'id_user' => $id,
                 'error'   => $e->getMessage()
             ]);
+
+            Logging::record(
+                Auth::guard('sanctum')->user(),
+                "Gagal menghapus permanent user " . $e->getMessage()
+            );
 
             return new ResponseApiResource(false, 'Terjadi kesalahan pada server', $id, $e->getMessage(), 500);
         }
@@ -405,6 +437,11 @@ class UserController extends Controller
                 'id_user' => $id,
                 'error'   => $e->getMessage()
             ]);
+
+            Logging::record(
+                Auth::guard('sanctum')->user(),
+                "Gagal mereset password user " . $e->getMessage()
+            );
 
             return new ResponseApiResource(false, 'Terjadi kesalahan pada server', null, $e->getMessage(), 500);
         }

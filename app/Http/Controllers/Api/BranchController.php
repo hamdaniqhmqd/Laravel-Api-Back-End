@@ -211,14 +211,6 @@ class BranchController extends Controller
                 return new ResponseApiResource(false, 'Validasi gagal', $request->all(), $validator->errors());
             }
 
-            if ($request->is_active_branch === 'inactive') {
-                $branch->delete();
-
-                Log::info('Branch berhasil dinonaktifkan', ['id_user' => $id, 'name_branch' => $branch->name_branch]);
-
-                return new ResponseApiResource(true, 'Branch berhasil dinonaktifkan!', $branch, null, 200);
-            }
-
             // Update data branch
             $branch->update([
                 'name_branch' => $request->name_branch,
@@ -229,6 +221,16 @@ class BranchController extends Controller
 
             // Logging berhasil
             Log::info('Branch dengan id_branch ' . $id . ' berhasil diperbarui.');
+
+            if ($request->is_active_branch === 'inactive') {
+                $branch->delete();
+
+                Log::info('Branch berhasil dinonaktifkan', ['id_user' => $id, 'name_branch' => $branch->name_branch]);
+            } elseif ($request->is_active_branch === 'active') {
+                $branch->restore();
+
+                Log::info('Branch berhasil diaktifkan', ['id_user' => $id, 'name_branch' => $branch->name_branch]);
+            }
 
             // Kembalikan response sukses
             return new ResponseApiResource(true, 'Branch berhasil diperbarui!', $branch, null, 200);
