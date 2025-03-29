@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\BranchController;
 use App\Http\Controllers\Api\ClientController;
 use App\Http\Controllers\Api\LaundryItemController;
+use App\Http\Controllers\Api\ListTransactionLaundryController;
 use App\Http\Controllers\Api\RentalItemController;
 use App\Http\Controllers\Api\TransactionLaundryController;
 use App\Http\Controllers\Api\UserController;
@@ -90,6 +91,19 @@ Route::middleware(['auth:sanctum', 'role:owner'])->group(function () {
     Route::delete('/delete_transaction_laundries/{id}', [TransactionLaundryController::class, 'destroy']);
     Route::put('/restore_transaction_laundries/{id}', [TransactionLaundryController::class, 'restore']);
     Route::delete('/force_destroy_transaction_laundries/{id}', [TransactionLaundryController::class, 'forceDestroy']);
+    Route::get('/transaction_laundries/{id}/list', [TransactionLaundryController::class, 'getListWithTransactionLaundry']);
+    Route::post('/create_transaction_list_laundries', [TransactionLaundryController::class, 'storeListTransaction']);
+
+    // List Transaction Laundry
+    Route::get('/list_transaction_laundries', [ListTransactionLaundryController::class, 'index']);
+    Route::get('/all_list_transaction_laundries', [ListTransactionLaundryController::class, 'getAll']);
+    Route::get('/all_list_transaction_laundries_trashed', [ListTransactionLaundryController::class, 'getAllTrashed']);
+    Route::post('/create_list_transaction_laundries', [ListTransactionLaundryController::class, 'store']);
+    Route::get('/list_transaction_laundries/{id}', [ListTransactionLaundryController::class, 'show']);
+    Route::put('/edit_list_transaction_laundries/{id}', [ListTransactionLaundryController::class, 'update']);
+    Route::delete('/delete_list_transaction_laundries/{id}', [ListTransactionLaundryController::class, 'destroy']);
+    Route::put('/restore_list_transaction_laundries/{id}', [ListTransactionLaundryController::class, 'restore']);
+    Route::delete('/force_destroy_list_transaction_laundries/{id}', [ListTransactionLaundryController::class, 'forceDestroy']);
 });
 
 

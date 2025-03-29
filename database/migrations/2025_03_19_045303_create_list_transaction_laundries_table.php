@@ -17,7 +17,7 @@ return new class extends Migration
             $table->unsignedBigInteger('id_item_laundry')->index();
             $table->double('price_list_transaction_laundry', 10, 2);
             $table->double('weight_list_transaction_laundry', 8, 2);
-            $table->integer('pcs_list_transaction_rental');
+            $table->integer('pcs_list_transaction_laundry');
             $table->enum('status_list_transaction_laundry', ['pending', 'completed', 'cancelled'])->default('pending');
             $table->text('note_list_transaction_laundry')->nullable();
             $table->enum('is_active_list_transaction_laundry', ['active', 'inactive'])->default('active');
