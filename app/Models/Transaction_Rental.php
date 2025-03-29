@@ -34,9 +34,9 @@ class Transaction_Rental extends Model
     protected $casts = [
         'total_weight_transaction_rental' => 'float',
         'total_pcs_transaction_rental' => 'integer',
-        'promo_transaction_rental' => 'integer',
-        'additional_cost_transaction_rental' => 'integer',
-        'total_price_transaction_rental' => 'integer',
+        'promo_transaction_rental' => 'float',
+        'additional_cost_transaction_rental' => 'float',
+        'total_price_transaction_rental' => 'float',
         'first_date_transaction_rental' => 'date',
         'last_date_transaction_rental' => 'date',
     ];
