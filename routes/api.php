@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\BranchController;
 use App\Http\Controllers\Api\ClientController;
 use App\Http\Controllers\Api\LaundryItemController;
 use App\Http\Controllers\Api\RentalItemController;
+use App\Http\Controllers\Api\TransactionLaundryController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\LogoutController;
@@ -78,6 +79,17 @@ Route::middleware(['auth:sanctum', 'role:owner'])->group(function () {
     Route::delete('/delete_laundry_items/{id}', [LaundryItemController::class, 'destroy']);
     Route::put('/restore_laundry_items/{id}', [LaundryItemController::class, 'restore']);
     Route::delete('/force_destroy_laundry_items/{id}', [LaundryItemController::class, 'forceDestroy']);
+
+    // Transaction Laundry
+    Route::get('/transaction_laundries', [TransactionLaundryController::class, 'index']);
+    Route::get('/all_transaction_laundries', [TransactionLaundryController::class, 'getAll']);
+    Route::get('/all_transaction_laundries_trashed', [TransactionLaundryController::class, 'getAllTrashed']);
+    Route::post('/create_transaction_laundries', [TransactionLaundryController::class, 'store']);
+    Route::get('/transaction_laundries/{id}', [TransactionLaundryController::class, 'show']);
+    Route::put('/edit_transaction_laundries/{id}', [TransactionLaundryController::class, 'update']);
+    Route::delete('/delete_transaction_laundries/{id}', [TransactionLaundryController::class, 'destroy']);
+    Route::put('/restore_transaction_laundries/{id}', [TransactionLaundryController::class, 'restore']);
+    Route::delete('/force_destroy_transaction_laundries/{id}', [TransactionLaundryController::class, 'forceDestroy']);
 });
 
 

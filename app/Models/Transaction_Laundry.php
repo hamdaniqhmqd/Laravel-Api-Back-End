@@ -17,36 +17,39 @@ class Transaction_Laundry extends Model
     protected $fillable = [
         'id_user_transaction_laundry',
         'id_branch_transaction_laundry',
-        'time_transaction_laundry',
         'name_client_transaction_laundry',
         'status_transaction_laundry',
         'notes_transaction_laundry',
         'total_weight_transaction_laundry',
         'total_price_transaction_laundry',
+        'total_laundry_transaction_laundry',
+        'promo_transaction_laundry',
+        'additional_cost_transaction_laundry',
+        'total_transaction_laundry',
         'cash_transaction_laundry',
+        'change_money_transaction_laundry',
         'is_active_transaction_laundry',
         'first_date_transaction_laundry',
         'last_date_transaction_laundry',
     ];
 
     protected $casts = [
-        'time_transaction_laundry' => 'datetime:H:i',
         'total_weight_transaction_laundry' => 'float',
         'total_price_transaction_laundry' => 'float',
+        'total_laundry_transaction_laundry' => 'integer',
+        'promo_transaction_laundry' => 'float',
+        'additional_cost_transaction_laundry' => 'float',
+        'total_transaction_laundry' => 'float',
         'cash_transaction_laundry' => 'float',
-        'first_date_transaction_laundry' => 'date',
-        'last_date_transaction_laundry' => 'date',
+        'change_money_transaction_laundry' => 'float',
     ];
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var list<string, string>
-     */
     protected $dates = [
+        'first_date_transaction_laundry',
+        'last_date_transaction_laundry',
         'deleted_at',
         'created_at',
-        'updated_at'
+        'updated_at',
     ];
 
     // Relasi ke User (Kurir)
@@ -64,6 +67,6 @@ class Transaction_Laundry extends Model
     // Relasi ke List_Transaction_Laundry
     public function listTransactionLaundry()
     {
-        return $this->hasMany(List_Transaction_Laundry::class, 'id_list_transaction_laundry', 'id_transaction_laundry');
+        return $this->hasMany(List_Transaction_Laundry::class, 'id_transaction_laundry', 'id_transaction_laundry');
     }
 }

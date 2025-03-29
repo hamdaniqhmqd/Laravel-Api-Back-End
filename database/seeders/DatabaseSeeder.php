@@ -22,10 +22,10 @@ class DatabaseSeeder extends Seeder
                 ClientSeeder::class,
                 LaundryItemsSeeder::class,
                 RentalItemsSeeder::class,
+                TransactionsLaundrySeeder::class,
                 ListTransactionsLaundrySeeder::class,
                 TransactionsRentalSeeder::class,
                 ListTransactionsRentalSeeder::class,
-                TransactionsLaundrySeeder::class,
             ]);
 
             Log::info('Database seeded successfully'); //code...

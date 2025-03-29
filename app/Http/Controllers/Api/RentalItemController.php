@@ -232,14 +232,6 @@ class RentalItemController extends Controller
                 return new ResponseApiResource(false, 'Validasi gagal', $request->all(), $validator->errors());
             }
 
-            if ($request->is_active_rental_item === 'inactive') {
-                $rentalItem->delete();
-
-                Log::info('Rental item berhasil dinonaktifkan', ['id_rental_item' => $id, 'name' => $rentalItem->name_rental_item]);
-
-                return new ResponseApiResource(true, 'Rental item berhasil dinonaktifkan!', $rentalItem, null, 200);
-            }
-
             // Update data rental item
             $rentalItem->update([
                 'number_rental_item' => $request->number_rental_item,
@@ -251,6 +243,16 @@ class RentalItemController extends Controller
                 'is_active_rental_item' => $request->is_active_rental_item,
                 'id_branch_rental_item' => $request->id_branch_rental_item,
             ]);
+
+            if ($request->is_active_rental_item === 'inactive') {
+                $rentalItem->delete();
+
+                Log::info('Rental item berhasil dinonaktifkan', ['id_rental_item' => $id, 'name' => $rentalItem->name_rental_item]);
+            } elseif ($request->is_active_rental_item === 'active') {
+                $rentalItem->restore();
+
+                Log::info('Rental item berhasil diaktifkan', ['id_rental_item' => $id, 'name' => $rentalItem->name_rental_item]);
+            }
 
             // Logging sukses
             Log::info('Rental item dengan id_rental_item ' . $id . ' berhasil diperbarui.');
@@ -286,7 +288,7 @@ class RentalItemController extends Controller
     {
         try {
             // Cari Client berdasarkan ID
-            $rental_item = Rental_Item::withTrashed()->find($id);
+            $rental_item = Rental_Item::find($id);
 
             // Jika Client tidak ditemukan
             if (!$rental_item) {

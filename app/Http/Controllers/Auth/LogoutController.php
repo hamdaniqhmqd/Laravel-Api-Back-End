@@ -33,6 +33,9 @@ class LogoutController extends Controller
                 );
             }
 
+            // Hapus token
+            $token->delete();
+
             Log::info('Logout berhasil : dengan id_user ' . $user->id_user);
 
             return new ResponseApiResource(true, 'Logout berhasil', $user, null, 200);

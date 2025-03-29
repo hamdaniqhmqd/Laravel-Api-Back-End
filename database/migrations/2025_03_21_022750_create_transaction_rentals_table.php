@@ -19,12 +19,11 @@ return new class extends Migration
             $table->text('recipient_name_transaction_rental');
             $table->enum('status_transaction_rental', ['waiting for approval', 'approved', 'out', 'in', 'cancelled'])->default('waiting for approval');
             $table->double('total_weight_transaction_rental', 8, 2);
-            $table->bigInteger('total_pcs_transaction_rental');
-            $table->bigInteger('promo_transaction_rental')->default(0);
-            $table->bigInteger('additional_cost_transaction_rental')->default(0);
-            $table->bigInteger('total_price_transaction_rental');
+            $table->integer('total_pcs_transaction_rental');
+            $table->double('promo_transaction_rental', 10, 2)->default(0);
+            $table->double('additional_cost_transaction_rental', 10, 2)->default(0);
+            $table->double('total_price_transaction_rental', 10, 2);
             $table->text('notes_transaction_laundry')->nullable();
-            // $table->time('time_transaction_rental');
             $table->enum('is_active_transaction_rental', ['active', 'inactive'])->default('active');
             $table->date('first_date_transaction_rental');
             $table->date('last_date_transaction_rental');

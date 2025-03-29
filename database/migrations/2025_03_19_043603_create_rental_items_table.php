@@ -16,7 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('id_branch_rental_item'); // Foreign key ke branch
             $table->string('number_rental_item')->unique();
             $table->string('name_rental_item');
-            $table->bigInteger('price_rental_item');
+            $table->integer('price_rental_item');
             $table->enum('status_rental_item', ['available', 'rented', 'maintenance'])->default('available');
             $table->enum('condition_rental_item', ['clean', 'dirty', 'damaged'])->default('clean');
             $table->text('description_rental_item')->nullable();

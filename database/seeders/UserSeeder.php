@@ -19,7 +19,7 @@ class UserSeeder extends Seeder
         try {
             User::insert([
                 [
-                    'id_branch_user' => 1,
+                    'id_branch_user' => null,
                     'username' => 'admin_jakarta',
                     'password' => Hash::make('password123'),
                     'fullname_user' => 'Budi Santoso',
@@ -47,7 +47,7 @@ class UserSeeder extends Seeder
                     'updated_at' => Carbon::now(),
                 ],
                 [
-                    'id_branch_user' => 3,
+                    'id_branch_user' => null,
                     'username' => 'admin_bandung',
                     'password' => Hash::make('password123'),
                     'fullname_user' => 'Siti Nurhaliza',
@@ -103,7 +103,7 @@ class UserSeeder extends Seeder
                     'updated_at' => Carbon::now(),
                 ],
                 [
-                    'id_branch_user' => 5,
+                    'id_branch_user' => null,
                     'username' => 'admin_semarang',
                     'password' => Hash::make('password123'),
                     'fullname_user' => 'Rahmad Hidayat',
@@ -131,7 +131,7 @@ class UserSeeder extends Seeder
                     'updated_at' => Carbon::now(),
                 ],
                 [
-                    'id_branch_user' => 3,
+                    'id_branch_user' => null,
                     'username' => 'admin_bandung2',
                     'password' => Hash::make('password123'),
                     'fullname_user' => 'Andi Saputra',

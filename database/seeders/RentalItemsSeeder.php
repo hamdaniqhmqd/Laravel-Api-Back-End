@@ -22,8 +22,7 @@ class RentalItemsSeeder extends Seeder
                     'number_rental_item' => 'RTL-001',
                     'name_rental_item' => 'Handuk Kecil',
                     'price_rental_item' => 5000,
-                    'status_rental_item' =>
-                    'available',
+                    'status_rental_item' => 'available',
                     'condition_rental_item' => 'clean',
                     'description_rental_item' => 'Handuk kecil nyaman dipakai',
                     'is_active_rental_item' => 'active',
@@ -36,8 +35,7 @@ class RentalItemsSeeder extends Seeder
                     'number_rental_item' => 'RTL-002',
                     'name_rental_item' => 'Handuk Besar',
                     'price_rental_item' => 8000,
-                    'status_rental_item' =>
-                    'rented',
+                    'status_rental_item' => 'rented',
                     'condition_rental_item' => 'clean',
                     'description_rental_item' => 'Handuk besar tebal',
                     'is_active_rental_item' => 'active',
@@ -50,8 +48,7 @@ class RentalItemsSeeder extends Seeder
                     'number_rental_item' => 'RTL-003',
                     'name_rental_item' => 'Handuk Kecil',
                     'price_rental_item' => 6000,
-                    'status_rental_item' =>
-                    'available',
+                    'status_rental_item' => 'available',
                     'condition_rental_item' => 'clean',
                     'description_rental_item' => 'Handuk kecil cabang 2',
                     'is_active_rental_item' => 'active',
@@ -64,8 +61,7 @@ class RentalItemsSeeder extends Seeder
                     'number_rental_item' => 'RTL-004',
                     'name_rental_item' => 'Handuk Besar',
                     'price_rental_item' => 9000,
-                    'status_rental_item' =>
-                    'maintenance',
+                    'status_rental_item' => 'maintenance',
                     'condition_rental_item' => 'dirty',
                     'description_rental_item' => 'Handuk besar cabang 2 perlu dicuci',
                     'is_active_rental_item' => 'active',
@@ -78,8 +74,7 @@ class RentalItemsSeeder extends Seeder
                     'number_rental_item' => 'RTL-005',
                     'name_rental_item' => 'Handuk Kecil',
                     'price_rental_item' => 5500,
-                    'status_rental_item' =>
-                    'available',
+                    'status_rental_item' => 'available',
                     'condition_rental_item' => 'clean',
                     'description_rental_item' => 'Handuk kecil lembut',
                     'is_active_rental_item' => 'active',
@@ -92,8 +87,7 @@ class RentalItemsSeeder extends Seeder
                     'number_rental_item' => 'RTL-006',
                     'name_rental_item' => 'Handuk Besar',
                     'price_rental_item' => 8500,
-                    'status_rental_item' =>
-                    'rented',
+                    'status_rental_item' => 'rented',
                     'condition_rental_item' => 'clean',
                     'description_rental_item' => 'Handuk besar cabang 3',
                     'is_active_rental_item' => 'active',
@@ -106,8 +100,7 @@ class RentalItemsSeeder extends Seeder
                     'number_rental_item' => 'RTL-007',
                     'name_rental_item' => 'Handuk Kecil',
                     'price_rental_item' => 5200,
-                    'status_rental_item' =>
-                    'available',
+                    'status_rental_item' => 'available',
                     'condition_rental_item' => 'clean',
                     'description_rental_item' => 'Handuk kecil harga murah',
                     'is_active_rental_item' => 'active',
@@ -120,8 +113,7 @@ class RentalItemsSeeder extends Seeder
                     'number_rental_item' => 'RTL-008',
                     'name_rental_item' => 'Handuk Besar',
                     'price_rental_item' => 7800,
-                    'status_rental_item' =>
-                    'maintenance',
+                    'status_rental_item' => 'maintenance',
                     'condition_rental_item' => 'damaged',
                     'description_rental_item' => 'Handuk besar rusak perlu diganti',
                     'is_active_rental_item' => 'inactive',
@@ -134,8 +126,7 @@ class RentalItemsSeeder extends Seeder
                     'number_rental_item' => 'RTL-009',
                     'name_rental_item' => 'Handuk Kecil',
                     'price_rental_item' => 5700,
-                    'status_rental_item' =>
-                    'available',
+                    'status_rental_item' => 'available',
                     'condition_rental_item' => 'clean',
                     'description_rental_item' => 'Handuk kecil ekstra lembut',
                     'is_active_rental_item' => 'active',
@@ -148,8 +139,7 @@ class RentalItemsSeeder extends Seeder
                     'number_rental_item' => 'RTL-010',
                     'name_rental_item' => 'Handuk Besar',
                     'price_rental_item' => 8700,
-                    'status_rental_item' =>
-                    'rented',
+                    'status_rental_item' => 'rented',
                     'condition_rental_item' => 'clean',
                     'description_rental_item' => 'Handuk besar cabang 5',
                     'is_active_rental_item' => 'active',

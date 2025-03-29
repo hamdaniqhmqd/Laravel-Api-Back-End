@@ -27,7 +27,7 @@ class List_Transaction_Rental extends Model
     ];
 
     protected $casts = [
-        'price_list_transaction_rental' => 'integer',
+        'price_list_transaction_rental' => 'float',
         'weight_list_transaction_rental' => 'float',
     ];
 
