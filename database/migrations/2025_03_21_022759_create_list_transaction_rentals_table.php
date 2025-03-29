@@ -18,7 +18,7 @@ return new class extends Migration
             $table->enum('status_list_transaction_rental', ['rented', 'returned', 'cancelled'])->default('rented');
             $table->enum('condition_list_transaction_rental', ['clean', 'dirty', 'damaged'])->default('clean');
             $table->text('note_list_transaction_rental')->nullable();
-            $table->bigInteger('price_list_transaction_rental');
+            $table->double('price_list_transaction_rental', 10, 2);
             $table->double('weight_list_transaction_rental', 8, 2);
             $table->enum('is_active_list_transaction_rental', ['active', 'inactive'])->default('active');
             $table->softDeletes();

@@ -21,7 +21,12 @@ return new class extends Migration
             $table->text('notes_transaction_laundry')->nullable();
             $table->double('total_weight_transaction_laundry', 8, 2);
             $table->double('total_price_transaction_laundry', 10, 2);
+            $table->integer('total_laundry_transaction_laundry');
+            $table->double('promo_transaction_laundry', 10, 2)->default(0);
+            $table->double('additional_cost_transaction_laundry', 10, 2)->default(0);
+            $table->double('total_transaction_laundry', 10, 2);
             $table->double('cash_transaction_laundry', 10, 2);
+            $table->double('change_money_transaction_laundry', 10, 2);
             $table->enum('is_active_transaction_laundry', ['active', 'inactive'])->default('active');
             $table->timestamp('first_date_transaction_laundry')->nullable();
             $table->timestamp('last_date_transaction_laundry')->nullable();
