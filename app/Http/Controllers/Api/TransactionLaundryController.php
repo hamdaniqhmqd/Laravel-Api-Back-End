@@ -4,12 +4,14 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ResponseApiResource;
+use App\Models\List_Transaction_Laundry;
 use App\Models\Logging;
 use App\Models\Transaction_Laundry;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
@@ -112,12 +114,14 @@ class TransactionLaundryController extends Controller
             $validator = Validator::make($request->all(), [
                 'id_user_transaction_laundry' => 'required|exists:users,id_user',
                 'id_branch_transaction_laundry' => 'required|exists:branches,id_branch',
-                // 'time_transaction_laundry' => 'required|date_format:H:i:s',
                 'name_client_transaction_laundry' => 'required|string|max:255',
                 'status_transaction_laundry' => 'required|in:pending,in_progress,completed,cancelled',
                 'notes_transaction_laundry' => 'nullable|string',
                 'total_weight_transaction_laundry' => 'required|numeric|min:0',
                 'total_price_transaction_laundry' => 'required|numeric|min:0',
+                'total_laundry_transaction_laundry' => 'required|integer|min:1',
+                'promo_transaction_laundry' => 'nullable|numeric|min:0',
+                'additional_cost_transaction_laundry' => 'nullable|numeric|min:0',
                 'cash_transaction_laundry' => 'required|numeric|min:0',
                 'is_active_transaction_laundry' => 'required|in:active,inactive',
                 // 'first_date_transaction_laundry' => 'required|date',
@@ -130,17 +134,34 @@ class TransactionLaundryController extends Controller
                 return new ResponseApiResource(false, 'Validasi gagal', $request->all(), $validator->errors());
             }
 
+            // Hitung total transaksi setelah promo dan biaya tambahan
+            $totalTransaction = ($request->total_price_transaction_laundry - ($request->promo_transaction_laundry ?? 0)) + ($request->additional_cost_transaction_laundry ?? 0);
+
+            // Hitung kembalian
+            $changeMoney = $request->cash_transaction_laundry - $totalTransaction;
+
+            // Pastikan cash cukup untuk membayar transaksi
+            if ($changeMoney < 0) {
+                Log::warning('Uang pembayaran kurang!');
+
+                return new ResponseApiResource(false, 'Uang pembayaran kurang!', null, ['cash_transaction_laundry' => 'Uang tidak mencukupi untuk membayar total transaksi'], 400);
+            }
+
             // Membuat transaksi laundry baru
             $transaction_laundry = Transaction_Laundry::create([
                 'id_user_transaction_laundry' => $request->id_user_transaction_laundry,
                 'id_branch_transaction_laundry' => $request->id_branch_transaction_laundry,
-                // 'time_transaction_laundry' => $request->time_transaction_laundry,
                 'name_client_transaction_laundry' => $request->name_client_transaction_laundry,
                 'status_transaction_laundry' => $request->status_transaction_laundry,
                 'notes_transaction_laundry' => $request->notes_transaction_laundry,
                 'total_weight_transaction_laundry' => $request->total_weight_transaction_laundry,
                 'total_price_transaction_laundry' => $request->total_price_transaction_laundry,
+                'total_laundry_transaction_laundry' => $request->total_laundry_transaction_laundry,
+                'promo_transaction_laundry' => $request->promo_transaction_laundry ?? 0,
+                'additional_cost_transaction_laundry' => $request->additional_cost_transaction_laundry ?? 0,
+                'total_transaction_laundry' => $totalTransaction,
                 'cash_transaction_laundry' => $request->cash_transaction_laundry,
+                'change_money_transaction_laundry' => $changeMoney,
                 'is_active_transaction_laundry' => $request->is_active_transaction_laundry,
                 'first_date_transaction_laundry' => Carbon::now(),
                 'last_date_transaction_laundry' => null,
@@ -163,6 +184,97 @@ class TransactionLaundryController extends Controller
         }
     }
 
+    public function storeListTransaction(Request $request)
+    {
+        DB::beginTransaction();
+        try {
+            // Validasi input transaksi utama
+            $validator = Validator::make($request->all(), [
+                'id_user_transaction_laundry' => 'required|exists:users,id_user',
+                'id_branch_transaction_laundry' => 'required|exists:branches,id_branch',
+                'name_client_transaction_laundry' => 'required|string|max:255',
+                'status_transaction_laundry' => 'required|in:pending,in_progress,completed,cancelled',
+                'notes_transaction_laundry' => 'nullable|string',
+                'total_weight_transaction_laundry' => 'required|numeric|min:0',
+                'total_price_transaction_laundry' => 'required|numeric|min:0',
+                'total_laundry_transaction_laundry' => 'required|integer|min:1',
+                'promo_transaction_laundry' => 'nullable|numeric|min:0',
+                'additional_cost_transaction_laundry' => 'nullable|numeric|min:0',
+                'cash_transaction_laundry' => 'required|numeric|min:0',
+                'is_active_transaction_laundry' => 'required|in:active,inactive',
+                'list_transaction_laundry' => 'required|array|min:1',
+                'list_transaction_laundry.*.id_item_laundry' => 'required|exists:laundry_items,id_laundry_item',
+                'list_transaction_laundry.*.price_list_transaction_laundry' => 'required|numeric|min:0',
+                'list_transaction_laundry.*.weight_list_transaction_laundry' => 'required|numeric|min:0',
+                'list_transaction_laundry.*.pcs_list_transaction_laundry' => 'required|integer|min:1',
+                'list_transaction_laundry.*.status_list_transaction_laundry' => 'required|in:pending,completed,cancelled',
+                'list_transaction_laundry.*.note_list_transaction_laundry' => 'nullable|string',
+                'list_transaction_laundry.*.is_active_list_transaction_laundry' => 'required|in:active,inactive',
+            ]);
+
+            if ($validator->fails()) {
+                DB::rollBack();
+                return new ResponseApiResource(false, 'Validasi gagal', $request->all(), $validator->errors());
+            }
+
+            $totalTransaction = ($request->total_price_transaction_laundry - ($request->promo_transaction_laundry ?? 0)) + ($request->additional_cost_transaction_laundry ?? 0);
+            $changeMoney = $request->cash_transaction_laundry - $totalTransaction;
+
+            if ($changeMoney < 0) {
+                DB::rollBack();
+                return new ResponseApiResource(false, 'Uang pembayaran kurang!', null, ['cash_transaction_laundry' => 'Uang tidak mencukupi untuk membayar total transaksi'], 400);
+            }
+
+            // Buat transaksi utama
+            $transaction_laundry = Transaction_Laundry::create([
+                'id_user_transaction_laundry' => $request->id_user_transaction_laundry,
+                'id_branch_transaction_laundry' => $request->id_branch_transaction_laundry,
+                'name_client_transaction_laundry' => $request->name_client_transaction_laundry,
+                'status_transaction_laundry' => $request->status_transaction_laundry,
+                'notes_transaction_laundry' => $request->notes_transaction_laundry,
+                'total_weight_transaction_laundry' => $request->total_weight_transaction_laundry,
+                'total_price_transaction_laundry' => $request->total_price_transaction_laundry,
+                'total_laundry_transaction_laundry' => $request->total_laundry_transaction_laundry,
+                'promo_transaction_laundry' => $request->promo_transaction_laundry ?? 0,
+                'additional_cost_transaction_laundry' => $request->additional_cost_transaction_laundry ?? 0,
+                'total_transaction_laundry' => $totalTransaction,
+                'cash_transaction_laundry' => $request->cash_transaction_laundry,
+                'change_money_transaction_laundry' => $changeMoney,
+                'is_active_transaction_laundry' => $request->is_active_transaction_laundry,
+                'first_date_transaction_laundry' => Carbon::now(),
+                'last_date_transaction_laundry' => null,
+            ]);
+
+            // Buat daftar transaksi
+            $list_transactions = [];
+            foreach ($request->list_transaction_laundry as $list) {
+                $list_transactions[] = List_Transaction_Laundry::create([
+                    'id_transaction_laundry' => $transaction_laundry->id_transaction_laundry,
+                    'id_item_laundry' => $list['id_item_laundry'],
+                    'price_list_transaction_laundry' => $list['price_list_transaction_laundry'],
+                    'weight_list_transaction_laundry' => $list['weight_list_transaction_laundry'],
+                    'pcs_list_transaction_laundry' => $list['pcs_list_transaction_laundry'],
+                    'status_list_transaction_laundry' => $list['status_list_transaction_laundry'],
+                    'note_list_transaction_laundry' => $list['note_list_transaction_laundry'] ?? null,
+                    'is_active_list_transaction_laundry' => $list['is_active_list_transaction_laundry'],
+                ]);
+            }
+
+            // Commit transaksi jika semua berhasil
+            DB::commit();
+
+            return new ResponseApiResource(true, 'Transaksi laundry berhasil ditambahkan!', [
+                'transaction' => $transaction_laundry,
+                'list_transactions' => $list_transactions,
+            ], null, 201);
+        } catch (ValidationException $error) {
+            DB::rollBack();
+            return new ResponseApiResource(false, 'Terjadi kesalahan validasi.', $request->all(), $error->getMessage(), 422);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return new ResponseApiResource(false, 'Terjadi kesalahan saat menambahkan transaksi laundry.', $request->all(), $e->getMessage(), 500);
+        }
+    }
 
     /**
      * show
@@ -187,7 +299,7 @@ class TransactionLaundryController extends Controller
             Log::info('Detail Transaksi laundry ditemukan', ['id' => $transaction_laundry->id_transaction_laundry, 'name_client_transaction_laundry' => $transaction_laundry->name_client_transaction_laundry]);
 
             // Return data Transaksi laundry sebagai resource
-            return new ResponseApiResource(true, 'Detail Data Transaksi laundry : ', $transaction_laundry, null, 200);
+            return new ResponseApiResource(true, 'Detail Data Transaksi laundry', $transaction_laundry, null, 200);
         } catch (Exception $e) {
             // Log error jika terjadi masalah
             Log::error('Gagal mengambil data Transaksi laundry', [
@@ -198,6 +310,39 @@ class TransactionLaundryController extends Controller
             return new ResponseApiResource(false, 'Terjadi kesalahan pada server', $id, $e->getMessage(), 500);
         }
     }
+
+    public function getListWithTransactionLaundry($id)
+    {
+        try {
+            // Cari data transaksi laundry berdasarkan ID, termasuk yang sudah dihapus (soft deleted)
+            $transaction_laundry = Transaction_Laundry::withTrashed()->with('listTransactionLaundry')->find($id);
+
+            // Periksa apakah transaksi laundry ditemukan
+            if (!$transaction_laundry) {
+                Log::info('Transaksi laundry dengan ID ' . $id . ' tidak ditemukan.');
+
+                return new ResponseApiResource(false, 'Transaksi laundry tidak ditemukan.', null, 404);
+            }
+
+            // Log informasi jika transaksi laundry ditemukan
+            Log::info('Detail transaksi laundry ditemukan.', [
+                'id' => $transaction_laundry->id_transaction_laundry,
+                'nama_client' => $transaction_laundry->name_client_transaction_laundry
+            ]);
+
+            // Kembalikan data transaksi laundry sebagai response
+            return new ResponseApiResource(true, 'Detail transaksi laundry berhasil ditemukan.', $transaction_laundry, null, 200);
+        } catch (Exception $e) {
+            // Log error jika terjadi masalah
+            Log::error('Gagal mengambil data transaksi laundry.', [
+                'id' => $id,
+                'error' => $e->getMessage()
+            ]);
+
+            return new ResponseApiResource(false, 'Terjadi kesalahan pada server.', null, 500);
+        }
+    }
+
 
     /**
      * update
@@ -237,15 +382,6 @@ class TransactionLaundryController extends Controller
                 return new ResponseApiResource(false, 'Validasi gagal', $request->all(), $validator->errors());
             }
 
-            // Periksa apakah transaksi laundry ingin dinonaktifkan
-            if ($request->is_active_transaction_laundry === 'inactive') {
-                $transaction_laundry->delete();
-
-                Log::info('Transaksi Laundry berhasil dinonaktifkan', ['id_transaction_laundry' => $id, 'name_client_transaction_laundry' => $transaction_laundry->name_client_transaction_laundry]);
-
-                return new ResponseApiResource(true, 'Transaksi Laundry berhasil dinonaktifkan!', $transaction_laundry, null, 200);
-            }
-
             $data = [
                 'id_user_transaction_laundry' => $request->id_user_transaction_laundry,
                 'id_branch_transaction_laundry' => $request->id_branch_transaction_laundry,
@@ -264,33 +400,30 @@ class TransactionLaundryController extends Controller
                 // Update last_date_transaction_laundry
                 $data['last_date_transaction_laundry'] = Carbon::now();
 
-                // Update data transaksi laundry
-                $transaction_laundry->update($data);
-
                 // Logging berhasil
-                Log::info('Transaksi laundry dengan id ' . $id . ' berhasil diperbarui.');
-
-                // Kembalikan response sukses
-                return new ResponseApiResource(true, 'Transaksi laundry berhasil diperbarui!', $transaction_laundry, null, 200);
+                Log::info('Transaksi laundry dengan id ' . $id . ' berhasil diselesaikan.');
             } elseif ($request->status_transaction_laundry === "cancelled") { // Jika ada input status_transaction_laundry = "cancelled", update last_date_transaction_laundry dan non-aktifkan transaksi laundry
                 // Non-aktifkan transaksi laundry & update last_date_transaction_laundry
                 $data['is_active_transaction_laundry'] = "inactive";
                 $data['last_date_transaction_laundry'] = Carbon::now();
 
-                // Update data transaksi laundry
-                $transaction_laundry->update($data);
-
-                // Hapus transaksi laundry
-                $transaction_laundry->delete();
-
                 // Logging berhasil
                 Log::info('Transaksi laundry dengan id ' . $id . ' berhasil dibatalkan.');
-
-                return new ResponseApiResource(true, 'Transaksi laundry berhasil dibatalkan!', $transaction_laundry, null, 200);
             }
 
             // Update data transaksi laundry
             $transaction_laundry->update($data);
+
+            // Periksa apakah transaksi laundry ingin dinonaktifkan
+            if ($transaction_laundry->is_active_transaction_laundry === 'inactive') {
+                $transaction_laundry->delete();
+
+                Log::info('Transaksi Laundry berhasil dinonaktifkan', ['id_transaction_laundry' => $id, 'name_client_transaction_laundry' => $transaction_laundry->name_client_transaction_laundry]);
+            } elseif ($transaction_laundry->is_active_transaction_laundry === 'active') {
+                $transaction_laundry->restore();
+
+                Log::info('Transaksi Laundry berhasil diaktifkan', ['id_transaction_laundry' => $id, 'name_client_transaction_laundry' => $transaction_laundry->name_client_transaction_laundry]);
+            }
 
             // Logging berhasil
             Log::info('Transaksi laundry dengan id ' . $id . ' berhasil diperbarui.');
@@ -320,13 +453,13 @@ class TransactionLaundryController extends Controller
     {
         try {
             // Cari cabang berdasarkan ID
-            $transaction_laundry = Transaction_Laundry::withTrashed()->find($id);
+            $transaction_laundry = Transaction_Laundry::find($id);
 
             // Jika cabang tidak ditemukan
             if (!$transaction_laundry) {
                 Log::info('Cabang tidak ditemukan saat mencoba menghapus', ['id_transaction_laundry' => $id]);
 
-                return new ResponseApiResource(false, 'Cabang tidak ditemukan!', $id,  $transaction_laundry, 404);
+                return new ResponseApiResource(false, 'Cabang tidak ditemukan!', [],  $transaction_laundry, 404);
             }
 
             // Ubah status is_active_transaction_laundry menjadi 'inactive'
@@ -347,7 +480,7 @@ class TransactionLaundryController extends Controller
                 'error'   => $e->getMessage()
             ]);
 
-            return new ResponseApiResource(false, 'Terjadi kesalahan pada server', $id, $e->getMessage(), 500);
+            return new ResponseApiResource(false, 'Terjadi kesalahan pada server', [], $e->getMessage(), 500);
         }
     }
 
@@ -361,7 +494,7 @@ class TransactionLaundryController extends Controller
             if (!$transaction_laundry) {
                 Log::info('Transaksi Laundry tidak ditemukan saat mencoba dipulihkan', ['id_transaction_laundry' => $id]);
 
-                return new ResponseApiResource(false, 'Transaksi Laundry tidak ditemukan!', $id,  $transaction_laundry, 404);
+                return new ResponseApiResource(false, 'Transaksi Laundry tidak ditemukan!', [],  $transaction_laundry, 404);
             }
 
             // Ubah status is_active_transaction_laundry menjadi 'active'
@@ -382,7 +515,7 @@ class TransactionLaundryController extends Controller
                 'error'   => $e->getMessage()
             ]);
 
-            return new ResponseApiResource(false, 'Terjadi kesalahan pada server', $id, $e->getMessage(), 500);
+            return new ResponseApiResource(false, 'Terjadi kesalahan pada server', [], $e->getMessage(), 500);
         }
     }
 
@@ -396,7 +529,7 @@ class TransactionLaundryController extends Controller
             if (!$transaction_laundry) {
                 Log::info('Transaksi Laundry tidak ditemukan saat mencoba hapus permanent', ['id_transaction_laundry' => $id]);
 
-                return new ResponseApiResource(false, 'Transaksi Laundry tidak ditemukan!', $id,  $transaction_laundry, 404);
+                return new ResponseApiResource(false, 'Transaksi Laundry tidak ditemukan!', $transaction_laundry,  $transaction_laundry, 404);
             }
 
             // Ubah status is_active_transaction_laundry menjadi 'inactive'
@@ -417,7 +550,7 @@ class TransactionLaundryController extends Controller
                 'error'   => $e->getMessage()
             ]);
 
-            return new ResponseApiResource(false, 'Terjadi kesalahan pada server', $id, $e->getMessage(), 500);
+            return new ResponseApiResource(false, 'Terjadi kesalahan pada server', [], $e->getMessage(), 500);
         }
     }
 }
