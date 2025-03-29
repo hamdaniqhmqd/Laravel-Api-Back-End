@@ -17,15 +17,15 @@ class DatabaseSeeder extends Seeder
     {
         try {
             $this->call([
-                // BranchSeeder::class,
-                // UserSeeder::class,
-                // ClientSeeder::class,
-                // LaundryItemsSeeder::class,
-                // RentalItemsSeeder::class,
-                // TransactionsLaundrySeeder::class,
-                // ListTransactionsLaundrySeeder::class,
-                // TransactionsRentalSeeder::class,
-                // ListTransactionsRentalSeeder::class,
+                BranchSeeder::class,
+                UserSeeder::class,
+                ClientSeeder::class,
+                LaundryItemsSeeder::class,
+                RentalItemsSeeder::class,
+                TransactionsLaundrySeeder::class,
+                ListTransactionsLaundrySeeder::class,
+                TransactionsRentalSeeder::class,
+                ListTransactionsRentalSeeder::class,
             ]);
 
             Log::info('Database seeded successfully'); //code...

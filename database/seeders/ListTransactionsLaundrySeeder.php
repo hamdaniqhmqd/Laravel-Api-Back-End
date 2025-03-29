@@ -148,7 +148,7 @@ class ListTransactionsLaundrySeeder extends Seeder
                     'updated_at' => Carbon::now(),
                 ],
                 [
-                    'id_transaction_laundry' => 6,
+                    'id_transaction_laundry' => 1,
                     'id_item_laundry' => 1,
                     'price_list_transaction_laundry' => 14000,
                     'weight_list_transaction_laundry' => 2.6,
@@ -161,7 +161,7 @@ class ListTransactionsLaundrySeeder extends Seeder
                     'updated_at' => Carbon::now(),
                 ],
                 [
-                    'id_transaction_laundry' => 6,
+                    'id_transaction_laundry' => 1,
                     'id_item_laundry' => 2,
                     'price_list_transaction_laundry' => 12500,
                     'weight_list_transaction_laundry' => 2.1,
@@ -174,7 +174,7 @@ class ListTransactionsLaundrySeeder extends Seeder
                     'updated_at' => Carbon::now(),
                 ],
                 [
-                    'id_transaction_laundry' => 7,
+                    'id_transaction_laundry' => 2,
                     'id_item_laundry' => 3,
                     'price_list_transaction_laundry' => 17500,
                     'weight_list_transaction_laundry' => 3.8,
@@ -187,7 +187,7 @@ class ListTransactionsLaundrySeeder extends Seeder
                     'updated_at' => Carbon::now(),
                 ],
                 [
-                    'id_transaction_laundry' => 7,
+                    'id_transaction_laundry' => 2,
                     'id_item_laundry' => 4,
                     'price_list_transaction_laundry' => 10000,
                     'weight_list_transaction_laundry' => 1.7,
@@ -200,7 +200,7 @@ class ListTransactionsLaundrySeeder extends Seeder
                     'updated_at' => Carbon::now(),
                 ],
                 [
-                    'id_transaction_laundry' => 8,
+                    'id_transaction_laundry' => 3,
                     'id_item_laundry' => 5,
                     'price_list_transaction_laundry' => 23000,
                     'weight_list_transaction_laundry' => 4.8,
@@ -213,7 +213,7 @@ class ListTransactionsLaundrySeeder extends Seeder
                     'updated_at' => Carbon::now(),
                 ],
                 [
-                    'id_transaction_laundry' => 8,
+                    'id_transaction_laundry' => 3,
                     'id_item_laundry' => 6,
                     'price_list_transaction_laundry' => 15000,
                     'weight_list_transaction_laundry' => 3.2,
@@ -226,7 +226,7 @@ class ListTransactionsLaundrySeeder extends Seeder
                     'updated_at' => Carbon::now(),
                 ],
                 [
-                    'id_transaction_laundry' => 9,
+                    'id_transaction_laundry' => 4,
                     'id_item_laundry' => 7,
                     'price_list_transaction_laundry' => 14500,
                     'weight_list_transaction_laundry' => 2.4,
@@ -239,7 +239,7 @@ class ListTransactionsLaundrySeeder extends Seeder
                     'updated_at' => Carbon::now(),
                 ],
                 [
-                    'id_transaction_laundry' => 9,
+                    'id_transaction_laundry' => 4,
                     'id_item_laundry' => 8,
                     'price_list_transaction_laundry' => 15500,
                     'weight_list_transaction_laundry' => 3.3,
@@ -252,7 +252,7 @@ class ListTransactionsLaundrySeeder extends Seeder
                     'updated_at' => Carbon::now(),
                 ],
                 [
-                    'id_transaction_laundry' => 10,
+                    'id_transaction_laundry' => 5,
                     'id_item_laundry' => 9,
                     'price_list_transaction_laundry' => 21000,
                     'weight_list_transaction_laundry' => 4.5,

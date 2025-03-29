@@ -18,8 +18,8 @@ class TransactionsRentalSeeder extends Seeder
         try {
             Transaction_Rental::insert([
                 [
-                    'id_kurir_transaction_rental' => 1,
-                    'id_branch_transaction_rental' => 1,
+                    'id_kurir_transaction_rental' => 2,
+                    'id_branch_transaction_rental' => 2,
                     'id_client_transaction_rental' => 1,
                     'recipient_name_transaction_rental' => 'Ahmad Hamdani',
                     'status_transaction_rental' => 'waiting for approval',
@@ -56,8 +56,8 @@ class TransactionsRentalSeeder extends Seeder
                     'updated_at' => Carbon::now(),
                 ],
                 [
-                    'id_kurir_transaction_rental' => 3,
-                    'id_branch_transaction_rental' => 3,
+                    'id_kurir_transaction_rental' => 8,
+                    'id_branch_transaction_rental' => 2,
                     'id_client_transaction_rental' => 3,
                     'recipient_name_transaction_rental' => 'Siti Aisyah',
                     'status_transaction_rental' => 'out',
@@ -75,8 +75,8 @@ class TransactionsRentalSeeder extends Seeder
                     'updated_at' => Carbon::now(),
                 ],
                 [
-                    'id_kurir_transaction_rental' => 1,
-                    'id_branch_transaction_rental' => 1,
+                    'id_kurir_transaction_rental' => 5,
+                    'id_branch_transaction_rental' => 4,
                     'id_client_transaction_rental' => 1,
                     'recipient_name_transaction_rental' => 'Budi Santoso',
                     'status_transaction_rental' => 'approved',
@@ -94,8 +94,8 @@ class TransactionsRentalSeeder extends Seeder
                     'updated_at' => Carbon::now(),
                 ],
                 [
-                    'id_kurir_transaction_rental' => 2,
-                    'id_branch_transaction_rental' => 2,
+                    'id_kurir_transaction_rental' => 5,
+                    'id_branch_transaction_rental' => 4,
                     'id_client_transaction_rental' => 2,
                     'recipient_name_transaction_rental' => 'Siti Rahmawati',
                     'status_transaction_rental' => 'out',
