@@ -2,7 +2,9 @@
 
 use App\Http\Controllers\Api\BranchController;
 use App\Http\Controllers\Api\ClientController;
+use App\Http\Controllers\Api\InvoiceRentalController;
 use App\Http\Controllers\Api\LaundryItemController;
+use App\Http\Controllers\Api\ListInvoiceRentalController;
 use App\Http\Controllers\Api\ListTransactionLaundryController;
 use App\Http\Controllers\Api\ListTransactionRentalController;
 use App\Http\Controllers\Api\RentalItemController;
@@ -130,6 +132,29 @@ Route::middleware(['auth:sanctum', 'role:owner'])->group(function () {
     Route::delete('/delete_list_transaction_rentals/{id}', [ListTransactionRentalController::class, 'destroy']);
     Route::put('/restore_list_transaction_rentals/{id}', [ListTransactionRentalController::class, 'restore']);
     Route::delete('/force_destroy_list_transaction_rentals/{id}', [ListTransactionRentalController::class, 'forceDestroy']);
+
+    // Invoice Rental
+    Route::get('/invoice_rentals', [InvoiceRentalController::class, 'index']);
+    Route::get('/all_invoice_rentals', [InvoiceRentalController::class, 'getAll']);
+    Route::get('/all_invoice_rentals_trashed', [InvoiceRentalController::class, 'getAllTrashed']);
+    Route::post('/create_invoice_rentals', [InvoiceRentalController::class, 'store']);
+    Route::get('/invoice_rentals/{id}', [InvoiceRentalController::class, 'show']);
+    Route::get('/invoice_rentals/{id}/list', [InvoiceRentalController::class, 'getListWithInvoiceRental']);
+    Route::put('/edit_invoice_rentals/{id}', [InvoiceRentalController::class, 'update']);
+    Route::delete('/delete_invoice_rentals/{id}', [InvoiceRentalController::class, 'destroy']);
+    Route::put('/restore_invoice_rentals/{id}', [InvoiceRentalController::class, 'restore']);
+    Route::delete('/force_destroy_invoice_rentals/{id}', [InvoiceRentalController::class, 'forceDestroy']);
+
+    // List Invoice Rental
+    Route::get('/list_invoice_rentals', [ListInvoiceRentalController::class, 'index']);
+    Route::get('/all_list_invoice_rentals', [ListInvoiceRentalController::class, 'getAll']);
+    Route::get('/all_list_invoice_rentals_trashed', [ListInvoiceRentalController::class, 'getAllTrashed']);
+    Route::post('/create_list_invoice_rentals', [ListInvoiceRentalController::class, 'store']);
+    Route::get('/list_invoice_rentals/{id}', [ListInvoiceRentalController::class, 'show']);
+    Route::put('/edit_list_invoice_rentals/{id}', [ListInvoiceRentalController::class, 'update']);
+    Route::delete('/delete_list_invoice_rentals/{id}', [ListInvoiceRentalController::class, 'destroy']);
+    Route::put('/restore_list_invoice_rentals/{id}', [ListInvoiceRentalController::class, 'restore']);
+    Route::delete('/force_destroy_list_invoice_rentals/{id}', [ListInvoiceRentalController::class, 'forceDestroy']);
 });
 
 
