@@ -184,7 +184,7 @@ class TransactionLaundryController extends Controller
         }
     }
 
-    public function storeListTransaction(Request $request)
+    public function storeListTransactionLaundry(Request $request)
     {
         DB::beginTransaction();
         try {
@@ -214,7 +214,7 @@ class TransactionLaundryController extends Controller
 
             if ($validator->fails()) {
                 DB::rollBack();
-                return new ResponseApiResource(false, 'Validasi gagal', $request->all(), $validator->errors());
+                return new ResponseApiResource(false, 'Validasi transaksi laundry gagal', $request->all(), $validator->errors());
             }
 
             $totalTransaction = ($request->total_price_transaction_laundry - ($request->promo_transaction_laundry ?? 0)) + ($request->additional_cost_transaction_laundry ?? 0);
@@ -263,14 +263,18 @@ class TransactionLaundryController extends Controller
             // Commit transaksi jika semua berhasil
             DB::commit();
 
+            Log::info('Transaksi laundry berhasil ditambahkan dengan id ' . $transaction_laundry->id_transaction_laundry);
+
             return new ResponseApiResource(true, 'Transaksi laundry berhasil ditambahkan!', [
                 'transaction' => $transaction_laundry,
                 'list_transactions' => $list_transactions,
             ], null, 201);
         } catch (ValidationException $error) {
+            Log::error('Error validasi: ' . $error->getMessage());
             DB::rollBack();
             return new ResponseApiResource(false, 'Terjadi kesalahan validasi.', $request->all(), $error->getMessage(), 422);
         } catch (Exception $e) {
+            Log::error('Error saat menambahkan transaksi laundry: ' . $e->getMessage());
             DB::rollBack();
             return new ResponseApiResource(false, 'Terjadi kesalahan saat menambahkan transaksi laundry.', $request->all(), $e->getMessage(), 500);
         }
@@ -409,6 +413,12 @@ class TransactionLaundryController extends Controller
 
                 // Logging berhasil
                 Log::info('Transaksi laundry dengan id ' . $id . ' berhasil dibatalkan.');
+            } else {
+                // Logging berhasil
+                Log::info('Transaksi laundry dengan id ' . $id . ' berhasil diperbarui.');
+
+                $data['is_active_transaction_laundry'] = "active";
+                $data['last_date_transaction_laundry'] = null;
             }
 
             // Update data transaksi laundry
