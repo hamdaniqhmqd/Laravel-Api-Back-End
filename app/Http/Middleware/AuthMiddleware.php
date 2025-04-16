@@ -28,7 +28,13 @@ class AuthMiddleware
                     'ip' => $request->ip()
                 ]);
 
-                return response()->json(new ResponseApiResource(false, 'Unauthorized', $islogin, 401), 401);
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Unauthorized',
+                    'data' => [],
+                    'token' => null,
+                    'errors' => 401
+                ], 401);
             }
 
             $user = Auth::guard('sanctum')->user();
@@ -38,7 +44,13 @@ class AuthMiddleware
             if (!$user->role_user) {
                 Log::error('User has no assigned role', ['user_id' => $user->id_user]);
 
-                return response()->json(new ResponseApiResource(false, 'User not found', $user, 404), 404);
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Unauthorized',
+                    'data' => [],
+                    'token' => null,
+                    'errors' => 401
+                ], 401);
             }
 
             // Periksa apakah role sesuai

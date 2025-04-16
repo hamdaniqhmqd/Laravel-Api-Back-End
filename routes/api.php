@@ -26,6 +26,7 @@ Route::get('/user', function (Request $request) {
 // Route::post('/register', RegisterController::class); untuk test register saja, jika mau digunakan, jangan lupa atur controller nya
 Route::post('/login', LoginController::class)->name('login');
 Route::post('/logout', LogoutController::class)->middleware('auth:sanctum')->name('logout');
+// Route::post('/logout', LogoutController::class)->name('logout');
 
 Route::middleware(['auth:sanctum', 'role:owner'])->group(function () {
     // Users

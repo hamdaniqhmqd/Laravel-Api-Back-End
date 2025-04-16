@@ -22,6 +22,10 @@ class LoginController extends Controller
     public function __invoke(Request $request)
     {
         try {
+            // Tangkap IP dan User Agent
+            $ipAddress = $request->ip();
+            $device = $request->userAgent();
+
             // Validasi input
             $credentials = $request->validate([
                 'username' => 'required|string',
@@ -36,7 +40,8 @@ class LoginController extends Controller
                 Log::warning(
                     !$user || !Hash::check($credentials['password'], $user->password)
                         ? 'Data pengguna tidak valid : dengan id_user ' . ($user ? $user->id_user : 'unknown')
-                        : 'Akun tidak aktif : dengan id_user ' . $user->id_user
+                        : 'Akun tidak aktif : dengan id_user ' . $user->id_user .
+                        ' | IP: ' . $ipAddress . ' | Device: ' . $device
                 );
 
                 return new AuthApiResource(
@@ -50,28 +55,20 @@ class LoginController extends Controller
                 );
             }
 
-            // Periksa apakah user sudah memiliki token aktif
-            $existingToken = $user->tokens()->latest()->first();
-            if ($existingToken) {
-                Log::info('Pengguna sudah memiliki sesi aktif : dengan id_user ' . $user->id_user);
-                return new AuthApiResource(true, 'Pengguna sudah pernah melakukan login', $user, $existingToken->plainTextToken, null);
-            }
-
-            // Buat token baru jika tidak ada token aktif
-            $token = $user->createToken('apilaundry&rental' . $user->username, ['read', 'write']);
+            // Buat token baru
+            $token = $user->createToken($ipAddress . '_' . $user->username, ['read', 'write']);
             $plainTextToken = $token->plainTextToken;
 
-            Log::info('Login berhasil : dengan id_user ' . $user->id_user);
+            Log::info('Login berhasil : dengan id_user ' . $user->id_user .
+                ' | IP: ' . $ipAddress .
+                ' | Device: ' . $device);
 
-            // Response sukses dengan token baru
             return new AuthApiResource(true, 'Berhasil masuk', $user, $plainTextToken, null);
         } catch (ValidationException $error) {
-            // Jika validasi gagal
             Log::error('Kesalahan validasi : ' . $error->getMessage());
 
             return new AuthApiResource(false, 'Kesalahan validasi', null, null, $error->errors(), 422);
         } catch (Exception $error) {
-            // Tangani error umum
             Log::error('Ada yang tidak beres : ' . $error->getMessage());
 
             return new AuthApiResource(false, 'Ada yang tidak beres', null, null, $error->getMessage(), 500);
