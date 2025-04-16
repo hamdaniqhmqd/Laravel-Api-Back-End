@@ -4,8 +4,10 @@ use App\Http\Controllers\Api\BranchController;
 use App\Http\Controllers\Api\ClientController;
 use App\Http\Controllers\Api\LaundryItemController;
 use App\Http\Controllers\Api\ListTransactionLaundryController;
+use App\Http\Controllers\Api\ListTransactionRentalController;
 use App\Http\Controllers\Api\RentalItemController;
 use App\Http\Controllers\Api\TransactionLaundryController;
+use App\Http\Controllers\Api\TransactionRentalController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\LogoutController;
@@ -92,7 +94,7 @@ Route::middleware(['auth:sanctum', 'role:owner'])->group(function () {
     Route::put('/restore_transaction_laundries/{id}', [TransactionLaundryController::class, 'restore']);
     Route::delete('/force_destroy_transaction_laundries/{id}', [TransactionLaundryController::class, 'forceDestroy']);
     Route::get('/transaction_laundries/{id}/list', [TransactionLaundryController::class, 'getListWithTransactionLaundry']);
-    Route::post('/create_transaction_list_laundries', [TransactionLaundryController::class, 'storeListTransaction']);
+    Route::post('/create_transaction_list_laundries', [TransactionLaundryController::class, 'storeListTransactionLaundry']);
 
     // List Transaction Laundry
     Route::get('/list_transaction_laundries', [ListTransactionLaundryController::class, 'index']);
@@ -104,6 +106,30 @@ Route::middleware(['auth:sanctum', 'role:owner'])->group(function () {
     Route::delete('/delete_list_transaction_laundries/{id}', [ListTransactionLaundryController::class, 'destroy']);
     Route::put('/restore_list_transaction_laundries/{id}', [ListTransactionLaundryController::class, 'restore']);
     Route::delete('/force_destroy_list_transaction_laundries/{id}', [ListTransactionLaundryController::class, 'forceDestroy']);
+
+    // Transaction Rental
+    Route::get('/transaction_rentals', [TransactionRentalController::class, 'index']);
+    Route::get('/all_transaction_rentals', [TransactionRentalController::class, 'getAll']);
+    Route::get('/all_transaction_rentals_trashed', [TransactionRentalController::class, 'getAllTrashed']);
+    Route::post('/create_transaction_rentals', [TransactionRentalController::class, 'store']);
+    Route::get('/transaction_rentals/{id}', [TransactionRentalController::class, 'show']);
+    Route::put('/edit_transaction_rentals/{id}', [TransactionRentalController::class, 'update']);
+    Route::delete('/delete_transaction_rentals/{id}', [TransactionRentalController::class, 'destroy']);
+    Route::put('/restore_transaction_rentals/{id}', [TransactionRentalController::class, 'restore']);
+    Route::delete('/force_destroy_transaction_rentals/{id}', [TransactionRentalController::class, 'forceDestroy']);
+    Route::get('/transaction_rentals/{id}/list', [TransactionRentalController::class, 'getListWithTransactionRental']);
+    Route::post('/create_transaction_list_rentals', [TransactionRentalController::class, 'storeListTransactionRental']);
+
+    // List Transaction Rental
+    Route::get('/list_transaction_rentals', [ListTransactionRentalController::class, 'index']);
+    Route::get('/all_list_transaction_rentals', [ListTransactionRentalController::class, 'getAll']);
+    Route::get('/all_list_transaction_rentals_trashed', [ListTransactionRentalController::class, 'getAllTrashed']);
+    Route::post('/create_list_transaction_rentals', [ListTransactionRentalController::class, 'store']);
+    Route::get('/list_transaction_rentals/{id}', [ListTransactionRentalController::class, 'show']);
+    Route::put('/edit_list_transaction_rentals/{id}', [ListTransactionRentalController::class, 'update']);
+    Route::delete('/delete_list_transaction_rentals/{id}', [ListTransactionRentalController::class, 'destroy']);
+    Route::put('/restore_list_transaction_rentals/{id}', [ListTransactionRentalController::class, 'restore']);
+    Route::delete('/force_destroy_list_transaction_rentals/{id}', [ListTransactionRentalController::class, 'forceDestroy']);
 });
 
 
