@@ -25,7 +25,7 @@ class Transaction_Rental extends Model
         'promo_transaction_rental',
         'additional_cost_transaction_rental',
         'total_price_transaction_rental',
-        'notes_transaction_laundry',
+        'notes_transaction_rental',
         'is_active_transaction_rental',
         'first_date_transaction_rental',
         'last_date_transaction_rental',
@@ -37,8 +37,6 @@ class Transaction_Rental extends Model
         'promo_transaction_rental' => 'float',
         'additional_cost_transaction_rental' => 'float',
         'total_price_transaction_rental' => 'float',
-        'first_date_transaction_rental' => 'date',
-        'last_date_transaction_rental' => 'date',
     ];
 
     /**
@@ -47,6 +45,8 @@ class Transaction_Rental extends Model
      * @var list<string, string>
      */
     protected $dates = [
+        'first_date_transaction_rental',
+        'last_date_transaction_rental',
         'deleted_at',
         'created_at',
         'updated_at'
@@ -67,7 +67,7 @@ class Transaction_Rental extends Model
         return $this->belongsTo(Client::class, 'id_client_transaction_rental', 'id_client');
     }
 
-    public function listTransactions()
+    public function listTransactionRentals()
     {
         return $this->hasMany(List_Transaction_Rental::class, 'id_rental_transaction', 'id_transaction_rental');
     }
