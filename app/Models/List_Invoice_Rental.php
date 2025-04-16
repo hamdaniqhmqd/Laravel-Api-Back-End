@@ -10,7 +10,7 @@ class List_Invoice_Rental extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $table = 'list__invoice__rentals';
+    protected $table = 'list_invoice_rentals';
     protected $primaryKey = 'id_list_invoice_rental';
     public $timestamps = true;
 
