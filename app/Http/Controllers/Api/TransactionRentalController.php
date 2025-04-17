@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\ResponseApiResource;
 use App\Models\List_Transaction_Rental;
 use App\Models\Logging;
+use App\Models\Rental_Item;
 use App\Models\Transaction_Rental;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -106,67 +107,67 @@ class TransactionRentalController extends Controller
      * @param  mixed $request
      * @return \Illuminate\Http\JsonResponse
      */
+    // public function store(Request $request)
+    // {
+    //     try {
+    //         // Validasi input
+    //         $validator = Validator::make($request->all(), [
+    //             'id_kurir_transaction_rental' => 'required|exists:users,id_user',
+    //             'id_branch_transaction_rental' => 'required|exists:branches,id_branch',
+    //             'id_client_transaction_rental' => 'required|exists:clients,id_client',
+    //             'recipient_name_transaction_rental' => 'required|string|max:255',
+    //             'status_transaction_rental' => 'required|in:waiting for approval,approved,out,in,cancelled',
+    //             'total_weight_transaction_rental' => 'required|numeric|min:0',
+    //             'total_pcs_transaction_rental' => 'required|integer|min:1',
+    //             'promo_transaction_rental' => 'nullable|numeric|min:0',
+    //             'additional_cost_transaction_rental' => 'nullable|numeric|min:0',
+    //             'total_price_transaction_rental' => 'required|numeric|min:0',
+    //             'notes_transaction_laundry' => 'nullable|string',
+    //             'is_active_transaction_rental' => 'required|in:active,inactive',
+    //         ]);
+
+    //         // Jika validasi gagal, kembalikan response error
+    //         if ($validator->fails()) {
+    //             Log::warning('Validasi gagal: ' . $validator->errors()->toJson());
+    //             return new ResponseApiResource(false, 'Validasi gagal', $request->all(), $validator->errors());
+    //         }
+
+    //         // Hitung total akhir transaksi
+    //         // $totalTransaction = ($request->total_price_transaction_rental - ($request->promo_transaction_rental ?? 0)) + ($request->additional_cost_transaction_rental ?? 0);
+
+    //         // Simpan data transaksi rental
+    //         $transaction = Transaction_Rental::create([
+    //             'id_kurir_transaction_rental' => $request->id_kurir_transaction_rental,
+    //             'id_branch_transaction_rental' => $request->id_branch_transaction_rental,
+    //             'id_client_transaction_rental' => $request->id_client_transaction_rental,
+    //             'recipient_name_transaction_rental' => $request->recipient_name_transaction_rental,
+    //             'status_transaction_rental' => $request->status_transaction_rental,
+    //             'total_weight_transaction_rental' => $request->total_weight_transaction_rental,
+    //             'total_pcs_transaction_rental' => $request->total_pcs_transaction_rental,
+    //             'promo_transaction_rental' => $request->promo_transaction_rental ?? 0,
+    //             'additional_cost_transaction_rental' => $request->additional_cost_transaction_rental ?? 0,
+    //             'total_price_transaction_rental' => $request->total_price_transaction_rental,
+    //             'notes_transaction_laundry' => $request->notes_transaction_laundry,
+    //             'is_active_transaction_rental' => $request->is_active_transaction_rental,
+    //             'first_date_transaction_rental' => Carbon::now(),
+    //             'last_date_transaction_rental' => null,
+    //         ]);
+
+    //         Log::info('Transaksi rental berhasil ditambahkan dengan ID ' . $transaction->id_transaction_rental);
+
+    //         return new ResponseApiResource(true, 'Transaksi rental berhasil ditambahkan!', $transaction, null, 201);
+    //     } catch (ValidationException $error) {
+    //         Log::error('Error validasi: ' . $error->getMessage());
+
+    //         return new ResponseApiResource(false, 'Terjadi kesalahan validasi.', $request->all(), $error->getMessage(), 422);
+    //     } catch (Exception $e) {
+    //         Log::error('Error saat menambahkan transaksi rental: ' . $e->getMessage());
+
+    //         return new ResponseApiResource(false, 'Terjadi kesalahan saat menambahkan transaksi rental.', $request->all(), $e->getMessage(), 500);
+    //     }
+    // }
+
     public function store(Request $request)
-    {
-        try {
-            // Validasi input
-            $validator = Validator::make($request->all(), [
-                'id_kurir_transaction_rental' => 'required|exists:users,id_user',
-                'id_branch_transaction_rental' => 'required|exists:branches,id_branch',
-                'id_client_transaction_rental' => 'required|exists:clients,id_client',
-                'recipient_name_transaction_rental' => 'required|string|max:255',
-                'status_transaction_rental' => 'required|in:waiting for approval,approved,out,in,cancelled',
-                'total_weight_transaction_rental' => 'required|numeric|min:0',
-                'total_pcs_transaction_rental' => 'required|integer|min:1',
-                'promo_transaction_rental' => 'nullable|numeric|min:0',
-                'additional_cost_transaction_rental' => 'nullable|numeric|min:0',
-                'total_price_transaction_rental' => 'required|numeric|min:0',
-                'notes_transaction_laundry' => 'nullable|string',
-                'is_active_transaction_rental' => 'required|in:active,inactive',
-            ]);
-
-            // Jika validasi gagal, kembalikan response error
-            if ($validator->fails()) {
-                Log::warning('Validasi gagal: ' . $validator->errors()->toJson());
-                return new ResponseApiResource(false, 'Validasi gagal', $request->all(), $validator->errors());
-            }
-
-            // Hitung total akhir transaksi
-            // $totalTransaction = ($request->total_price_transaction_rental - ($request->promo_transaction_rental ?? 0)) + ($request->additional_cost_transaction_rental ?? 0);
-
-            // Simpan data transaksi rental
-            $transaction = Transaction_Rental::create([
-                'id_kurir_transaction_rental' => $request->id_kurir_transaction_rental,
-                'id_branch_transaction_rental' => $request->id_branch_transaction_rental,
-                'id_client_transaction_rental' => $request->id_client_transaction_rental,
-                'recipient_name_transaction_rental' => $request->recipient_name_transaction_rental,
-                'status_transaction_rental' => $request->status_transaction_rental,
-                'total_weight_transaction_rental' => $request->total_weight_transaction_rental,
-                'total_pcs_transaction_rental' => $request->total_pcs_transaction_rental,
-                'promo_transaction_rental' => $request->promo_transaction_rental ?? 0,
-                'additional_cost_transaction_rental' => $request->additional_cost_transaction_rental ?? 0,
-                'total_price_transaction_rental' => $request->total_price_transaction_rental,
-                'notes_transaction_laundry' => $request->notes_transaction_laundry,
-                'is_active_transaction_rental' => $request->is_active_transaction_rental,
-                'first_date_transaction_rental' => Carbon::now(),
-                'last_date_transaction_rental' => null,
-            ]);
-
-            Log::info('Transaksi rental berhasil ditambahkan dengan ID ' . $transaction->id_transaction_rental);
-
-            return new ResponseApiResource(true, 'Transaksi rental berhasil ditambahkan!', $transaction, null, 201);
-        } catch (ValidationException $error) {
-            Log::error('Error validasi: ' . $error->getMessage());
-
-            return new ResponseApiResource(false, 'Terjadi kesalahan validasi.', $request->all(), $error->getMessage(), 422);
-        } catch (Exception $e) {
-            Log::error('Error saat menambahkan transaksi rental: ' . $e->getMessage());
-
-            return new ResponseApiResource(false, 'Terjadi kesalahan saat menambahkan transaksi rental.', $request->all(), $e->getMessage(), 500);
-        }
-    }
-
-    public function storeListTransactionRental(Request $request)
     {
         DB::beginTransaction();
         try {
@@ -176,24 +177,24 @@ class TransactionRentalController extends Controller
                 'id_branch_transaction_rental' => 'required|exists:branches,id_branch',
                 'id_client_transaction_rental' => 'required|exists:clients,id_client',
                 'recipient_name_transaction_rental' => 'required|string|max:255',
-                'status_transaction_rental' => 'required|in:pending,approved,returned,cancelled',
+                'status_transaction_rental' => 'required|in:waiting for approval,approved,returned,cancelled',
                 'total_weight_transaction_rental' => 'required|numeric|min:0',
                 'total_pcs_transaction_rental' => 'required|integer|min:0',
                 'promo_transaction_rental' => 'nullable|numeric|min:0',
                 'additional_cost_transaction_rental' => 'nullable|numeric|min:0',
                 'total_price_transaction_rental' => 'required|numeric|min:0',
                 'notes_transaction_laundry' => 'nullable|string',
-                'is_active_transaction_rental' => 'required|in:active,inactive',
-                'first_date_transaction_rental' => 'required|date',
-                'last_date_transaction_rental' => 'required|date',
+                // 'is_active_transaction_rental' => 'required|in:active,inactive',
+                // 'first_date_transaction_rental' => 'required|date',
+                // 'last_date_transaction_rental' => 'required|date',
                 'list_transaction_rentals' => 'required|array|min:1',
                 'list_transaction_rentals.*.id_item_rental' => 'required|exists:rental_items,id_rental_item',
-                'list_transaction_rentals.*.status_list_transaction_rental' => 'required|in:rented,returned',
+                // 'list_transaction_rentals.*.status_list_transaction_rental' => 'required|in:rented,returned',
                 'list_transaction_rentals.*.condition_list_transaction_rental' => 'required|in:clean,dirty,damaged',
                 'list_transaction_rentals.*.note_list_transaction_rental' => 'nullable|string',
                 'list_transaction_rentals.*.price_list_transaction_rental' => 'required|numeric|min:0',
                 'list_transaction_rentals.*.weight_list_transaction_rental' => 'required|numeric|min:0',
-                'list_transaction_rentals.*.is_active_list_transaction_rental' => 'required|in:active,inactive',
+                // 'list_transaction_rentals.*.is_active_list_transaction_rental' => 'required|in:active,inactive',
             ]);
 
             if ($validator->fails()) {
@@ -202,7 +203,7 @@ class TransactionRentalController extends Controller
             }
 
             // Hitung total transaksi
-            $totalTransaction = ($request->total_price_transaction_rental - ($request->promo_transaction_rental ?? 0)) + ($request->additional_cost_transaction_rental ?? 0);
+            // $totalTransaction = ($request->total_price_transaction_rental - ($request->promo_transaction_rental ?? 0)) + ($request->additional_cost_transaction_rental ?? 0);
 
             // Buat transaksi utama
             $transaction_rental = Transaction_Rental::create([
@@ -216,26 +217,39 @@ class TransactionRentalController extends Controller
                 'promo_transaction_rental' => $request->promo_transaction_rental ?? 0,
                 'additional_cost_transaction_rental' => $request->additional_cost_transaction_rental ?? 0,
                 'total_price_transaction_rental' => $request->total_price_transaction_rental,
-                'total_transaction_rental' => $totalTransaction,
+                // 'total_transaction_rental' => $totalTransaction,
+                'total_transaction_rental' => $request->total_price_transaction_rental,
                 'notes_transaction_laundry' => $request->notes_transaction_laundry,
-                'is_active_transaction_rental' => $request->is_active_transaction_rental,
-                'first_date_transaction_rental' => $request->first_date_transaction_rental,
-                'last_date_transaction_rental' => $request->last_date_transaction_rental,
+                // 'is_active_transaction_rental' => $request->is_active_transaction_rental,
+                'is_active_transaction_rental' => 'active',
+                'first_date_transaction_rental' => Carbon::now(),
+                // 'last_date_transaction_rental' => $request->last_date_transaction_rental,
+                'last_date_transaction_rental' => null,
             ]);
 
             // Buat daftar list transaksi
             $list_transactions = [];
             foreach ($request->list_transaction_rentals as $list) {
-                $list_transactions[] = List_Transaction_Rental::create([
+                $list_transaction = List_Transaction_Rental::create([
                     'id_rental_transaction' => $transaction_rental->id_transaction_rental,
                     'id_item_rental' => $list['id_item_rental'],
-                    'status_list_transaction_rental' => $list['status_list_transaction_rental'],
+                    // 'status_list_transaction_rental' => $list['status_list_transaction_rental'],
+                    'status_list_transaction_rental' => 'rented',
                     'condition_list_transaction_rental' => $list['condition_list_transaction_rental'],
                     'note_list_transaction_rental' => $list['note_list_transaction_rental'] ?? null,
                     'price_list_transaction_rental' => $list['price_list_transaction_rental'],
                     'weight_list_transaction_rental' => $list['weight_list_transaction_rental'],
-                    'is_active_list_transaction_rental' => $list['is_active_list_transaction_rental'],
+                    // 'is_active_list_transaction_rental' => $list['is_active_list_transaction_rental'],
+                    'is_active_list_transaction_rental' => 'active',
                 ]);
+
+                // Update status item rental menjadi 'rented'
+                Rental_Item::where('id_rental_item', $list['id_item_rental'])->update([
+                    'status_rental_item' => 'rented'
+                ]);
+
+                // Simpan ke array hasil jika diperlukan
+                $list_transactions[] = $list_transaction;
             }
 
             DB::commit();
