@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\ListTransactionRentalController;
 use App\Http\Controllers\Api\RentalItemController;
 use App\Http\Controllers\Api\TransactionLaundryController;
 use App\Http\Controllers\Api\TransactionRentalController;
+use App\Http\Controllers\Api\TransactionRentalExportController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\LogoutController;
@@ -122,6 +123,9 @@ Route::middleware(['auth:sanctum', 'role:owner'])->group(function () {
     Route::put('/restore_transaction_rentals/{id}', [TransactionRentalController::class, 'restore']);
     Route::delete('/force_destroy_transaction_rentals/{id}', [TransactionRentalController::class, 'forceDestroy']);
     Route::get('/transaction_rentals/{id}/list', [TransactionRentalController::class, 'getListWithTransactionRental']);
+
+    // Export data transaksi rental
+    Route::get('/export_transaction_rentals/{id}', [TransactionRentalExportController::class, 'export']);
 
     // List Transaction Rental
     Route::get('/list_transaction_rentals', [ListTransactionRentalController::class, 'index']);
