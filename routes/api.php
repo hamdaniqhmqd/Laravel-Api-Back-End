@@ -91,13 +91,13 @@ Route::middleware(['auth:sanctum', 'role:owner'])->group(function () {
     Route::get('/all_transaction_laundries', [TransactionLaundryController::class, 'getAll']);
     Route::get('/all_transaction_laundries_trashed', [TransactionLaundryController::class, 'getAllTrashed']);
     Route::post('/create_transaction_laundries', [TransactionLaundryController::class, 'store']);
+    // Route::post('/create_transaction_list_laundries', [TransactionLaundryController::class, 'storeListTransactionLaundry']);
     Route::get('/transaction_laundries/{id}', [TransactionLaundryController::class, 'show']);
     Route::put('/edit_transaction_laundries/{id}', [TransactionLaundryController::class, 'update']);
     Route::delete('/delete_transaction_laundries/{id}', [TransactionLaundryController::class, 'destroy']);
     Route::put('/restore_transaction_laundries/{id}', [TransactionLaundryController::class, 'restore']);
     Route::delete('/force_destroy_transaction_laundries/{id}', [TransactionLaundryController::class, 'forceDestroy']);
     Route::get('/transaction_laundries/{id}/list', [TransactionLaundryController::class, 'getListWithTransactionLaundry']);
-    Route::post('/create_transaction_list_laundries', [TransactionLaundryController::class, 'storeListTransactionLaundry']);
 
     // List Transaction Laundry
     Route::get('/list_transaction_laundries', [ListTransactionLaundryController::class, 'index']);
@@ -115,13 +115,13 @@ Route::middleware(['auth:sanctum', 'role:owner'])->group(function () {
     Route::get('/all_transaction_rentals', [TransactionRentalController::class, 'getAll']);
     Route::get('/all_transaction_rentals_trashed', [TransactionRentalController::class, 'getAllTrashed']);
     Route::post('/create_transaction_rentals', [TransactionRentalController::class, 'store']);
+    // Route::post('/create_transaction_list_rentals', [TransactionRentalController::class, 'storeListTransactionRental']);
     Route::get('/transaction_rentals/{id}', [TransactionRentalController::class, 'show']);
     Route::put('/edit_transaction_rentals/{id}', [TransactionRentalController::class, 'update']);
     Route::delete('/delete_transaction_rentals/{id}', [TransactionRentalController::class, 'destroy']);
     Route::put('/restore_transaction_rentals/{id}', [TransactionRentalController::class, 'restore']);
     Route::delete('/force_destroy_transaction_rentals/{id}', [TransactionRentalController::class, 'forceDestroy']);
     Route::get('/transaction_rentals/{id}/list', [TransactionRentalController::class, 'getListWithTransactionRental']);
-    Route::post('/create_transaction_list_rentals', [TransactionRentalController::class, 'storeListTransactionRental']);
 
     // List Transaction Rental
     Route::get('/list_transaction_rentals', [ListTransactionRentalController::class, 'index']);
@@ -139,6 +139,7 @@ Route::middleware(['auth:sanctum', 'role:owner'])->group(function () {
     Route::get('/all_invoice_rentals', [InvoiceRentalController::class, 'getAll']);
     Route::get('/all_invoice_rentals_trashed', [InvoiceRentalController::class, 'getAllTrashed']);
     Route::post('/create_invoice_rentals', [InvoiceRentalController::class, 'store']);
+    // Route::post('/create_invoice_list_rentals', [InvoiceRentalController::class, 'storeInvoiceWithList']);
     Route::get('/invoice_rentals/{id}', [InvoiceRentalController::class, 'show']);
     Route::get('/invoice_rentals/{id}/list', [InvoiceRentalController::class, 'getListWithInvoiceRental']);
     Route::put('/edit_invoice_rentals/{id}', [InvoiceRentalController::class, 'update']);
