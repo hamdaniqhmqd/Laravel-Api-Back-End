@@ -23,10 +23,10 @@ return new class extends Migration
             $table->double('promo_transaction_rental', 10, 2)->default(0);
             $table->double('additional_cost_transaction_rental', 10, 2)->default(0);
             $table->double('total_price_transaction_rental', 10, 2);
-            $table->text('notes_transaction_laundry')->nullable();
+            $table->text('notes_transaction_rental')->nullable();
             $table->enum('is_active_transaction_rental', ['active', 'inactive'])->default('active');
-            $table->date('first_date_transaction_rental');
-            $table->date('last_date_transaction_rental');
+            $table->timestamp('first_date_transaction_rental')->nullable();
+            $table->timestamp('last_date_transaction_rental')->nullable();
             $table->softDeletes();
             $table->timestamps();
 

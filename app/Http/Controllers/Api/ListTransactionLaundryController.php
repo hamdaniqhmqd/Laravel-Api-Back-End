@@ -282,30 +282,30 @@ class ListTransactionLaundryController extends Controller
     public function destroy($id)
     {
         try {
-            // Cari cabang berdasarkan ID
+            // Cari List transaksi laundry berdasarkan ID
             $list_transaction_laundry = List_Transaction_Laundry::find($id);
 
-            // Jika cabang tidak ditemukan
+            // Jika List transaksi laundry tidak ditemukan
             if (!$list_transaction_laundry) {
-                Log::info('Cabang tidak ditemukan saat mencoba menghapus', ['id_transaction_laundry' => $id]);
+                Log::info('List transaksi laundry tidak ditemukan saat mencoba menghapus', ['id_transaction_laundry' => $id]);
 
-                return new ResponseApiResource(false, 'Cabang tidak ditemukan!', $id,  $list_transaction_laundry, 404);
+                return new ResponseApiResource(false, 'List transaksi laundry tidak ditemukan!', [],  $list_transaction_laundry, 404);
             }
 
             // Ubah status is_active_list_transaction_laundry menjadi 'inactive'
             $list_transaction_laundry->update(['is_active_list_transaction_laundry' => 'inactive']);
 
-            // Hapus cabang
+            // Hapus List transaksi laundry
             $list_transaction_laundry->delete();
 
-            // Log informasi perubahan status Cabang
-            Log::info('Cabang berhasil dinonaktifkan', ['id_transaction_laundry' => $id, 'id_transaction_laundry' => $list_transaction_laundry->id_transaction_laundry]);
+            // Log informasi perubahan status List transaksi laundry
+            Log::info('List transaksi laundry berhasil dinonaktifkan', ['id_transaction_laundry' => $id, 'id_transaction_laundry' => $list_transaction_laundry->id_transaction_laundry]);
 
             // Kembalikan response sukses
-            return new ResponseApiResource(true, 'Cabang berhasil dinonaktifkan!', $list_transaction_laundry, 200);
-        } catch (\Exception $e) {
+            return new ResponseApiResource(true, 'List transaksi laundry berhasil dinonaktifkan!', $list_transaction_laundry, 200);
+        } catch (Exception $e) {
             // Log error jika terjadi kesalahan
-            Log::error('Gagal menonaktifkan Cabang', [
+            Log::error('Gagal menonaktifkan List transaksi laundry', [
                 'id_branch' => $id,
                 'error'   => $e->getMessage()
             ]);
@@ -324,7 +324,7 @@ class ListTransactionLaundryController extends Controller
             if (!$list_transaction_laundry) {
                 Log::info('Transaksi Laundry tidak ditemukan saat mencoba dipulihkan', ['id_transaction_laundry' => $id]);
 
-                return new ResponseApiResource(false, 'Transaksi Laundry tidak ditemukan!', $id,  $list_transaction_laundry, 404);
+                return new ResponseApiResource(false, 'Transaksi Laundry tidak ditemukan!', [],  $list_transaction_laundry, 404);
             }
 
             // Ubah status is_active_list_transaction_laundry menjadi 'active'
@@ -359,7 +359,7 @@ class ListTransactionLaundryController extends Controller
             if (!$list_transaction_laundry) {
                 Log::info('Transaksi Laundry tidak ditemukan saat mencoba hapus permanent', ['id_transaction_laundry' => $id]);
 
-                return new ResponseApiResource(false, 'Transaksi Laundry tidak ditemukan!', $id,  $list_transaction_laundry, 404);
+                return new ResponseApiResource(false, 'Transaksi Laundry tidak ditemukan!', [],  $list_transaction_laundry, 404);
             }
 
             // Ubah status is_active_list_transaction_laundry menjadi 'inactive'

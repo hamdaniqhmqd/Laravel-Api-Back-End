@@ -33,6 +33,7 @@ class Invoice_Rental extends Model
      * @var list<string, string>
      */
     protected $dates = [
+        'time_invoice_rental',
         'deleted_at',
         'created_at',
         'updated_at'
@@ -48,8 +49,8 @@ class Invoice_Rental extends Model
         return $this->belongsTo(Client::class, 'id_client_invoice', 'id_client');
     }
 
-    public function listInvoices()
+    public function listInvoiceRentals()
     {
-        return $this->hasMany(List_Invoice_Rental::class, 'id_rental_invoice', 'id_list_invoice_rental');
+        return $this->hasMany(List_Invoice_Rental::class, 'id_rental_invoice', 'id_invoice_rental');
     }
 }

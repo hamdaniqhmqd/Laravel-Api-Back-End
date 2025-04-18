@@ -26,6 +26,8 @@ class DatabaseSeeder extends Seeder
                 ListTransactionsLaundrySeeder::class,
                 TransactionsRentalSeeder::class,
                 ListTransactionsRentalSeeder::class,
+                InvoiceRentalSeeder::class,
+                ListInvoiceRentalSeeder::class,
             ]);
 
             Log::info('Database seeded successfully'); //code...
