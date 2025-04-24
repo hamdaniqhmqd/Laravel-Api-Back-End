@@ -30,10 +30,10 @@ class TransactionRentalExportController extends Controller
             // Validate request
             $validator = Validator::make($request->all(), [
                 'month' => 'required|date_format:Y-m',
-                'location' => 'required|string',
-                'description' => 'required|string',
+                'location' => 'required|exists:branches,id_branch',
+                'description' => 'required|in:bath towel,hand towel,gorden,keset',
                 'notes' => 'nullable|array',
-                'initial_stock' => 'required|integer|min:0', // Add validation for initial stock
+                'initial_stock' => 'required|integer|min:0',
             ]);
 
             if ($validator->fails()) {
