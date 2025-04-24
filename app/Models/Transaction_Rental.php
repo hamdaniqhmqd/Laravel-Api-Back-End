@@ -19,6 +19,7 @@ class Transaction_Rental extends Model
         'id_branch_transaction_rental',
         'id_client_transaction_rental',
         'recipient_name_transaction_rental',
+        'type_rental_transaction',
         'status_transaction_rental',
         'total_weight_transaction_rental',
         'total_pcs_transaction_rental',
@@ -27,8 +28,8 @@ class Transaction_Rental extends Model
         'total_price_transaction_rental',
         'notes_transaction_rental',
         'is_active_transaction_rental',
-        'first_date_transaction_rental',
-        'last_date_transaction_rental',
+        // 'first_date_transaction_rental',
+        // 'last_date_transaction_rental',
     ];
 
     protected $casts = [
@@ -45,8 +46,8 @@ class Transaction_Rental extends Model
      * @var list<string, string>
      */
     protected $dates = [
-        'first_date_transaction_rental',
-        'last_date_transaction_rental',
+        // 'first_date_transaction_rental',
+        // 'last_date_transaction_rental',
         'deleted_at',
         'created_at',
         'updated_at'

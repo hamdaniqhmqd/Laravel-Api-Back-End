@@ -176,8 +176,9 @@ class TransactionRentalController extends Controller
                 'id_kurir_transaction_rental' => 'required|exists:users,id_user',
                 'id_branch_transaction_rental' => 'required|exists:branches,id_branch',
                 'id_client_transaction_rental' => 'required|exists:clients,id_client',
-                'recipient_name_transaction_rental' => 'required|string|max:255',
-                'status_transaction_rental' => 'required|in:waiting for approval,approved,returned,cancelled',
+                'recipient_name_transaction_rental' => 'nullable|string|max:255',
+                'type_rental_transaction' => 'required|in:bath towel,hand towel,gorden,keset',
+                'status_transaction_rental' => 'required|in:waiting for approval,approved,out,in,returned,cancelled',
                 'total_weight_transaction_rental' => 'required|numeric|min:0',
                 'total_pcs_transaction_rental' => 'required|integer|min:0',
                 'promo_transaction_rental' => 'nullable|numeric|min:0',
@@ -198,6 +199,7 @@ class TransactionRentalController extends Controller
             ]);
 
             if ($validator->fails()) {
+                Log::warning('Validasi gagal: ' . $validator->errors()->toJson());
                 DB::rollBack();
                 return new ResponseApiResource(false, 'Validasi transaksi rental gagal', $request->all(), $validator->errors());
             }
@@ -211,9 +213,10 @@ class TransactionRentalController extends Controller
                 'id_branch_transaction_rental' => $request->id_branch_transaction_rental,
                 'id_client_transaction_rental' => $request->id_client_transaction_rental,
                 'recipient_name_transaction_rental' => $request->recipient_name_transaction_rental,
+                'type_rental_transaction' => $request->type_rental_transaction,
                 'status_transaction_rental' => $request->status_transaction_rental,
                 'total_weight_transaction_rental' => $request->total_weight_transaction_rental,
-                'total_pcs_transaction_rental' => $request->total_pcs_transaction_rental,
+                'total_pcs_transaction_rental' => count($request->list_transaction_rentals),
                 'promo_transaction_rental' => $request->promo_transaction_rental ?? 0,
                 'additional_cost_transaction_rental' => $request->additional_cost_transaction_rental ?? 0,
                 'total_price_transaction_rental' => $request->total_price_transaction_rental,
@@ -222,9 +225,9 @@ class TransactionRentalController extends Controller
                 'notes_transaction_laundry' => $request->notes_transaction_laundry,
                 // 'is_active_transaction_rental' => $request->is_active_transaction_rental,
                 'is_active_transaction_rental' => 'active',
-                'first_date_transaction_rental' => Carbon::now(),
+                // 'first_date_transaction_rental' => Carbon::now(),
                 // 'last_date_transaction_rental' => $request->last_date_transaction_rental,
-                'last_date_transaction_rental' => null,
+                // 'last_date_transaction_rental' => null,
             ]);
 
             // Buat daftar list transaksi
@@ -256,10 +259,16 @@ class TransactionRentalController extends Controller
 
             Log::info('Transaksi rental berhasil ditambahkan dengan ID: ' . $transaction_rental->id_transaction_rental);
 
-            return new ResponseApiResource(true, 'Transaksi rental berhasil ditambahkan!', [
-                'transaction' => $transaction_rental,
-                'list_transactions' => $list_transactions,
-            ], null, 201);
+            $mergedTransaction = $transaction_rental;
+            $mergedTransaction['list_transaction_rentals'] = $list_transactions;
+
+            return new ResponseApiResource(
+                true,
+                'Transaksi rental berhasil ditambahkan!',
+                $mergedTransaction,
+                null,
+                201
+            );
         } catch (ValidationException $error) {
             DB::rollBack();
             Log::error('Error validasi: ' . $error->getMessage());
@@ -353,7 +362,8 @@ class TransactionRentalController extends Controller
                 'id_kurir_transaction_rental' => 'required|exists:users,id_user',
                 'id_branch_transaction_rental' => 'required|exists:branches,id_branch',
                 'id_client_transaction_rental' => 'required|exists:clients,id_client',
-                'recipient_name_transaction_rental' => 'required|string|max:255',
+                'recipient_name_transaction_rental' => 'nullable|string|max:255',
+                'type_rental_transaction' => 'required|in:bath towel,hand towel,gorden,keset',
                 'status_transaction_rental' => 'required|in:waiting for approval,approved,out,in,cancelled',
                 'total_weight_transaction_rental' => 'required|numeric|min:0',
                 'total_pcs_transaction_rental' => 'required|integer|min:1',
@@ -373,6 +383,7 @@ class TransactionRentalController extends Controller
             // Cari transaksi laundry berdasarkan ID
             $transaction = Transaction_Rental::withTrashed()->find($id);
             if (!$transaction) {
+                Log::warning('Transaksi laundry tidak ditemukan dengan ID ' . $id);
                 return new ResponseApiResource(false, 'Transaksi laundry tidak ditemukan.', [], null, 404);
             }
 
@@ -382,6 +393,7 @@ class TransactionRentalController extends Controller
                 'id_client_transaction_rental' => $request->id_client_transaction_rental,
                 'recipient_name_transaction_rental' => $request->recipient_name_transaction_rental,
                 'status_transaction_rental' => $request->status_transaction_rental,
+                'type_rental_transaction' => $request->type_rental_transaction,
                 'total_weight_transaction_rental' => $request->total_weight_transaction_rental,
                 'total_pcs_transaction_rental' => $request->total_pcs_transaction_rental,
                 'promo_transaction_rental' => $request->promo_transaction_rental ?? 0,
@@ -389,20 +401,15 @@ class TransactionRentalController extends Controller
                 'total_price_transaction_rental' => $request->total_price_transaction_rental,
                 'notes_transaction_laundry' => $request->notes_transaction_laundry,
                 'is_active_transaction_rental' => $request->is_active_transaction_rental,
-                'first_date_transaction_rental' => $transaction->first_date_transaction_rental
+                // 'first_date_transaction_rental' => $transaction->first_date_transaction_rental
             ];
 
-            // Jika ada input status_transaction_rental = "completed", update last_date_transaction_rental
-            if ($request->status_transaction_rental === "in") {
-                // Update last_date_transaction_rental
-                $data['last_date_transaction_rental'] = Carbon::now();
-
-                // Logging berhasil
-                Log::info('Transaksi laundry dengan id ' . $id . ' berhasil diselesaikan.');
-            } elseif ($request->status_transaction_rental === "cancelled") { // Jika ada input status_transaction_rental = "cancelled", update last_date_transaction_rental dan non-aktifkan transaksi laundry
+            if ($request->status_transaction_rental === "cancelled") {
                 // Non-aktifkan transaksi laundry & update last_date_transaction_rental
                 $data['is_active_transaction_rental'] = "inactive";
-                $data['last_date_transaction_rental'] = Carbon::now();
+                // $data['last_date_transaction_rental'] = Carbon::now();
+
+                $transaction->delete(); // Hapus transaksi laundry
 
                 // Logging berhasil
                 Log::info('Transaksi laundry dengan id ' . $id . ' berhasil dibatalkan.');
@@ -411,7 +418,8 @@ class TransactionRentalController extends Controller
                 Log::info('Transaksi laundry dengan id ' . $id . ' berhasil diperbarui.');
 
                 $data['is_active_transaction_rental'] = "active";
-                $data['last_date_transaction_rental'] = null;
+
+                $transaction->restore(); // Pulihkan transaksi laundry
             }
 
             // Simpan data transaksi laundry
