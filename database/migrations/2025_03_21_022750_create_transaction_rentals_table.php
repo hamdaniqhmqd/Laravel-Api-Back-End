@@ -16,7 +16,8 @@ return new class extends Migration
             $table->unsignedBigInteger('id_kurir_transaction_rental')->index();
             $table->unsignedBigInteger('id_branch_transaction_rental')->index();
             $table->unsignedBigInteger('id_client_transaction_rental')->index();
-            $table->text('recipient_name_transaction_rental');
+            $table->text('recipient_name_transaction_rental')->nullable();
+            $table->enum('type_rental_transaction', ['bath towel', 'hand towel', 'gorden', 'keset']);
             $table->enum('status_transaction_rental', ['waiting for approval', 'approved', 'out', 'in', 'cancelled'])->default('waiting for approval');
             $table->double('total_weight_transaction_rental', 8, 2);
             $table->integer('total_pcs_transaction_rental');
@@ -25,8 +26,8 @@ return new class extends Migration
             $table->double('total_price_transaction_rental', 10, 2);
             $table->text('notes_transaction_rental')->nullable();
             $table->enum('is_active_transaction_rental', ['active', 'inactive'])->default('active');
-            $table->timestamp('first_date_transaction_rental')->nullable();
-            $table->timestamp('last_date_transaction_rental')->nullable();
+            // $table->timestamp('first_date_transaction_rental')->nullable();
+            // $table->timestamp('last_date_transaction_rental')->nullable();
             $table->softDeletes();
             $table->timestamps();
 
