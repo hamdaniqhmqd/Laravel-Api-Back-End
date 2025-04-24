@@ -126,6 +126,7 @@ Route::middleware(['auth:sanctum', 'role:owner'])->group(function () {
 
     // Export data transaksi rental
     Route::get('/export_transaction_rentals/{id}', [TransactionRentalExportController::class, 'export']);
+    Route::post('/export_transaction_monthly', [TransactionRentalExportController::class, 'exportMonthly']);
 
     // List Transaction Rental
     Route::get('/list_transaction_rentals', [ListTransactionRentalController::class, 'index']);
