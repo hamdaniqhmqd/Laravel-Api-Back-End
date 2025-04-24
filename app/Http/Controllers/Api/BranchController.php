@@ -112,7 +112,7 @@ class BranchController extends Controller
                 'name_branch' => 'required|string|max:255',
                 'city_branch' => 'required|string|max:255',
                 'address_branch' => 'required|string',
-                'is_active_branch' => 'required|in:active,inactive'
+                // 'is_active_branch' => 'required|in:active,inactive'
             ]);
 
             // Jika validasi gagal, kembalikan response error
@@ -126,7 +126,7 @@ class BranchController extends Controller
                 'name_branch' => $request->name_branch,
                 'city_branch' => $request->city_branch,
                 'address_branch' => $request->address_branch,
-                'is_active_branch' => $request->is_active_branch,
+                'is_active_branch' => "active",
             ]);
 
             // Kembalikan response sukses
