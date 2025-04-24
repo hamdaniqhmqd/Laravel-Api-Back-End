@@ -55,6 +55,9 @@ class LoginController extends Controller
                 );
             }
 
+            // Hapus semua token sebelumnya
+            // $user->tokens()->delete();
+
             // Buat token baru
             $token = $user->createToken($ipAddress . '_' . $user->username, ['read', 'write']);
             $plainTextToken = $token->plainTextToken;
