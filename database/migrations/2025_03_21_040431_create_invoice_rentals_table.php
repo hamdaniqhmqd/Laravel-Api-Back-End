@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id('id_invoice_rental')->index();
             $table->unsignedBigInteger('id_branch_invoice')->index();
             $table->unsignedBigInteger('id_client_invoice')->index();
+            $table->string('number_invoice')->unique();
             $table->text('notes_invoice_rental')->nullable();
             $table->datetime('time_invoice_rental');
             $table->double('total_weight_invoice_rental', 8, 2);

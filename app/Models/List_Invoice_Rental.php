@@ -17,10 +17,12 @@ class List_Invoice_Rental extends Model
     protected $fillable = [
         'id_rental_invoice',
         'id_rental_transaction',
+        'type_invoice_rental',
         'status_list_invoice_rental',
         'note_list_invoice_rental',
         'price_list_invoice_rental',
         'weight_list_invoice_rental',
+        'total_price_invoice_rental',
         'is_active_list_invoice_rental',
     ];
 

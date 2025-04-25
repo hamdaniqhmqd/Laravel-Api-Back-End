@@ -15,10 +15,12 @@ return new class extends Migration
             $table->id('id_list_invoice_rental')->index();
             $table->unsignedBigInteger('id_rental_invoice')->index();
             $table->unsignedBigInteger('id_rental_transaction')->index();
+            $table->enum('type_invoice_rental', ['bath towel', 'hand towel', 'gorden', 'keset']);
             $table->enum('status_list_invoice_rental', ['unpaid', 'paid', 'cancelled'])->default('unpaid');
             $table->text('note_list_invoice_rental')->nullable();
             $table->double('price_list_invoice_rental', 12, 2);
             $table->double('weight_list_invoice_rental', 8, 2);
+            $table->double('total_price_invoice_rental', 8, 2);
             $table->enum('is_active_list_invoice_rental', ['active', 'inactive'])->default('active');
             $table->softDeletes();
             $table->timestamps();

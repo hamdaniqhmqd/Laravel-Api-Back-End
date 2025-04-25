@@ -17,6 +17,7 @@ class Invoice_Rental extends Model
     protected $fillable = [
         'id_branch_invoice',
         'id_client_invoice',
+        'number_invoice',
         'notes_invoice_rental',
         'time_invoice_rental',
         'total_weight_invoice_rental',
