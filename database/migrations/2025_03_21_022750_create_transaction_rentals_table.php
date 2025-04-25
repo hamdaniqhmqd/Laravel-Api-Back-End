@@ -19,6 +19,7 @@ return new class extends Migration
             $table->text('recipient_name_transaction_rental')->nullable();
             $table->enum('type_rental_transaction', ['bath towel', 'hand towel', 'gorden', 'keset']);
             $table->enum('status_transaction_rental', ['waiting for approval', 'approved', 'out', 'in', 'cancelled'])->default('waiting for approval');
+            $table->integer('price_weight_transaction_rental');
             $table->double('total_weight_transaction_rental', 8, 2);
             $table->integer('total_pcs_transaction_rental');
             $table->double('promo_transaction_rental', 10, 2)->default(0);

@@ -21,6 +21,7 @@ class Transaction_Rental extends Model
         'recipient_name_transaction_rental',
         'type_rental_transaction',
         'status_transaction_rental',
+        'price_weight_transaction_rental',
         'total_weight_transaction_rental',
         'total_pcs_transaction_rental',
         'promo_transaction_rental',
@@ -33,6 +34,7 @@ class Transaction_Rental extends Model
     ];
 
     protected $casts = [
+        'price_weight_transaction_rental' => 'float',
         'total_weight_transaction_rental' => 'float',
         'total_pcs_transaction_rental' => 'integer',
         'promo_transaction_rental' => 'float',
