@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\ListTransactionLaundryController;
 use App\Http\Controllers\Api\ListTransactionRentalController;
 use App\Http\Controllers\Api\RentalItemController;
 use App\Http\Controllers\Api\TransactionLaundryController;
+use App\Http\Controllers\Api\TransactionLaundryExportController;
 use App\Http\Controllers\Api\TransactionRentalController;
 use App\Http\Controllers\Api\TransactionRentalExportController;
 use App\Http\Controllers\Api\UserController;
@@ -124,10 +125,6 @@ Route::middleware(['auth:sanctum', 'role:owner'])->group(function () {
     Route::delete('/force_destroy_transaction_rentals/{id}', [TransactionRentalController::class, 'forceDestroy']);
     Route::get('/transaction_rentals/{id}/list', [TransactionRentalController::class, 'getListWithTransactionRental']);
 
-    // Export data transaksi rental
-    Route::get('/export_transaction_rentals/{id}', [TransactionRentalExportController::class, 'export']);
-    Route::post('/export_transaction_monthly', [TransactionRentalExportController::class, 'exportMonthly']);
-
     // List Transaction Rental
     Route::get('/list_transaction_rentals', [ListTransactionRentalController::class, 'index']);
     Route::get('/all_list_transaction_rentals', [ListTransactionRentalController::class, 'getAll']);
@@ -147,7 +144,7 @@ Route::middleware(['auth:sanctum', 'role:owner'])->group(function () {
     // Route::post('/create_invoice_list_rentals', [InvoiceRentalController::class, 'storeInvoiceWithList']);
     Route::get('/invoice_rentals/{id}', [InvoiceRentalController::class, 'show']);
     Route::get('/invoice_rentals/{id}/list', [InvoiceRentalController::class, 'getListWithInvoiceRental']);
-    Route::put('/edit_invoice_rentals/{id}', [InvoiceRentalController::class, 'update']);
+    Route::put('/   /{id}', [InvoiceRentalController::class, 'update']);
     Route::delete('/delete_invoice_rentals/{id}', [InvoiceRentalController::class, 'destroy']);
     Route::put('/restore_invoice_rentals/{id}', [InvoiceRentalController::class, 'restore']);
     Route::delete('/force_destroy_invoice_rentals/{id}', [InvoiceRentalController::class, 'forceDestroy']);
@@ -162,6 +159,10 @@ Route::middleware(['auth:sanctum', 'role:owner'])->group(function () {
     Route::delete('/delete_list_invoice_rentals/{id}', [ListInvoiceRentalController::class, 'destroy']);
     Route::put('/restore_list_invoice_rentals/{id}', [ListInvoiceRentalController::class, 'restore']);
     Route::delete('/force_destroy_list_invoice_rentals/{id}', [ListInvoiceRentalController::class, 'forceDestroy']);
+
+    // Export data transaksi rental
+    Route::post('/export_transaction_monthly', [TransactionRentalExportController::class, 'exportMonthly']);
+    Route::post('/export_laundry_monthly', [TransactionLaundryExportController::class, 'exportMonthly']);
 });
 
 

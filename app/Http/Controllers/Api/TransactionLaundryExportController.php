@@ -2,24 +2,20 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Exports\TransactionRentalExport;
-use App\Exports\TransactionRentalMonthlyExport;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 use App\Http\Resources\ResponseApiResource;
-use App\Models\List_Transaction_Rental;
-use App\Models\Transaction_Rental;
+use App\Exports\TransactionLaundryMonthlyExport;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Log;
+use Maatwebsite\Excel\Facades\Excel;
 use Carbon\Carbon;
 use Exception;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Validator;
-use Maatwebsite\Excel\Facades\Excel;
 
-class TransactionRentalExportController extends Controller
+class TransactionLaundryExportController extends Controller
 {
     /**
-     * Export monthly transaction data via API
+     * Export monthly laundry transaction data via API
      * 
      * @param Request $request
      * @return ResponseApiResource
@@ -31,9 +27,7 @@ class TransactionRentalExportController extends Controller
             $validator = Validator::make($request->all(), [
                 'month' => 'required|date_format:Y-m',
                 'location' => 'required|exists:branches,id_branch',
-                'description' => 'required|in:bath towel,hand towel,gorden,keset',
                 'notes' => 'nullable|array',
-                'initial_stock' => 'required|integer|min:0',
             ]);
 
             if ($validator->fails()) {
@@ -42,16 +36,14 @@ class TransactionRentalExportController extends Controller
 
             $month = $request->month;
             $location = $request->location;
-            $description = $request->description;
             $notes = $request->notes ?? [];
-            $initialStock = $request->initial_stock; // Get initial stock value
 
             // Generate month name for title
             $monthDate = Carbon::createFromFormat('Y-m', $month);
             $periodName = $monthDate->translatedFormat('F Y');
 
             // Create folder structure
-            $folderPath = 'transaction_rental/' . $month;
+            $folderPath = 'transaction_laundry/' . $month;
 
             // Check and create directory if not exists
             $storagePath = storage_path('app/public/' . $folderPath);
@@ -60,7 +52,7 @@ class TransactionRentalExportController extends Controller
             }
 
             // Base filename without extension
-            $baseFilename = 'Report_' . str_replace(' ', '_', $description) . '_' . $month;
+            $baseFilename = 'Report_Laundry_' . $month;
 
             // Check for existing files with similar names and get the next increment number
             $existingFiles = glob($storagePath . '/' . $baseFilename . '*.xlsx');
@@ -81,12 +73,12 @@ class TransactionRentalExportController extends Controller
 
             // Store Excel file
             Excel::store(
-                new TransactionRentalMonthlyExport($month, $location, $description, $periodName, $initialStock, $notes),
+                new TransactionLaundryMonthlyExport($month, $location, $periodName, $notes),
                 $path,
                 'public'
             );
 
-            Log::info('Monthly report file saved at: ' . storage_path('app/public/' . $path));
+            Log::info('Monthly laundry report file saved at: ' . storage_path('app/public/' . $path));
 
             // Return download URL
             $url = asset('storage/' . $path);
@@ -97,7 +89,7 @@ class TransactionRentalExportController extends Controller
                 'path' => $path
             ], null, 200);
         } catch (Exception $e) {
-            Log::error("Error generating monthly report: " . $e->getMessage());
+            Log::error("Error generating monthly laundry report: " . $e->getMessage());
             return new ResponseApiResource(false, 'Gagal generate report.', null, $e->getMessage(), 500);
         }
     }

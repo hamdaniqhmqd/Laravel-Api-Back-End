@@ -1,14 +1,7 @@
-<!-- resources/views/export/transaction_rental_monthly.blade.php -->
-<!DOCTYPE html>
-<html>
-
-<head>
-</head>
-
-<body>
+<div>
     <h2>REPORT PEMINJAMAN {{ strtoupper($title) }}</h2>
 
-    <table class="header-table" border="1">
+    <table>
         <tr>
             <td>Lokasi</td>
             <td>: {{ $location }}</td>
@@ -21,45 +14,59 @@
             <td>Periode</td>
             <td>: {{ $period }}</td>
         </tr>
+        <tr>
+            <td>Stok Awal</td>
+            <td>: {{ $initialStock }}</td>
+        </tr>
     </table>
 
-    <table class="main-table" width="100%">
+    <table border="1" cellspacing="0" cellpadding="10">
         <thead>
             <tr>
+                <th>NO</th>
                 <th>TANGGAL</th>
                 <th>JAM</th>
+                <th>TIPE</th>
                 <th>MASUK</th>
                 <th>KELUAR</th>
                 <th>JUMLAH STOK</th>
-                <th>BERAT (KG)</th>
+                <th>BERAT MASUK (KG)</th>
+                <th>BERAT KELUAR (KG)</th>
                 <th>KURIR</th>
                 <th>PENERIMA</th>
             </tr>
         </thead>
         <tbody>
+            @php $rowNumber = 1; @endphp
             @foreach ($transactions as $transaction)
                 @if ($transaction->masuk > 0)
                     <tr>
+                        <td>{{ $rowNumber++ }}</td>
                         <td>{{ \Carbon\Carbon::parse($transaction->tanggal)->format('d M y') }}</td>
                         <td>{{ \Carbon\Carbon::parse($transaction->jam)->format('H:i') }}</td>
+                        <td>{{ $transaction->status }}</td>
                         <td>{{ $transaction->masuk }}</td>
                         <td>0</td>
                         <td>{{ $transaction->stok_after_masuk }}</td>
-                        <td>{{ number_format($transaction->berat, 2) }}</td>
-                        <td>{{ $transaction->kurir }}</td>
+                        <td>{{ number_format($transaction->berat_masuk, 2) }}</td>
+                        <td>0</td>
+                        <td>{{ $transaction->kurir_name ?? $transaction->kurir_id }}</td>
                         <td>{{ $transaction->penerima }}</td>
                     </tr>
                 @endif
 
                 @if ($transaction->keluar > 0)
                     <tr>
+                        <td>{{ $rowNumber++ }}</td>
                         <td>{{ \Carbon\Carbon::parse($transaction->tanggal)->format('d M y') }}</td>
                         <td>{{ \Carbon\Carbon::parse($transaction->jam)->format('H:i') }}</td>
+                        <td>{{ $transaction->status }}</td>
                         <td>0</td>
                         <td>{{ $transaction->keluar }}</td>
                         <td>{{ $transaction->stok_after_keluar }}</td>
-                        <td>{{ number_format($transaction->berat, 2) }}</td>
-                        <td>{{ $transaction->kurir }}</td>
+                        <td>0</td>
+                        <td>{{ number_format($transaction->berat_keluar, 2) }}</td>
+                        <td>{{ $transaction->kurir_name ?? $transaction->kurir_id }}</td>
                         <td>{{ $transaction->penerima }}</td>
                     </tr>
                 @endif
@@ -67,23 +74,32 @@
         </tbody>
         <tfoot>
             <tr>
-                <td colspan="5" style="text-align: right">TOTAL</td>
-                <td>{{ number_format($totalWeight, 2) }}</td>
+                <td colspan="7" align="right"><strong>TOTAL</strong></td>
+                <td align="right"><strong>{{ number_format($totalInWeight, 2) }}</strong></td>
+                <td align="right"><strong>{{ number_format($totalOutWeight, 2) }}</strong></td>
                 <td colspan="2"></td>
             </tr>
         </tfoot>
     </table>
 
-    <table class="notes-table" width="100%">
-        <tr>
-            <th colspan="3">CATATAN :</th>
-        </tr>
-        @foreach ($notes as $note)
-            <tr>
-                <td colspan="7">- {{ $note }}</td>
-            </tr>
-        @endforeach
-    </table>
-</body>
+    <h3><strong>CATATAN :</strong></h3>
 
-</html>
+    @if (count($notes) > 0)
+        <table border="1" cellspacing="0" cellpadding="5" style="width: 100%;">
+            <thead>
+                <tr>
+                    <th width="10%">No</th>
+                    <th width="90%">Keterangan</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ($notes as $index => $note)
+                    <tr>
+                        <td align="center">{{ $index + 1 }}</td>
+                        <td>{{ $note }}</td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+    @endif
+</div>
