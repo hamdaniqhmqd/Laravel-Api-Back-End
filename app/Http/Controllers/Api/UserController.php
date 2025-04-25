@@ -217,6 +217,7 @@ class UserController extends Controller
 
             // Validasi input sesuai schema
             $validator = Validator::make($request->all(), [
+                'id_branch_user' => 'nullable|exists:branches,id_branch',
                 'username'       => 'required|string|max:255|unique:users,username,' . $id . ',id_user',
                 'password'       => 'nullable|string|min:8',
                 'fullname_user'  => 'required|string|max:255',
@@ -236,6 +237,7 @@ class UserController extends Controller
 
             // Perbarui data user
             $user->update([
+                'id_branch_user' => $request->id_branch_user,
                 'username'       => $request->username,
                 'password'       => $request->password ? Hash::make($request->password) : $user->password,
                 'fullname_user'  => $request->fullname_user,
