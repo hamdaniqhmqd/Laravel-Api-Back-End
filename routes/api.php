@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\BranchController;
 use App\Http\Controllers\Api\ClientController;
 use App\Http\Controllers\Api\InvoiceRentalController;
+use App\Http\Controllers\Api\InvoiceRentalExportController;
 use App\Http\Controllers\Api\LaundryItemController;
 use App\Http\Controllers\Api\ListInvoiceRentalController;
 use App\Http\Controllers\Api\ListTransactionLaundryController;
@@ -163,6 +164,11 @@ Route::middleware(['auth:sanctum', 'role:owner'])->group(function () {
     // Export data transaksi rental
     Route::post('/export_transaction_monthly', [TransactionRentalExportController::class, 'exportMonthly']);
     Route::post('/export_laundry_monthly', [TransactionLaundryExportController::class, 'exportMonthly']);
+
+    // Export data pdf
+    Route::get('/export-pdf', [InvoiceRentalExportController::class, 'export']);
+
+    Route::post('export_invoice_rental', [InvoiceRentalExportController::class, 'generateInvoicePdf']);
 });
 
 
