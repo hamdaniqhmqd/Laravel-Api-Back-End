@@ -111,7 +111,7 @@ class LaundryItemController extends Controller
             $validator = Validator::make($request->all(), [
                 'name_laundry_item' => 'required|string|max:255',
                 'price_laundry_item' => 'required|integer',
-                'time_laundry_item' => 'nullable|date_format:H:i:s',
+                'time_laundry_item' => 'nullable|string|max:255',
                 'description_laundry_item' => 'nullable|string',
                 'is_active_laundry_item' => 'required|in:active,inactive',
                 'id_branch_laundry_item' => 'nullable|exists:branches,id_branch'
@@ -217,7 +217,7 @@ class LaundryItemController extends Controller
             $validator = Validator::make($request->all(), [
                 'name_laundry_item' => 'required|string|max:255',
                 'price_laundry_item' => 'required|integer',
-                'time_laundry_item' => 'nullable|date_format:H:i:s',
+                'time_laundry_item' => 'nullable|string|max:255',
                 'description_laundry_item' => 'nullable|string',
                 'is_active_laundry_item' => 'required|in:active,inactive',
                 'id_branch_laundry_item' => 'nullable|exists:branches,id_branch'
