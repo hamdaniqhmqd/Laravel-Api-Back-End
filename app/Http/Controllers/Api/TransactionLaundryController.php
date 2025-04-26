@@ -169,7 +169,7 @@ class TransactionLaundryController extends Controller
 
             if ($changeMoney < 0) {
                 DB::rollBack();
-                return new ResponseApiResource(false, 'Uang pembayaran kurang!', null, ['cash_transaction_laundry' => 'Uang tidak mencukupi untuk membayar total transaksi'], 400);
+                return new ResponseApiResource(false, 'Uang pembayaran kurang!', $request->all(), ['cash_transaction_laundry' => 'Uang tidak mencukupi untuk membayar total transaksi'], 400);
             }
 
             // Buat transaksi utama
