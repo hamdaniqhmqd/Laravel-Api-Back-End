@@ -115,7 +115,6 @@ class RentalItemController extends Controller
                 'status_rental_item' => 'required|in:available,rented,maintenance',
                 'condition_rental_item' => 'required|in:clean,dirty,damaged',
                 'description_rental_item' => 'nullable|string',
-                'is_active_rental_item' => 'required|in:active,inactive',
                 'id_branch_rental_item' => 'required|exists:branches,id_branch'
             ]);
 
@@ -133,7 +132,7 @@ class RentalItemController extends Controller
                 'status_rental_item' => $request->status_rental_item ?? 'available',
                 'condition_rental_item' => $request->condition_rental_item ?? 'clean',
                 'description_rental_item' => $request->description_rental_item,
-                'is_active_rental_item' => $request->is_active_rental_item ?? 'active',
+                'is_active_rental_item' => 'active',
                 'id_branch_rental_item' => $request->id_branch_rental_item,
             ]);
 

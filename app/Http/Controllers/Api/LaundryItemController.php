@@ -113,7 +113,6 @@ class LaundryItemController extends Controller
                 'price_laundry_item' => 'required|integer',
                 'time_laundry_item' => 'nullable|string|max:255',
                 'description_laundry_item' => 'nullable|string',
-                'is_active_laundry_item' => 'required|in:active,inactive',
                 'id_branch_laundry_item' => 'nullable|exists:branches,id_branch'
             ]);
 
@@ -129,7 +128,7 @@ class LaundryItemController extends Controller
                 'price_laundry_item' => $request->price_laundry_item,
                 'time_laundry_item' => $request->time_laundry_item,
                 'description_laundry_item' => $request->description_laundry_item,
-                'is_active_laundry_item' => $request->is_active_laundry_item,
+                'is_active_laundry_item' => 'active',
                 'id_branch_laundry_item' => $request->id_branch_laundry_item,
             ]);
 

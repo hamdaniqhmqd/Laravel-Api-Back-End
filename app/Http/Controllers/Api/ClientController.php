@@ -143,7 +143,6 @@ class ClientController extends Controller
                 'name_client' => 'required|string|max:255',
                 'address_client' => 'nullable|string',
                 'phone_client' => 'nullable|string|max:15',
-                'is_active_client' => 'required|in:active,inactive',
                 'id_branch_client' => 'nullable|exists:branches,id_branch'
             ]);
 
@@ -158,7 +157,7 @@ class ClientController extends Controller
                 'name_client' => $request->name_client,
                 'address_client' => $request->address_client,
                 'phone_client' => $request->phone_client,
-                'is_active_client' => $request->is_active_client,
+                'is_active_client' => 'active',
                 'id_branch_client' => $request->id_branch_client,
             ]);
 

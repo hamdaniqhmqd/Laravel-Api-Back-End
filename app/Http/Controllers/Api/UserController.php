@@ -118,7 +118,7 @@ class UserController extends Controller
                 'gender_user' => 'required|in:male,female',
                 'phone_user' => 'nullable|string|max:15',
                 'address_user' => 'nullable|string',
-                'is_active_user' => 'required|in:active,inactive',
+                // 'is_active_user' => 'required|in:active,inactive',
             ]);
 
             // Jika validasi gagal, kembalikan response error
@@ -138,7 +138,7 @@ class UserController extends Controller
                 'gender_user' => $request->gender_user,
                 'phone_user' => $request->phone_user,
                 'address_user' => $request->address_user,
-                'is_active_user' => $request->is_active_user
+                'is_active_user' => 'active',
             ]);
 
             // Kembalikan response sukses
