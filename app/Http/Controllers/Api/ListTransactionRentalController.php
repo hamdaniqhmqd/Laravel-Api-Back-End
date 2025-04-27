@@ -117,7 +117,6 @@ class ListTransactionRentalController extends Controller
                 'note_list_transaction_rental' => 'nullable|string',
                 'price_list_transaction_rental' => 'required|numeric|min:0',
                 'weight_list_transaction_rental' => 'required|numeric|min:0',
-                'is_active_list_transaction_rental' => 'required|in:active,inactive',
             ]);
 
             // Jika validasi gagal, kembalikan response error
@@ -136,7 +135,7 @@ class ListTransactionRentalController extends Controller
                 'note_list_transaction_rental' => $request->note_list_transaction_rental,
                 'price_list_transaction_rental' => $request->price_list_transaction_rental,
                 'weight_list_transaction_rental' => $request->weight_list_transaction_rental,
-                'is_active_list_transaction_rental' => $request->is_active_list_transaction_rental,
+                'is_active_list_transaction_rental' => 'active',
             ]);
 
             // Kembalikan response sukses
@@ -234,11 +233,6 @@ class ListTransactionRentalController extends Controller
                 'weight_list_transaction_rental' => $request->weight_list_transaction_rental,
                 'is_active_list_transaction_rental' => $request->is_active_list_transaction_rental,
             ];
-
-            // Jika ada input status_list_transaction_rental = "completed", update last_date_transaction_laundry
-            if ($request->status_list_transaction_rental === "cancelled") {
-                $data['is_active_list_transaction_rental'] = 'inactive';
-            }
 
             // Update data transaksi rental
             $list_transaction_rental->update($data);

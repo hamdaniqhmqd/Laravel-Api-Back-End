@@ -329,6 +329,7 @@ class InvoiceRentalController extends Controller
             $validator = Validator::make($request->all(), [
                 'id_branch_invoice' => 'required|exists:branches,id_branch',
                 'id_client_invoice' => 'required|exists:clients,id_client',
+                'number_invoice' => 'required|string|unique:invoice_rentals,number_invoice,' . $id,
                 'notes_invoice_rental' => 'nullable|string',
                 'time_invoice_rental' => 'required|date_format:Y-m-d H:i:s',
                 'total_weight_invoice_rental' => 'required|numeric|min:0',
