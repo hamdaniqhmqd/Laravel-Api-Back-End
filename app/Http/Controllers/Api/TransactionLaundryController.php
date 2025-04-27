@@ -350,8 +350,7 @@ class TransactionLaundryController extends Controller
                 // Logging berhasil
                 Log::info('Transaksi laundry dengan id ' . $id . ' berhasil diselesaikan.');
             } elseif ($request->status_transaction_laundry === "cancelled") { // Jika ada input status_transaction_laundry = "cancelled", update last_date_transaction_laundry dan non-aktifkan transaksi laundry
-                // Non-aktifkan transaksi laundry & update last_date_transaction_laundry
-                $data['is_active_transaction_laundry'] = "inactive";
+                // update last_date_transaction_laundry
                 $data['last_date_transaction_laundry'] = Carbon::now();
 
                 // Logging berhasil
