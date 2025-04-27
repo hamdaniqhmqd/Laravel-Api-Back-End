@@ -111,6 +111,7 @@ class ListTransactionRentalController extends Controller
             $validator = Validator::make($request->all(), [
                 'id_rental_transaction' => 'required|exists:transaction_rentals,id_transaction_rental',
                 'id_item_rental' => 'required|exists:rental_items,id_rental_item',
+                'type_list_rental_transaction' => 'required|in:bath towel,hand towel,gorden,keset',
                 'status_list_transaction_rental' => 'required|in:rented,returned,cancelled',
                 'condition_list_transaction_rental' => 'required|in:clean,dirty,damaged',
                 'note_list_transaction_rental' => 'nullable|string',
@@ -129,6 +130,7 @@ class ListTransactionRentalController extends Controller
             $list_transaction_rental = List_Transaction_Rental::create([
                 'id_rental_transaction' => $request->id_rental_transaction,
                 'id_item_rental' => $request->id_item_rental,
+                'type_list_rental_transaction' => $request->type_list_rental_transaction,
                 'status_list_transaction_rental' => $request->status_list_transaction_rental,
                 'condition_list_transaction_rental' => $request->condition_list_transaction_rental,
                 'note_list_transaction_rental' => $request->note_list_transaction_rental,
@@ -205,6 +207,7 @@ class ListTransactionRentalController extends Controller
             $validator = Validator::make($request->all(), [
                 'id_rental_transaction' => 'required|exists:transaction_rentals,id_transaction_rental',
                 'id_item_rental' => 'required|exists:rental_items,id_rental_item',
+                'type_list_rental_transaction' => 'required|in:bath towel,hand towel,gorden,keset',
                 'status_list_transaction_rental' => 'required|in:rented,returned,cancelled',
                 'condition_list_transaction_rental' => 'required|in:clean,dirty,damaged',
                 'note_list_transaction_rental' => 'nullable|string',
@@ -223,6 +226,7 @@ class ListTransactionRentalController extends Controller
             $data = [
                 'id_rental_transaction' => $request->id_rental_transaction,
                 'id_item_rental' => $request->id_item_rental,
+                'type_list_rental_transaction' => $request->type_list_rental_transaction,
                 'status_list_transaction_rental' => $request->status_list_transaction_rental,
                 'condition_list_transaction_rental' => $request->condition_list_transaction_rental,
                 'note_list_transaction_rental' => $request->note_list_transaction_rental,

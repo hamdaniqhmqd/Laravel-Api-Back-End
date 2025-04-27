@@ -23,7 +23,7 @@ class DatabaseSeeder extends Seeder
                 // LaundryItemsSeeder::class,
                 // RentalItemsSeeder::class,
                 // TransactionsLaundrySeeder::class,
-                ListTransactionsLaundrySeeder::class,
+                // ListTransactionsLaundrySeeder::class,
                 // TransactionsRentalSeeder::class,
                 // ListTransactionsRentalSeeder::class,
                 // InvoiceRentalSeeder::class,

@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id('id_list_transaction_rental')->index();
             $table->unsignedBigInteger('id_rental_transaction')->index();
             $table->unsignedBigInteger('id_item_rental')->index();
+            $table->enum('type_list_rental_transaction', ['bath towel', 'hand towel', 'gorden', 'keset']);
             $table->enum('status_list_transaction_rental', ['rented', 'returned', 'cancelled'])->default('rented');
             $table->enum('condition_list_transaction_rental', ['clean', 'dirty', 'damaged'])->default('clean');
             $table->text('note_list_transaction_rental')->nullable();
