@@ -61,25 +61,25 @@ class TransactionRentalMonthlyExport implements FromView, WithTitle
                 'status_transaction_rental as status',
                 DB::raw('
                     CASE 
-                        WHEN status_transaction_rental IN ("in", "approved", "waiting for approval") THEN total_pcs_transaction_rental 
+                        WHEN status_transaction_rental IN ("in") THEN total_pcs_transaction_rental 
                         ELSE 0 
                     END as masuk
                 '),
                 DB::raw('
                     CASE 
-                        WHEN status_transaction_rental = "out" THEN total_pcs_transaction_rental 
+                        WHEN status_transaction_rental IN ("out", "approved", "waiting for approval") THEN total_pcs_transaction_rental 
                         ELSE 0 
                     END as keluar
                 '),
                 DB::raw('
                     CASE 
-                        WHEN status_transaction_rental IN ("in", "approved", "waiting for approval") THEN total_weight_transaction_rental 
+                        WHEN status_transaction_rental IN ("in") THEN total_weight_transaction_rental 
                         ELSE 0 
                     END as berat_masuk
                 '),
                 DB::raw('
                     CASE 
-                        WHEN status_transaction_rental = "out" THEN total_weight_transaction_rental 
+                        WHEN status_transaction_rental IN ("out", "approved", "waiting for approval") THEN total_weight_transaction_rental 
                         ELSE 0 
                     END as berat_keluar
                 ')

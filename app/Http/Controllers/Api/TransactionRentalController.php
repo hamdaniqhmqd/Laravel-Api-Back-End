@@ -38,11 +38,6 @@ class TransactionRentalController extends Controller
         } catch (Exception $error) {
             Log::error("Daftar Data transaksi rental Gagal " . $error->getMessage());
 
-            Logging::record(
-                Auth::guard('sanctum')->user(),
-                "Daftar Data transaksi rental Gagal " . $error->getMessage()
-            );
-
             return new ResponseApiResource(false, 'Data transaksi rental Tidak Ditemukan!', null, $error->getMessage(), 404);
         }
     }
@@ -64,11 +59,6 @@ class TransactionRentalController extends Controller
             return new ResponseApiResource(true, 'Daftar seluruh Data transaksi rental', $transaction_rental, null, 200);
         } catch (Exception $error) {
             Log::error("Daftar Data transaksi rental Gagal " . $error->getMessage());
-
-            Logging::record(
-                Auth::guard('sanctum')->user(),
-                "Daftar Data transaksi rental Gagal " . $error->getMessage()
-            );
 
             return new ResponseApiResource(false, 'Data transaksi rental Tidak Ditemukan!', null, $error->getMessage(), 404);
         }
@@ -153,10 +143,19 @@ class TransactionRentalController extends Controller
             }
 
             // Hitung total berat dari semua item
+            // $price_per_weight = null;
             $total_weight = 0;
+
             foreach ($request->list_transaction_rentals as $list) {
+                // $item_rental = Rental_Item::withTrashed()->findOrFail($list['id_item_rental']);
+
+                // if (is_null($price_per_weight)) {
+                //     $price_per_weight = $item_rental->price_rental_item;
+                // }
+
                 $total_weight += $list['weight_list_transaction_rental'];
             }
+
 
             // Hitung total harga berdasarkan berat × harga per berat
             $price_per_weight = $request->price_weight_transaction_rental;
@@ -179,6 +178,7 @@ class TransactionRentalController extends Controller
                 'status_transaction_rental' => $request->status_transaction_rental,
                 'price_weight_transaction_rental' => $price_per_weight,
                 'total_weight_transaction_rental' => $total_weight,
+                'sub_total_weight_transaction_rental' => $total_price,
                 'total_pcs_transaction_rental' => count($request->list_transaction_rentals),
                 'promo_transaction_rental' => $request->promo_transaction_rental ?? 0,
                 'additional_cost_transaction_rental' => $additional,
@@ -191,7 +191,7 @@ class TransactionRentalController extends Controller
             $list_transactions = [];
             foreach ($request->list_transaction_rentals as $list) {
                 // Ambil data item rental berdasarkan id
-                $rental_item = Rental_Item::findOrFail($list['id_item_rental']);
+                $rental_item = Rental_Item::withTrashed()->findOrFail($list['id_item_rental']);
 
                 // Hitung total berat dan total harga
                 $weight = $list['weight_list_transaction_rental'];
@@ -212,8 +212,15 @@ class TransactionRentalController extends Controller
                 $list_transaction->refresh();
 
                 // Update status item rental menjadi 'rented'
+                $status_rental_item = '';
+                if ($transaction_rental->status_transaction_rental == 'in') {
+                    $status_rental_item = 'maintenance';
+                } else {
+                    $status_rental_item = 'rented';
+                }
+
                 Rental_Item::where('id_rental_item', $list['id_item_rental'])->update([
-                    'status_rental_item' => 'rented'
+                    'status_rental_item' => $status_rental_item
                 ]);
 
                 // Simpan ke array hasil jika diperlukan
@@ -378,9 +385,10 @@ class TransactionRentalController extends Controller
                 'is_active_transaction_rental' => $request->is_active_transaction_rental,
             ];
 
-            if ($request->is_active_transaction_rental === "inactive") {
+            if ($request->status_transaction_rental === "cancelled") {
+                $data['is_active_transaction_rental'] = "inactive";
                 $transaction->delete();
-                Log::info('Transaksi rental dengan id ' . $id . ' berhasil dinonaktifkan.');
+                Log::info('Transaksi rental dengan id ' . $id . ' berhasil dibatalkan.');
             } else {
                 $data['is_active_transaction_rental'] = "active";
                 $transaction->restore();
