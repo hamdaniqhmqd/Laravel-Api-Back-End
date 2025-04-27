@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\ResponseApiResource;
 use App\Models\List_Transaction_Rental;
 use App\Models\Logging;
+use App\Models\Rental_Item;
+use App\Models\Transaction_Rental;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -115,8 +117,9 @@ class ListTransactionRentalController extends Controller
                 'status_list_transaction_rental' => 'required|in:rented,returned,cancelled',
                 'condition_list_transaction_rental' => 'required|in:clean,dirty,damaged',
                 'note_list_transaction_rental' => 'nullable|string',
-                'price_list_transaction_rental' => 'required|numeric|min:0',
+                // 'price_list_transaction_rental' => 'required|numeric|min:0',
                 'weight_list_transaction_rental' => 'required|numeric|min:0',
+                // 'is_active_list_transaction_rental' => 'required|in:active,inactive',
             ]);
 
             // Jika validasi gagal, kembalikan response error
@@ -124,6 +127,24 @@ class ListTransactionRentalController extends Controller
                 Log::warning('Validasi gagal: ' . $validator->errors()->toJson());
                 return new ResponseApiResource(false, 'Validasi gagal', $request->all(), $validator->errors());
             }
+
+            // Ambil data transaction rental
+            $transaction_rental = Transaction_Rental::withTrashed()->findOrFail($request->id_rental_transaction);
+            if (!$transaction_rental) {
+                return new ResponseApiResource(false, 'Transaction rental tidak ditemukan.', [], null, 404);
+            }
+            $count_transaction = $transaction_rental->total_pcs_transaction_rental + 1;
+
+            // Ambil data item rental berdasarkan id
+            $rental_item = Rental_Item::withTrashed()->findOrFail($request->id_item_rental);
+            $price = $rental_item->price_rental_item;
+
+            // Berat sebelumnya dikurangi berat list yang lama
+            $new_total_weight = $transaction_rental->total_weight_transaction_rental + $request->weight_list_transaction_rental;
+
+            // Hitung sub total harga baru
+            $sub_total_price = $transaction_rental->price_weight_transaction_rental * $new_total_weight;
+            $total_transaction_rental = ($sub_total_price - $transaction_rental->promo_transaction_rental) + $transaction_rental->additional_cost_transaction_rental;
 
             // Membuat list transaksi rental baru
             $list_transaction_rental = List_Transaction_Rental::create([
@@ -133,9 +154,17 @@ class ListTransactionRentalController extends Controller
                 'status_list_transaction_rental' => $request->status_list_transaction_rental,
                 'condition_list_transaction_rental' => $request->condition_list_transaction_rental,
                 'note_list_transaction_rental' => $request->note_list_transaction_rental,
-                'price_list_transaction_rental' => $request->price_list_transaction_rental,
+                'price_list_transaction_rental' => $price,
                 'weight_list_transaction_rental' => $request->weight_list_transaction_rental,
                 'is_active_list_transaction_rental' => 'active',
+            ]);
+
+            // --- Update transaksi laundry utama ---
+            $transaction_rental->update([
+                'total_pcs_transaction_rental' => $count_transaction,
+                'sub_total_weight_transaction_rental' => $sub_total_price,
+                'total_weight_transaction_rental' => $new_total_weight,
+                'total_price_transaction_rental' => $total_transaction_rental,
             ]);
 
             // Kembalikan response sukses
@@ -210,7 +239,7 @@ class ListTransactionRentalController extends Controller
                 'status_list_transaction_rental' => 'required|in:rented,returned,cancelled',
                 'condition_list_transaction_rental' => 'required|in:clean,dirty,damaged',
                 'note_list_transaction_rental' => 'nullable|string',
-                'price_list_transaction_rental' => 'required|numeric|min:0',
+                // 'price_list_transaction_rental' => 'required|numeric|min:0',
                 'weight_list_transaction_rental' => 'required|numeric|min:0',
                 'is_active_list_transaction_rental' => 'required|in:active,inactive',
             ]);
@@ -221,6 +250,28 @@ class ListTransactionRentalController extends Controller
                 return new ResponseApiResource(false, 'Validasi gagal', $request->all(), $validator->errors());
             }
 
+            // Ambil data transaction rental
+            $transaction_rental = Transaction_Rental::withTrashed()->findOrFail($request->id_rental_transaction);
+            if (!$transaction_rental) {
+                return new ResponseApiResource(false, 'Transaction rental tidak ditemukan.', [], null, 404);
+            }
+
+            // Ambil data item rental berdasarkan id
+            $rental_item = Rental_Item::withTrashed()->findOrFail($request->id_item_rental);
+            $price = $rental_item->price_rental_item;
+
+            // Berat sebelumnya dikurangi berat list yang lama
+            $current_total_weight = $transaction_rental->total_weight_transaction_rental - $list_transaction_rental->weight_list_transaction_rental;
+            if ($current_total_weight <= 0) {
+                $current_total_weight = 0;
+            }
+            // Hitung total berat baru
+            $new_total_weight = $current_total_weight + $request->weight_list_transaction_rental;
+
+            // Hitung sub total harga baru
+            $sub_total_price = $transaction_rental->price_weight_transaction_rental * $new_total_weight;
+            $total_transaction_rental = ($sub_total_price - $transaction_rental->promo_transaction_rental) + $transaction_rental->additional_cost_transaction_rental;
+
             // Siapkan data yang akan diperbarui
             $data = [
                 'id_rental_transaction' => $request->id_rental_transaction,
@@ -229,13 +280,20 @@ class ListTransactionRentalController extends Controller
                 'status_list_transaction_rental' => $request->status_list_transaction_rental,
                 'condition_list_transaction_rental' => $request->condition_list_transaction_rental,
                 'note_list_transaction_rental' => $request->note_list_transaction_rental,
-                'price_list_transaction_rental' => $request->price_list_transaction_rental,
+                'price_list_transaction_rental' => $price,
                 'weight_list_transaction_rental' => $request->weight_list_transaction_rental,
                 'is_active_list_transaction_rental' => $request->is_active_list_transaction_rental,
             ];
 
             // Update data transaksi rental
             $list_transaction_rental->update($data);
+
+            // --- Update transaksi laundry utama ---
+            $transaction_rental->update([
+                'sub_total_weight_transaction_rental' => $sub_total_price,
+                'total_weight_transaction_rental' => $new_total_weight,
+                'total_price_transaction_rental' => $total_transaction_rental,
+            ]);
 
             // Jika status transaksi rental diubah menjadi "inactive", maka soft delete data
             if ($list_transaction_rental->is_active_list_transaction_rental === 'inactive') {
