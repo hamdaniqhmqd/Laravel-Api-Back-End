@@ -20,6 +20,7 @@ class ListTransactionsRentalSeeder extends Seeder
                 [
                     'id_rental_transaction' => 1,
                     'id_item_rental' => 2,
+                    'type_list_rental_transaction' => 'bath towel',
                     'status_list_transaction_rental' => 'rented',
                     'condition_list_transaction_rental' => 'clean',
                     'note_list_transaction_rental' => 'Rental for wedding event.',
@@ -33,6 +34,7 @@ class ListTransactionsRentalSeeder extends Seeder
                 [
                     'id_rental_transaction' => 2,
                     'id_item_rental' => 5,
+                    'type_list_rental_transaction' => 'bath towel',
                     'status_list_transaction_rental' => 'returned',
                     'condition_list_transaction_rental' => 'dirty',
                     'note_list_transaction_rental' => 'Used in outdoor event.',
@@ -46,6 +48,7 @@ class ListTransactionsRentalSeeder extends Seeder
                 [
                     'id_rental_transaction' => 3,
                     'id_item_rental' => 7,
+                    'type_list_rental_transaction' => 'bath towel',
                     'status_list_transaction_rental' => 'cancelled',
                     'condition_list_transaction_rental' => 'clean',
                     'note_list_transaction_rental' => 'Customer cancelled due to rain.',
@@ -59,6 +62,7 @@ class ListTransactionsRentalSeeder extends Seeder
                 [
                     'id_rental_transaction' => 4,
                     'id_item_rental' => 1,
+                    'type_list_rental_transaction' => 'bath towel',
                     'status_list_transaction_rental' => 'rented',
                     'condition_list_transaction_rental' => 'clean',
                     'note_list_transaction_rental' => 'For corporate event.',
@@ -72,6 +76,7 @@ class ListTransactionsRentalSeeder extends Seeder
                 [
                     'id_rental_transaction' => 5,
                     'id_item_rental' => 3,
+                    'type_list_rental_transaction' => 'bath towel',
                     'status_list_transaction_rental' => 'returned',
                     'condition_list_transaction_rental' => 'damaged',
                     'note_list_transaction_rental' => 'Minor scratches on surface.',
@@ -85,6 +90,7 @@ class ListTransactionsRentalSeeder extends Seeder
                 [
                     'id_rental_transaction' => 1,
                     'id_item_rental' => 6,
+                    'type_list_rental_transaction' => 'bath towel',
                     'status_list_transaction_rental' => 'rented',
                     'condition_list_transaction_rental' => 'clean',
                     'note_list_transaction_rental' => 'For photo shoot.',
@@ -98,6 +104,7 @@ class ListTransactionsRentalSeeder extends Seeder
                 [
                     'id_rental_transaction' => 3,
                     'id_item_rental' => 4,
+                    'type_list_rental_transaction' => 'bath towel',
                     'status_list_transaction_rental' => 'returned',
                     'condition_list_transaction_rental' => 'dirty',
                     'note_list_transaction_rental' => 'Used in muddy area.',
@@ -111,6 +118,7 @@ class ListTransactionsRentalSeeder extends Seeder
                 [
                     'id_rental_transaction' => 4,
                     'id_item_rental' => 8,
+                    'type_list_rental_transaction' => 'bath towel',
                     'status_list_transaction_rental' => 'rented',
                     'condition_list_transaction_rental' => 'clean',
                     'note_list_transaction_rental' => 'VIP customer order.',
@@ -124,6 +132,7 @@ class ListTransactionsRentalSeeder extends Seeder
                 [
                     'id_rental_transaction' => 2,
                     'id_item_rental' => 9,
+                    'type_list_rental_transaction' => 'bath towel',
                     'status_list_transaction_rental' => 'returned',
                     'condition_list_transaction_rental' => 'clean',
                     'note_list_transaction_rental' => 'Well maintained.',
@@ -137,6 +146,7 @@ class ListTransactionsRentalSeeder extends Seeder
                 [
                     'id_rental_transaction' => 5,
                     'id_item_rental' => 10,
+                    'type_list_rental_transaction' => 'bath towel',
                     'status_list_transaction_rental' => 'cancelled',
                     'condition_list_transaction_rental' => 'clean',
                     'note_list_transaction_rental' => 'Customer rescheduled.',

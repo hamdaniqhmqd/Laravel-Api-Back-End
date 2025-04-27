@@ -125,9 +125,10 @@ class TransactionRentalController extends Controller
                 'notes_transaction_laundry' => 'nullable|string',
                 'list_transaction_rentals' => 'required|array|min:1',
                 'list_transaction_rentals.*.id_item_rental' => 'required|exists:rental_items,id_rental_item',
+                'list_transaction_rentals.*.type_list_rental_transaction' => 'required|in:bath towel,hand towel,gorden,keset',
                 'list_transaction_rentals.*.condition_list_transaction_rental' => 'required|in:clean,dirty,damaged',
                 'list_transaction_rentals.*.note_list_transaction_rental' => 'nullable|string',
-                'list_transaction_rentals.*.price_list_transaction_rental' => 'required|numeric|min:0',
+                // 'list_transaction_rentals.*.price_list_transaction_rental' => 'required|numeric|min:0',
                 'list_transaction_rentals.*.weight_list_transaction_rental' => 'required|numeric|min:0',
             ]);
 
@@ -135,6 +136,20 @@ class TransactionRentalController extends Controller
                 Log::warning('Validasi gagal: ' . $validator->errors()->toJson());
                 DB::rollBack();
                 return new ResponseApiResource(false, 'Validasi transaksi rental gagal', $request->all(), $validator->errors());
+            }
+
+            foreach ($request->list_transaction_rentals as $list) {
+                if (strtolower(trim($list['type_list_rental_transaction'])) != strtolower(trim($request->type_rental_transaction))) {
+                    Log::warning('Tipe transaksi tidak sesuai: ' . $list['type_list_rental_transaction']);
+                    DB::rollBack();
+                    return new ResponseApiResource(
+                        false,
+                        'Tipe transaksi tidak sesuai',
+                        $request->all(),
+                        'Tipe transaksi tidak sesuai: ' . $list['type_list_rental_transaction'] . ', Yang harusnya ' . $request->type_rental_transaction,
+                        422
+                    );
+                }
             }
 
             // Hitung total berat dari semua item
@@ -185,6 +200,7 @@ class TransactionRentalController extends Controller
                 $list_transaction = List_Transaction_Rental::create([
                     'id_rental_transaction' => $transaction_rental->id_transaction_rental,
                     'id_item_rental' => $list['id_item_rental'],
+                    'type_list_transaction_rental' => $list['type_list_rental_transaction'] ?? $transaction_rental->type_rental_transaction,
                     'status_list_transaction_rental' => 'rented',
                     'condition_list_transaction_rental' => $list['condition_list_transaction_rental'],
                     'note_list_transaction_rental' => $list['note_list_transaction_rental'] ?? null,
@@ -192,6 +208,8 @@ class TransactionRentalController extends Controller
                     'weight_list_transaction_rental' => $weight,
                     'is_active_list_transaction_rental' => 'active',
                 ]);
+
+                $list_transaction->refresh();
 
                 // Update status item rental menjadi 'rented'
                 Rental_Item::where('id_rental_item', $list['id_item_rental'])->update([

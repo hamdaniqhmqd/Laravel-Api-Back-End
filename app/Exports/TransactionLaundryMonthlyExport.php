@@ -55,7 +55,7 @@ class TransactionLaundryMonthlyExport implements FromView, WithTitle
                 'notes_transaction_laundry as notes',
                 'total_weight_transaction_laundry as weight',
                 'total_price_transaction_laundry as price',
-                'total_laundry_transaction_laundry as qty',
+                'count_item_laundry_transaction_laundry as qty',
                 'promo_transaction_laundry as promo',
                 'additional_cost_transaction_laundry as additional_cost',
                 'total_transaction_laundry as total',

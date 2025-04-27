@@ -18,6 +18,7 @@ class List_Transaction_Rental extends Model
     protected $fillable = [
         'id_rental_transaction',
         'id_item_rental',
+        'type_list_rental_transaction',
         'status_list_transaction_rental',
         'condition_list_transaction_rental',
         'note_list_transaction_rental',

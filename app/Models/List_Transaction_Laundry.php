@@ -19,7 +19,7 @@ class List_Transaction_Laundry extends Model
         'id_item_laundry',
         'price_list_transaction_laundry',
         'weight_list_transaction_laundry',
-        'pcs_list_transaction_laundry',
+        'total_price_list_transaction_laundry',
         'status_list_transaction_laundry',
         'note_list_transaction_laundry',
         'is_active_list_transaction_laundry'
