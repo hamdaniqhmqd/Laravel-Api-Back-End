@@ -176,7 +176,7 @@ class InvoiceRentalController extends Controller
 
 
             // Hitung total harga dari berat total dikalikan harga per kg
-            $totalPrice = $priceInvoiceRental - $promo + $additional;
+            $totalPrice = ($priceInvoiceRental - $promo) + $additional;
 
             // Simpan data invoice utama
             $invoice = Invoice_Rental::create([
@@ -199,8 +199,7 @@ class InvoiceRentalController extends Controller
 
                 $priceWeightListInvoiceRental = $rentalTransaction->price_weight_transaction_rental;
                 $totalWeight = $rentalTransaction->total_weight_transaction_rental;
-                $totalPriceListInvoice = $priceWeightListInvoiceRental * $totalWeight;
-                $totalPriceListInvoice = $priceWeightListInvoiceRental * $totalWeight;                // Simpan data list invoice rental
+                $totalPriceListInvoice = $priceWeightListInvoiceRental * $totalWeight;              // Simpan data list invoice rental
 
                 $list = List_Invoice_Rental::create([
                     'id_rental_invoice' => $invoice->id_invoice_rental,
@@ -329,7 +328,6 @@ class InvoiceRentalController extends Controller
             $validator = Validator::make($request->all(), [
                 'id_branch_invoice' => 'required|exists:branches,id_branch',
                 'id_client_invoice' => 'required|exists:clients,id_client',
-                'number_invoice' => 'required|string|unique:invoice_rentals,number_invoice,' . $id,
                 'notes_invoice_rental' => 'nullable|string',
                 'time_invoice_rental' => 'required|date_format:Y-m-d H:i:s',
                 'total_weight_invoice_rental' => 'required|numeric|min:0',
