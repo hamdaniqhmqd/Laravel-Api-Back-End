@@ -378,10 +378,9 @@ class TransactionRentalController extends Controller
                 'is_active_transaction_rental' => $request->is_active_transaction_rental,
             ];
 
-            if ($request->status_transaction_rental === "cancelled") {
-                $data['is_active_transaction_rental'] = "inactive";
+            if ($request->is_active_transaction_rental === "inactive") {
                 $transaction->delete();
-                Log::info('Transaksi rental dengan id ' . $id . ' berhasil dibatalkan.');
+                Log::info('Transaksi rental dengan id ' . $id . ' berhasil dinonaktifkan.');
             } else {
                 $data['is_active_transaction_rental'] = "active";
                 $transaction->restore();

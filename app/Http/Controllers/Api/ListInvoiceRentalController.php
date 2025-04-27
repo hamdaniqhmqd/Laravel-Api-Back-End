@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\ResponseApiResource;
 use App\Models\List_Invoice_Rental;
 use App\Models\Logging;
+use App\Models\Transaction_Rental;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
@@ -112,10 +113,9 @@ class ListInvoiceRentalController extends Controller
                 'id_rental_invoice' => 'required|exists:invoice_rentals,id_invoice_rental',
                 'id_rental_transaction' => 'required|exists:transaction_rentals,id_transaction_rental',
                 'status_list_invoice_rental' => 'nullable|in:unpaid,paid,cancelled',
+                'type_invoice_rental' => 'required|in:bath towel,hand towel,gorden,keset',
                 'note_list_invoice_rental' => 'nullable|string',
-                'price_list_invoice_rental' => 'required|numeric|min:0',
-                'weight_list_invoice_rental' => 'required|numeric|min:0',
-                'is_active_list_invoice_rental' => 'required|in:active,inactive',
+                'is_active_list_invoice_rental' => 'nullable|in:active,inactive',
             ]);
 
             if ($validator->fails()) {
@@ -123,15 +123,44 @@ class ListInvoiceRentalController extends Controller
                 return new ResponseApiResource(false, 'Validasi gagal', $request->all(), $validator->errors(), 422);
             }
 
+            // Ambil data transaction rental
+            $rentalTransaction = Transaction_Rental::findOrFail($request->id_rental_transaction);
+
+            // Periksa apakah transaksi rental ditemukan
+            if (!$rentalTransaction) {
+                Log::info('Data transaksi rental tidak ditemukan', ['id_rental_transaction' => $request->id_rental_transaction]);
+                return new ResponseApiResource(false, 'Data transaksi rental tidak ditemukan', null, 404);
+            }
+
+            // Periksa apakah type invoice rental valid
+            if (strtolower($request->type_invoice_rental) !== strtolower($rentalTransaction->type_rental_transaction)) {
+                Log::warning('Tipe transaksi tidak sesuai: ' . $request->type_invoice_rental);
+
+                return new ResponseApiResource(
+                    false,
+                    'Tipe transaksi tidak sesuai',
+                    $request->all(),
+                    'Tipe transaksi tidak sesuai: ' . $request->type_invoice_rental . ', Yang harusnya ' . $rentalTransaction->type_rental_transaction,
+                    422
+                );
+            }
+
+            // Hitung total price berdasarkan price_weight dan total_weight
+            $priceWeightListInvoiceRental = $rentalTransaction->price_weight_transaction_rental;
+            $totalWeight = $rentalTransaction->total_weight_transaction_rental;
+            $totalPriceListInvoice = $priceWeightListInvoiceRental * $totalWeight;
+
             // Buat data list invoice rental
             $listInvoice = List_Invoice_Rental::create([
                 'id_rental_invoice' => $request->id_rental_invoice,
                 'id_rental_transaction' => $request->id_rental_transaction,
+                'type_invoice_rental' => $rentalTransaction->type_rental_transaction,
                 'status_list_invoice_rental' => $request->status_list_invoice_rental ?? 'unpaid',
                 'note_list_invoice_rental' => $request->note_list_invoice_rental,
-                'price_list_invoice_rental' => $request->price_list_invoice_rental,
-                'weight_list_invoice_rental' => $request->weight_list_invoice_rental,
-                'is_active_list_invoice_rental' => $request->is_active_list_invoice_rental,
+                'price_list_invoice_rental' => $priceWeightListInvoiceRental,
+                'weight_list_invoice_rental' => $totalWeight,
+                'total_price_invoice_rental' => $totalPriceListInvoice,
+                'is_active_list_invoice_rental' => $request->is_active_list_invoice_rental ?? 'active',
             ]);
 
             Log::info('List invoice rental berhasil ditambahkan dengan ID: ' . $listInvoice->id_list_invoice_rental);
@@ -199,14 +228,12 @@ class ListInvoiceRentalController extends Controller
                 return new ResponseApiResource(false, 'List Invoice Rental tidak ditemukan.', [], null, 404);
             }
 
-            // Validasi input berdasarkan skema tabel list_invoice_rentals
+            // Validasi input
             $validator = Validator::make($request->all(), [
                 'id_rental_invoice' => 'required|exists:invoice_rentals,id_invoice_rental',
                 'id_rental_transaction' => 'required|exists:transaction_rentals,id_transaction_rental',
                 'status_list_invoice_rental' => 'required|in:unpaid,paid,cancelled',
                 'note_list_invoice_rental' => 'nullable|string',
-                'price_list_invoice_rental' => 'required|numeric|min:0',
-                'weight_list_invoice_rental' => 'required|numeric|min:0',
                 'is_active_list_invoice_rental' => 'required|in:active,inactive',
             ]);
 
@@ -215,21 +242,30 @@ class ListInvoiceRentalController extends Controller
                 return new ResponseApiResource(false, 'Validasi gagal', $request->all(), $validator->errors(), 422);
             }
 
+            // Ambil data Transaction_Rental terkait
+            $rentalTransaction = Transaction_Rental::findOrFail($request->id_rental_transaction);
+
+            $priceWeightListInvoiceRental = $rentalTransaction->price_weight_transaction_rental;
+            $totalWeight = $rentalTransaction->total_weight_transaction_rental;
+            $totalPriceListInvoice = $priceWeightListInvoiceRental * $totalWeight;
+
             // Siapkan data untuk diupdate
             $data = [
                 'id_rental_invoice' => $request->id_rental_invoice,
                 'id_rental_transaction' => $request->id_rental_transaction,
+                'type_invoice_rental' => $rentalTransaction->type_rental_transaction,
                 'status_list_invoice_rental' => $request->status_list_invoice_rental,
-                'note_list_invoice_rental' => $request->note_list_invoice_rental,
-                'price_list_invoice_rental' => $request->price_list_invoice_rental,
-                'weight_list_invoice_rental' => $request->weight_list_invoice_rental,
+                'note_list_invoice_rental' => $request->note_list_invoice_rental ?? null,
+                'price_list_invoice_rental' => $priceWeightListInvoiceRental,
+                'weight_list_invoice_rental' => $totalWeight,
+                'total_price_invoice_rental' => $totalPriceListInvoice,
                 'is_active_list_invoice_rental' => $request->is_active_list_invoice_rental,
             ];
 
             // Update data
             $invoiceRental->update($data);
 
-            // Handle soft delete jika status nonaktif
+            // Handle soft delete jika nonaktif
             if ($data['is_active_list_invoice_rental'] === 'inactive') {
                 $invoiceRental->delete();
                 Log::info('List Invoice Rental berhasil dinonaktifkan', [
@@ -251,6 +287,7 @@ class ListInvoiceRentalController extends Controller
             return new ResponseApiResource(false, 'Terjadi kesalahan saat memperbarui invoice rental.', $request->all(), $e->getMessage(), 500);
         }
     }
+
 
 
     /**
