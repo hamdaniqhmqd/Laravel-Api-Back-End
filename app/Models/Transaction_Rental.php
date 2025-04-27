@@ -23,6 +23,7 @@ class Transaction_Rental extends Model
         'status_transaction_rental',
         'price_weight_transaction_rental',
         'total_weight_transaction_rental',
+        'sub_total_weight_transaction_rental',
         'total_pcs_transaction_rental',
         'promo_transaction_rental',
         'additional_cost_transaction_rental',
