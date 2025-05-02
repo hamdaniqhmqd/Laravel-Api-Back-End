@@ -28,7 +28,7 @@ class LoginController extends Controller
 
             // Validasi input
             $credentials = $request->validate([
-                'username' => 'required|string',
+                'username' => 'required|string|',
                 'password' => 'required|string|min:8',
             ]);
 
@@ -70,7 +70,7 @@ class LoginController extends Controller
         } catch (ValidationException $error) {
             Log::error('Kesalahan validasi : ' . $error->getMessage());
 
-            return new AuthApiResource(false, 'Kesalahan validasi', null, null, $error->errors(), 422);
+            return new AuthApiResource(false, 'Kesalahan validasi', null, $error->errors(), null, 422);
         } catch (Exception $error) {
             Log::error('Ada yang tidak beres : ' . $error->getMessage());
 
