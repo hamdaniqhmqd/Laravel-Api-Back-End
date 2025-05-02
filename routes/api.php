@@ -42,7 +42,7 @@ Route::middleware(['auth:sanctum', 'role:owner'])->group(function () {
     Route::delete('/delete_users/{id}', [UserController::class, 'destroy']);
     Route::put('/restore_users/{id}', [UserController::class, 'restore']);
     Route::delete('/force_destroy_users/{id}', [UserController::class, 'forceDestroy']);
-    Route::put('/reset_password/{id}', [UserController::class, 'resetPassword']);
+    Route::get('/reset_password/{id}', [UserController::class, 'resetPassword']);
 
     // Branch
     Route::get('/branches', [BranchController::class, 'index']);
