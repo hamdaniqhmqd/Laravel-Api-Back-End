@@ -184,6 +184,7 @@ class TransactionRentalController extends Controller
                 'additional_cost_transaction_rental' => $additional,
                 'total_price_transaction_rental' => $total_transaction,
                 'notes_transaction_laundry' => $request->notes_transaction_laundry,
+                'time_transaction_rental' => Carbon::now(),
                 'is_active_transaction_rental' => 'active',
             ]);
 

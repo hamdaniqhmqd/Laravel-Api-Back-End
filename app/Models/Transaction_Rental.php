@@ -30,7 +30,7 @@ class Transaction_Rental extends Model
         'total_price_transaction_rental',
         'notes_transaction_rental',
         'is_active_transaction_rental',
-        // 'first_date_transaction_rental',
+        'time_transaction_rental',
         // 'last_date_transaction_rental',
     ];
 
@@ -49,7 +49,7 @@ class Transaction_Rental extends Model
      * @var list<string, string>
      */
     protected $dates = [
-        // 'first_date_transaction_rental',
+        'time_transaction_rental',
         // 'last_date_transaction_rental',
         'deleted_at',
         'created_at',

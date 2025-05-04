@@ -112,6 +112,7 @@ class BranchController extends Controller
                 'name_branch' => 'required|string|max:255',
                 'city_branch' => 'required|string|max:255',
                 'address_branch' => 'required|string',
+                'type_branch' => 'required|in:rental,laundry,rental and laundry',
                 // 'is_active_branch' => 'required|in:active,inactive'
             ]);
 
@@ -126,6 +127,7 @@ class BranchController extends Controller
                 'name_branch' => $request->name_branch,
                 'city_branch' => $request->city_branch,
                 'address_branch' => $request->address_branch,
+                'type_branch' => $request->type_branch,
                 'is_active_branch' => "active",
             ]);
 
@@ -202,6 +204,7 @@ class BranchController extends Controller
                 'name_branch' => 'required|string|max:255',
                 'city_branch' => 'required|string|max:255',
                 'address_branch' => 'required|string',
+                'type_branch' => 'required|in:rental,laundry,rental and laundry',
                 'is_active_branch' => 'required|in:active,inactive'
             ]);
 
@@ -216,6 +219,7 @@ class BranchController extends Controller
                 'name_branch' => $request->name_branch,
                 'city_branch' => $request->city_branch,
                 'address_branch' => $request->address_branch,
+                'type_branch' => $request->type_branch,
                 'is_active_branch' => $request->is_active_branch,
             ]);
 
