@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('name_branch');
             $table->string('city_branch');
             $table->text('address_branch');
+            $table->enum('type_branch', ['rental', 'laundry', 'rental and laundry'])->default('laundry');
             $table->enum('is_active_branch', ['active', 'inactive'])->default('active');
             $table->softDeletes();
             $table->timestamps();
