@@ -117,7 +117,7 @@ class TransactionLaundryController extends Controller
                 'id_user_transaction_laundry' => 'required|exists:users,id_user',
                 'id_branch_transaction_laundry' => 'required|exists:branches,id_branch',
                 'name_client_transaction_laundry' => 'required|string|max:255',
-                'status_transaction_laundry' => 'required|in:pending,in_progress,completed,cancelled',
+                // 'status_transaction_laundry' => 'required|in:pending,in_progress,completed,cancelled',
                 'notes_transaction_laundry' => 'nullable|string',
                 'promo_transaction_laundry' => 'nullable|numeric|min:0',
                 'additional_cost_transaction_laundry' => 'nullable|numeric|min:0',
@@ -125,7 +125,7 @@ class TransactionLaundryController extends Controller
                 'list_transaction_laundry' => 'required|array|min:1',
                 'list_transaction_laundry.*.id_item_laundry' => 'required|exists:laundry_items,id_laundry_item',
                 'list_transaction_laundry.*.weight_list_transaction_laundry' => 'required|numeric|min:0',
-                'list_transaction_laundry.*.status_list_transaction_laundry' => 'required|in:pending,completed,cancelled',
+                // 'list_transaction_laundry.*.status_list_transaction_laundry' => 'required|in:pending,completed,cancelled',
                 'list_transaction_laundry.*.note_list_transaction_laundry' => 'nullable|string',
             ]);
 
@@ -157,7 +157,7 @@ class TransactionLaundryController extends Controller
                     'price_list_transaction_laundry' => $price_per_weight,
                     'weight_list_transaction_laundry' => $weight,
                     'total_price_list_transaction_laundry' => $price,
-                    'status_list_transaction_laundry' => $list['status_list_transaction_laundry'],
+                    'status_list_transaction_laundry' => 'pending',
                     'note_list_transaction_laundry' => $list['note_list_transaction_laundry'] ?? null,
                 ];
             }
@@ -177,7 +177,7 @@ class TransactionLaundryController extends Controller
                 'id_user_transaction_laundry' => $request->id_user_transaction_laundry,
                 'id_branch_transaction_laundry' => $request->id_branch_transaction_laundry,
                 'name_client_transaction_laundry' => $request->name_client_transaction_laundry,
-                'status_transaction_laundry' => $request->status_transaction_laundry,
+                'status_transaction_laundry' => 'pending',
                 'notes_transaction_laundry' => $request->notes_transaction_laundry,
                 'total_weight_transaction_laundry' => $total_weight,
                 'total_price_transaction_laundry' => $total_price,
